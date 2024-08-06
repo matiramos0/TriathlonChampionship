@@ -2,8 +2,6 @@ package Model.Athlete;
 
 import java.time.LocalDate;
 
-import Domain.Amateur.category;
-
 public class Amateur extends Athlete {
 
 private int category;	
@@ -12,8 +10,8 @@ private int category;
         super(number, name, last, nacionality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, physicalsConditions);
         this.category = calculateCategory(birthdate);
 	}
-
-	public int calculateCategory(String birthDate) {	
+	
+	private int calculateCategory(String birthDate) {	
     	//split the birthDate string and compare to the current date to get how years old the athlete is
     	String[] birth = birthDate.split("-");
     	LocalDate current = LocalDate.now();
@@ -24,7 +22,7 @@ private int category;
     		else if ((current.getMonthValue() == Integer.parseInt(birth[1])) && (current.getDayOfMonth() < Integer.parseInt(birth[3])))
     			years--;
     	int categoria = 0;
-    	switch(true) {
+    	/*switch(years) {
     		case years >= 19 && years <= 24 : categoria = 1;	
     		break;
     		case years >= 25 && years <= 29 : categoria = 2;	
@@ -48,8 +46,9 @@ private int category;
     		case years >= 70 && years <= 74 : categoria = 11;	
     		break;
     		case years >= 75 				: categoria = 12;
-    		break; 	   		    		    		    		    		    		    		    		    		    		    		  
-    }
+    		break;   		    		    		    		    		    		    		    		    		    		    		  
+    	}*/
+    	
     	return categoria;
 	}	
 
@@ -57,6 +56,5 @@ private int category;
     public void setGender(Gender gender) {
         this.gender = gender;
     }
-
 
 }

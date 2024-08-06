@@ -6,6 +6,7 @@ import java.util.List;
 import Model.City.City;
 import Model.Modality.Modality;
 import Model.ClimateCondition.ClimateCondition;
+import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
 
 public class Race {
@@ -16,12 +17,10 @@ public class Race {
 	//private List <ClimateCondition> listClimateCondition = new ArrayList<>();
 	private List <Athlete> listAthlete = new ArrayList<>();
 	
-	public Race(Modality modality, City city, ArrayList<Provisioning> listPrivisioning,
-			ArrayList<ClimateCondition> listclimatecondition, ArrayList<Athlete> listAthlete) {
+	public Race(Modality modality, City city, ArrayList<Provisioning> listPrivisioning) {
 		this.modality = modality;
 		this.city = city;
 		this.listPrivisioning = listPrivisioning;
-		this.listAthlete = listAthlete;
 	}
 
 	public Modality getModality() {

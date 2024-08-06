@@ -14,13 +14,13 @@ public class Championship {
 
 	public static void main(String[] args) {
 		
-		XMLCharge.chargeTriathlon(athletes);
+		XMLCharge.chargeTriathlon(athletes, races);
 		
-		for(Athlete athlete: athletes) {
+		//for(Athlete athlete: athletes) {
 			
-			System.out.println(athlete);
+			//System.out.println(athlete);
 			
-		}
+		//}
 
 	}
 	

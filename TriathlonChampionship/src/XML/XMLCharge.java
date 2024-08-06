@@ -4,6 +4,14 @@ import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
 import Model.Athlete.Competence;
 import Model.Athlete.Stats;
+import Model.City.City;
+import Model.City.Country;
+import Model.Discipline.Cycling;
+import Model.Discipline.DistanceDiscipline;
+import Model.Discipline.Pedestrianism;
+import Model.Discipline.Provisioning;
+import Model.Discipline.Swimming;
+import Model.Modality.Modality;
 import Model.Race.Race;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,11 +26,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class XMLCharge {
+	
+	private static Set<String> nationalities = new HashSet<>();
+	private static Set<String> modalities = new HashSet<>();  
 
-    public static void chargeTriathlon(List<Athlete> athletes) {
+    public static void chargeTriathlon(List<Athlete> athletes, List<Race> races) {
 
         try {
 
@@ -62,6 +75,8 @@ public class XMLCharge {
                 float height = Float.parseFloat(element.getElementsByTagName("altura").item(0).getTextContent());
 
                 double economy = Double.parseDouble(element.getElementsByTagName("presupuestoEconomico").item(0).getTextContent());
+                
+                nationalities.add(nationality);
 
                 Stats stats = new Stats(swimming, cycling, stoning, resistance, psychological);
 
@@ -79,6 +94,8 @@ public class XMLCharge {
                     else if (gender.equals("Feminino"))
                         athlete.setGender(Athlete.Gender.FEMALE);
                 }
+                
+                //System.out.println(nationality);
 
                 athletes.add(athlete);
 
@@ -90,11 +107,57 @@ public class XMLCharge {
 
                 Element element = (Element) raceList.item(i);
 
-                //String city = element.getElementsByTagName("ciudad").item(0).getTextContent();
-                //String country = element.getElementsByTagName("pais").item(0).getTextContent();
-                //String date = element.getElementsByTagName("fecha").item(0).getTextContent();
-
+                String city = element.getElementsByTagName("ciudad").item(0).getTextContent();               
+                String country = element.getElementsByTagName("pais").item(0).getTextContent();
+                String date = element.getElementsByTagName("fecha").item(0).getTextContent();
+                String descriptModality = element.getElementsByTagName("modalidad").item(0).getTextContent();
+                
+                float distanceSwimming = Float.parseFloat(element.getElementsByTagName("natacion").item(0).getTextContent());
+                float distanceCycling = Float.parseFloat(element.getElementsByTagName("ciclismo").item(0).getTextContent());
+                float distanceStoning = Float.parseFloat(element.getElementsByTagName("pedestrismo").item(0).getTextContent());
+                
+                DistanceDiscipline swimming = new DistanceDiscipline(distanceSwimming, new Swimming());
+                DistanceDiscipline cycling = new DistanceDiscipline(distanceCycling, new Cycling());
+                DistanceDiscipline stoning = new DistanceDiscipline(distanceStoning, new Pedestrianism());
+                
+                Modality modality = new Modality(descriptModality, swimming, cycling, stoning);
+                
+                modalities.add(descriptModality);
+                
+                NodeList listPoints = root.getElementsByTagName("puestos_aprovisionamiento");
+                
+                //List<Provisioning> provisionings = new ArrayList<>();
+                
+                for (int j = 0; j < listPoints.getLength(); j++) {
+                	
+                	Element elementChild = (Element) element.getElementsByTagName("puesto").item(j);
+                	
+                	String type = elementChild.getAttributeNode("tipo").getValue();
+                	
+                	int number = Integer.parseInt(elementChild.getAttributeNode("numero").getValue());
+                	
+                	float distance = Float.parseFloat(elementChild.getElementsByTagName("distancia").item(0).getTextContent());
+                	
+                	//if (type.equals("ciclismo"))
+                		
+                	System.out.println(type + "\t" + distance + "\t" + number);
+                	
+                }
+                
+                System.out.println("\n");
+                
+                Race race = null;
+                
+                //race = new Race(modality, new City(city, new Country(country)), null);
+                
+                //System.out.println();
+                
+                //races.add(race);
+                
             }
+            
+            //System.out.println(nationalities);
+            //System.out.println(modalities);
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new RuntimeException(e);

@@ -32,6 +32,6 @@ public abstract class Athlete {
         this.birthdate = birthdate;
         this.physicalsConditions = physicalsConditions;
     }
-
+    
     public abstract void setGender(Gender gender);
 }
