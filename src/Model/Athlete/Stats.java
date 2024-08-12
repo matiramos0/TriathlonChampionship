@@ -7,7 +7,6 @@ public class Stats {
 	private float stoning;
 	private float resistance;
 	private float psychologicalStrenght;
-	private float energy;
 	
 	public Stats(float swimming, float cycling, float stoning, float resistance, float psychologicalStrenght) {
 		this.swimming = swimming;

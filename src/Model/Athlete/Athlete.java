@@ -33,5 +33,35 @@ public abstract class Athlete {
         this.physicalsConditions = physicalsConditions;
     }
     
-    public abstract void setGender(Gender gender);
+    //Getters and Setters
+    
+    public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getDni() {
+		return dni;
+	}
+
+	public void setDni(int dni) {
+		this.dni = dni;
+	}
+	
+	//Abstract Methods
+
+	public abstract void setGender(Gender gender);
+	
+	//public abstract String getCategory();
 }

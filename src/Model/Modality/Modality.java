@@ -18,5 +18,18 @@ public class Modality {
 		this.cycling = cycling;
 		this.pedestrianism = pedestrianism;
 	}
+	
+	public float totalDistance() {
+		return swimming.getDistance() + cycling.getDistance() + pedestrianism.getDistance();
+	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	
 }

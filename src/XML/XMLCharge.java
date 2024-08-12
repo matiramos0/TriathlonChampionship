@@ -128,7 +128,7 @@ public class XMLCharge {
                 
                 //List<Provisioning> provisionings = new ArrayList<>();
                 
-                for (int j = 0; j < listPoints.getLength(); j++) {
+                /*for (int j = 0; j < listPoints.getLength(); j++) {
                 	
                 	Element elementChild = (Element) element.getElementsByTagName("puesto").item(j);
                 	
@@ -142,17 +142,17 @@ public class XMLCharge {
                 		
                 	System.out.println(type + "\t" + distance + "\t" + number);
                 	
-                }
+                }*/
                 
-                System.out.println("\n");
+                //System.out.println("\n");
                 
                 Race race = null;
                 
-                //race = new Race(modality, new City(city, new Country(country)), null);
+                race = new Race(modality, new City(city, new Country(country)));
                 
                 //System.out.println();
                 
-                //races.add(race);
+                races.add(race);
                 
             }
             

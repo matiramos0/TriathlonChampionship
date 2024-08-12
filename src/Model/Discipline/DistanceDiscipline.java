@@ -11,7 +11,21 @@ public class DistanceDiscipline {
 		this.distance = distance;
 		this.discipline = discipline;
 	}
-	
-		
+
+	public float getDistance() {
+		return distance;
+	}
+
+	public void setDistance(float distance) {
+		this.distance = distance;
+	}
+
+	public float getTime() {
+		return time;
+	}
+
+	public void setTime(float time) {
+		this.time = time;
+	}
 
 }
