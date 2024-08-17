@@ -63,5 +63,8 @@ public abstract class Athlete {
 
 	public abstract void setGender(Gender gender);
 	
-	//public abstract String getCategory();
+	protected abstract String calculateCategory(String birthdate);
+	
+	public abstract String getCategory();
+
 }

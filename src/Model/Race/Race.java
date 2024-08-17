@@ -36,6 +36,7 @@ public class Race {
 		for (Athlete athlete: athletes) {
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete);
 			listAthletes.add(athleteRace);
+			
 		}
 		
 	}
@@ -50,7 +51,8 @@ public class Race {
 		System.out.println("Numero: " + athlete.getAthlete().getNumber());
 		System.out.println("Nombre: " + athlete.getAthlete().getName());
 		System.out.println("DNI: " + athlete.getAthlete().getDni());
-		System.out.println("Categoria: " + athlete.getAthlete().toString());
+		System.out.println("Categoria: " + athlete.getAthlete().getCategory());
+
 		
 		Timer timer = new Timer();
 		
