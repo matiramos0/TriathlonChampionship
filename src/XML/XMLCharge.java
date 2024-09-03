@@ -12,6 +12,7 @@ import Model.Discipline.Pedestrianism;
 import Model.Discipline.Provisioning;
 import Model.Discipline.Swimming;
 import Model.Modality.Modality;
+import Model.Modality.Modalities;
 import Model.Race.Race;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,14 +27,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class XMLCharge {
 	
-	private static Set<String> nationalities = new HashSet<>();
-	private static Set<String> modalities = new HashSet<>();  
+	private static Set<String> setNationalities = new HashSet<>();
+	private static Set<String> setModalities = new HashSet<>();  
 
     public static void chargeTriathlon(List<Athlete> athletes, List<Race> races) {
 
@@ -76,7 +79,7 @@ public class XMLCharge {
 
                 double economy = Double.parseDouble(element.getElementsByTagName("presupuestoEconomico").item(0).getTextContent());
                 
-                nationalities.add(nationality);
+                setNationalities.add(nationality);
 
                 Stats stats = new Stats(swimming, cycling, stoning, resistance, psychological);
 
@@ -94,8 +97,6 @@ public class XMLCharge {
                     else if (gender.equals("Feminino"))
                         athlete.setGender(Athlete.Gender.FEMALE);
                 }
-                
-                //System.out.println(nationality);
 
                 athletes.add(athlete);
 
@@ -120,15 +121,24 @@ public class XMLCharge {
                 DistanceDiscipline cycling = new DistanceDiscipline(distanceCycling, new Cycling());
                 DistanceDiscipline stoning = new DistanceDiscipline(distanceStoning, new Pedestrianism());
                 
-                Modality modality = new Modality(descriptModality, swimming, cycling, stoning);
+                Modality modality = new Modality(swimming, cycling, stoning);
                 
-                modalities.add(descriptModality);
+                if (Modalities.SPRINT.getDescription().equals(descriptModality))
+                	modality.setModality(Modalities.SPRINT);
+                else if (Modalities.OLYMPIC.getDescription().equals(descriptModality))
+                	modality.setModality(Modalities.OLYMPIC);
+                else if (Modalities.MIDDLE.getDescription().equals(descriptModality))
+                	modality.setModality(Modalities.MIDDLE);
+                else if (Modalities.LONG.getDescription().equals(descriptModality))
+                	modality.setModality(Modalities.LONG);
                 
-                NodeList listPoints = root.getElementsByTagName("puestos_aprovisionamiento");
+                setModalities.add(descriptModality);
                 
-                //List<Provisioning> provisionings = new ArrayList<>();
+                NodeList listPoints = element.getElementsByTagName("puesto");
                 
-                /*for (int j = 0; j < listPoints.getLength(); j++) {
+                Map <Integer, Provisioning> provisionings = new HashMap<>();
+                
+                for (int j = 0; j < listPoints.getLength(); j++) {
                 	
                 	Element elementChild = (Element) element.getElementsByTagName("puesto").item(j);
                 	
@@ -138,26 +148,28 @@ public class XMLCharge {
                 	
                 	float distance = Float.parseFloat(elementChild.getElementsByTagName("distancia").item(0).getTextContent());
                 	
-                	//if (type.equals("ciclismo"))
-                		
-                	System.out.println(type + "\t" + distance + "\t" + number);
+                	Provisioning provisioning = null;
                 	
-                }*/
+                	if (type.equals("ciclismo"))
+                		provisioning = new Provisioning(number, distance, new Cycling());
+                	else if (type.equals("pedestrismo"))
+                		provisioning = new Provisioning(number, distance, new Pedestrianism());
+                	
+                	provisionings.put(number, provisioning);
+                		
+                	//System.out.println(provisioning);
+                	
+                }
                 
-                //System.out.println("\n");
+                //System.out.println();
                 
                 Race race = null;
                 
-                race = new Race(modality, new City(city, new Country(country)));
-                
-                //System.out.println();
+                race = new Race(modality, new City(city, new Country(country)), provisionings);
                 
                 races.add(race);
                 
             }
-            
-            //System.out.println(nationalities);
-            //System.out.println(modalities);
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new RuntimeException(e);

@@ -24,14 +24,14 @@ public class Championship {
 		
 		XMLCharge.chargeTriathlon(athletes, races);
 		
-		Race race = newRace();
+		Race race = createNewRace();
 		
 		race.startRace();
 		
 
 	}
 	
-	public static Race newRace() {
+	public static Race createNewRace() {
 		
 		Random random = new Random();
 				
@@ -40,7 +40,7 @@ public class Championship {
 		newRace.prepareRace(athletes);
 		
 		System.out.println("Datos de la carrera" + "\n");
-		System.out.println("Modalidad: " + newRace.getModality().getDescription());
+		System.out.println("Modalidad: " + newRace.getModality().getModality().getDescription());
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
 		System.out.println("Distancia: " + newRace.getModality().totalDistance() + "\n");
 		

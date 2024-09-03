@@ -2,6 +2,8 @@ package Model.Athlete;
 
 import java.time.LocalDate;
 
+import Model.Discipline.Discipline;
+
 public class Amateur extends Athlete {
 
 private String category;	
@@ -62,5 +64,11 @@ private String category;
     public void setGender(Gender gender) {
         this.gender = gender;
     }
+
+	@Override
+	public float getVelocity(Discipline discipline) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }

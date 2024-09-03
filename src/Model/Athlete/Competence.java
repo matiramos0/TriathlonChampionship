@@ -2,6 +2,8 @@ package Model.Athlete;
 
 import java.time.LocalDate;
 
+import Model.Discipline.Discipline;
+
 public class Competence extends Athlete {
 
 //public enum category{ JUNIOR, SUB23, ELITE };
@@ -17,7 +19,7 @@ private String category;
     	//split the birthDate string and compare to the current date to get how years old the athlete is
     	String[] birth = birthDate.split("-");
     	LocalDate current = LocalDate.now();
-    	int idCategoria =0;
+    	int idCategoria = 0;
     	
     	int years = current.getYear() - Integer.parseInt(birth[0]);
     	
@@ -56,4 +58,10 @@ private String category;
     				else  categoria="elite";	
     	return categoria;
     }*/
+
+	@Override
+	public float getVelocity(Discipline discipline) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -2,6 +2,7 @@ package Model.Race;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,15 +17,16 @@ public class Race {
 
 	private Modality modality;
 	private City city;
-	//private List <Provisioning> listPrivisioning = new ArrayList<>();
-	//private List <ClimateCondition> listClimateCondition = new ArrayList<>();
+	private Map <Integer, Provisioning> listPrivisioning;
+	private List <ClimateCondition> listClimateCondition;
 	private List <AthleteRaceInformation> listAthletes;
 	
 	//Constructor Method
 	
-	public Race(Modality modality, City city) {
+	public Race(Modality modality, City city, Map <Integer, Provisioning> list) {
 		this.modality = modality;
 		this.city = city;
+		this.listPrivisioning = list;
 	}
 	
 	//Methods
@@ -33,41 +35,39 @@ public class Race {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
 		
+		ClimateCondition climateCondition = new ClimateCondition();
+		
 		for (Athlete athlete: athletes) {
-			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete);
+			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, climateCondition);
 			listAthletes.add(athleteRace);
 			
 		}
-		
 	}
 	
 	public void startRace() {
 		
 		Random random = new Random();
 		
-		AthleteRaceInformation athlete = listAthletes.get(random.nextInt(listAthletes.size()));
+		Thread athlete1 = listAthletes.get(0);
+		//Thread athlete2 = listAthletes.get(1);
 		
-		System.out.println("Info Atleta" + "\n");
-		System.out.println("Numero: " + athlete.getAthlete().getNumber());
-		System.out.println("Nombre: " + athlete.getAthlete().getName());
-		System.out.println("DNI: " + athlete.getAthlete().getDni());
-		System.out.println("Categoria: " + athlete.getAthlete().getCategory());
-
+		athlete1.start();
+		//athlete2.start();
 		
 		Timer timer = new Timer();
 		
 		TimerTask task = new TimerTask() {
 			
-			int i = 0;
-
+			int time = 0;
+			
 			@Override
 			public void run() {
+				System.out.println("Tiempo: " + time);
+				time++;
 				
-				System.out.println("Distancia del atleta: " + athlete.getAdvancedDistance());
-				System.out.println("Tiempo: " + i);
-				i++;
+				if (time == 50)
+					timer.cancel();
 			}
-			
 		};
 		
 		timer.schedule(task, 0, 1000);
