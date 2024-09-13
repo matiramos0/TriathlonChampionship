@@ -54,7 +54,7 @@ public class Race {
 		
 		Random random = new Random();
 		
-		Thread athlete1 = listAthletes.get(0);
+		AthleteRaceInformation athlete1 = listAthletes.get(0);
 		//Thread athlete2 = listAthletes.get(1);
 		
 		athlete1.start();

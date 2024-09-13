@@ -42,7 +42,7 @@ public class Championship {
 		System.out.println("Datos de la carrera" + "\n");
 		System.out.println("Modalidad: " + newRace.getModality().getModality().getDescription());
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
-		System.out.println("Distancia: " + newRace.getModality().totalDistance() + "\n");
+		System.out.println("Distancia: " + newRace.getModality().getTotalDistance() + "\n");
 		
 		return newRace;
 	}

@@ -169,7 +169,6 @@ public class XMLCharge {
                 try {
 					race = new Race(modality, new City(city, new Country(country)), provisionings);
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
                 

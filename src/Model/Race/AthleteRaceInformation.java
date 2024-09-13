@@ -8,13 +8,15 @@ public class AthleteRaceInformation extends Thread{
 	
 	public static final long SpeedOfRace = 100; // miliseconds
 	
+	private static final long timeOfTranscition = 1000;
+	
 	private Athlete athlete;
 	private Modality modality;
 	private ClimateCondition climateCondition;
 	private float advancedDistance;
 	private float advancedTime;
 	private float energy;
-	private int velocity;
+	private float velocity;
 	private boolean isOut = false;
 	
 	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition) {
@@ -33,13 +35,42 @@ public class AthleteRaceInformation extends Thread{
 		
 		try {
 			
-			while (advancedDistance < modality.getSwimming().getDistance() && isOut != true) {
+			while (advancedDistance < modality.getFirstTransition() && isOut != true) {
 				if (energy == 0)
 					isOut = true;
 				
-				advancedDistance+= athlete.getVelocity(modality.getSwimming().getDiscipline());
+				System.out.println(advancedDistance + "\t" + velocity);
+				
+				velocity = athlete.getVelocity(modality.getSwimming().getDiscipline());
+				advancedDistance += velocity;
+				
 				sleep(SpeedOfRace);
-				System.out.println(advancedDistance);
+			}
+			
+			sleep(timeOfTranscition);
+			
+			while (advancedDistance < modality.getSecondTransition() && isOut != true) {
+				if (energy == 0)
+					isOut = true;
+				
+				System.out.println(advancedDistance + "\t" + velocity);
+				
+				velocity = athlete.getVelocity(modality.getCycling().getDiscipline());
+				advancedDistance += velocity;
+				
+				sleep(SpeedOfRace);
+			}
+			
+			sleep(timeOfTranscition);
+			
+			while (advancedDistance < modality.getTotalDistance() && isOut != true) {
+				
+				System.out.println(advancedDistance + "\t" + velocity);
+				
+				velocity = athlete.getVelocity(modality.getPedestrianism().getDiscipline());
+				advancedDistance += velocity;
+				
+				sleep(SpeedOfRace);
 			}
 			
 			
@@ -53,12 +84,12 @@ public class AthleteRaceInformation extends Thread{
 		System.out.println("Atleta Nro: " + athlete.getNumber());
 		System.out.println("Nombre: " + athlete.getName());
 		System.out.println("DNI: " + athlete.getDni());
-		System.out.println("Categoria: " + athlete.toString() + "\n");
+		System.out.println("Categoria: " + athlete.getCategory() + "\n");
 		
 	}
 	
 	public float getEnergyWear() {
-		return (Float) null;
+		return 0;
 	}
 	
 	//Getters and Setters
