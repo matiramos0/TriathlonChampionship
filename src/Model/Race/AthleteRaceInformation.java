@@ -3,10 +3,11 @@ package Model.Race;
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Modality.Modality;
+import view.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	
-	public static final long SpeedOfRace = 100; // miliseconds
+	public static final long SpeedOfRace = 500; // miliseconds
 	
 	private Athlete athlete;
 	private Modality modality;
@@ -16,6 +17,7 @@ public class AthleteRaceInformation extends Thread{
 	private float energy;
 	private int velocity;
 	private boolean isOut = false;
+	private AthletePanel panel;//panel de carrera
 	
 	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition) {
 		this.athlete = athlete;
@@ -32,12 +34,12 @@ public class AthleteRaceInformation extends Thread{
 	public void run() {
 		
 		try {
-			
-			while (advancedDistance < modality.getSwimming().getDistance() && isOut != true) {
+			//modality.getSwimming().getDistance()
+			while (advancedDistance < 1025 && isOut != true) {
 				if (energy == 0)
 					isOut = true;
-				
 				advancedDistance+= athlete.getVelocity(modality.getSwimming().getDiscipline());
+				panel.advance(panel, advancedDistance);
 				sleep(SpeedOfRace);
 				System.out.println(advancedDistance);
 			}
@@ -93,6 +95,22 @@ public class AthleteRaceInformation extends Thread{
 
 	public void setEnergy(float energy) {
 		this.energy = energy;
+	}
+
+	public AthletePanel getPanel() {
+		return panel;
+	}
+
+	public void setPanel(AthletePanel panel) {
+		this.panel = panel;
+	}
+
+	public Modality getModality() {
+		return modality;
+	}
+
+	public void setModality(Modality modality) {
+		this.modality = modality;
 	}		
 
 }

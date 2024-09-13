@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import Model.City.City;
 import Model.Modality.Modality;
+import view.RaceView;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
@@ -34,12 +35,17 @@ public class Race {
 	public void prepareRace(List<Athlete> athletes) {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
-		
 		ClimateCondition climateCondition = new ClimateCondition();
-		
+	
+		RaceView frame = new RaceView();
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
+		int i = 0;		
 		for (Athlete athlete: athletes) {
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, climateCondition);
-			listAthletes.add(athleteRace);
+			listAthletes.add(athleteRace);		
+			frame.initializePanels(athleteRace, i, listPrivisioning);
+			i++;
 			
 		}
 	}
@@ -49,10 +55,22 @@ public class Race {
 		Random random = new Random();
 		
 		Thread athlete1 = listAthletes.get(0);
-		//Thread athlete2 = listAthletes.get(1);
-		
+		Thread athlete2 = listAthletes.get(1);
+		Thread athlete3 = listAthletes.get(2);
+		Thread athlete4 = listAthletes.get(3);
+		Thread athlete5 = listAthletes.get(4);
+		Thread athlete6 = listAthletes.get(5);
+		Thread athlete7 = listAthletes.get(6);
+		Thread athlete8 = listAthletes.get(7);
+
 		athlete1.start();
-		//athlete2.start();
+		athlete2.start();
+		athlete3.start();
+		athlete4.start();
+		athlete5.start();
+		athlete6.start();
+		athlete7.start();
+		athlete8.start();
 		
 		Timer timer = new Timer();
 		

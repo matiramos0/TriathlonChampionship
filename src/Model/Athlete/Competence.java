@@ -61,7 +61,7 @@ private String category;
 
 	@Override
 	public float getVelocity(Discipline discipline) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		return 10;
 	}
 }
