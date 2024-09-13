@@ -1,5 +1,6 @@
 package Model.Race;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import DAO.WeatherConditionsDAO;
 import Model.City.City;
 import Model.Modality.Modality;
 import Model.ClimateCondition.ClimateCondition;
@@ -18,16 +20,20 @@ public class Race {
 	private Modality modality;
 	private City city;
 	private Map <Integer, Provisioning> listPrivisioning;
-	private List <ClimateCondition> listClimateCondition;
+	private ClimateCondition currentWeather;
 	private List <AthleteRaceInformation> listAthletes;
 	
 	//Constructor Method
 	
-	public Race(Modality modality, City city, Map <Integer, Provisioning> list) {
+	public Race(Modality modality, City city, Map <Integer, Provisioning> list) throws SQLException{
 		this.modality = modality;
 		this.city = city;
 		this.listPrivisioning = list;
-	}
+		
+		  List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
+	        this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
+	 }
+	
 	
 	//Methods
 	
@@ -35,10 +41,10 @@ public class Race {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
 		
-		ClimateCondition climateCondition = new ClimateCondition();
+	//	ClimateCondition climateCondition = new ClimateCondition(); 
 		
 		for (Athlete athlete: athletes) {
-			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, climateCondition);
+			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather);
 			listAthletes.add(athleteRace);
 			
 		}

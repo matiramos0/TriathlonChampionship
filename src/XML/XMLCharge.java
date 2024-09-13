@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -165,7 +166,12 @@ public class XMLCharge {
                 
                 Race race = null;
                 
-                race = new Race(modality, new City(city, new Country(country)), provisionings);
+                try {
+					race = new Race(modality, new City(city, new Country(country)), provisionings);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 
                 races.add(race);
                 
