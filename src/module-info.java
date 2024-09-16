@@ -6,5 +6,5 @@
  */
 module TriathlonChampionship {
 	requires java.xml;
-	requires java.desktop;
+	requires java.sql;
 }

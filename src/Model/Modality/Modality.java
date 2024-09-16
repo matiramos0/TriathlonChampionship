@@ -20,7 +20,15 @@ public class Modality {
 	
 	// Methods
 	
-	public float totalDistance() {
+	public float getFirstTransition() {
+		return swimming.getDistance();
+	}
+	
+	public float getSecondTransition() {
+		return swimming.getDistance() + cycling.getDistance();
+	}
+	
+	public float getTotalDistance() {
 		return swimming.getDistance() + cycling.getDistance() + pedestrianism.getDistance();
 	}
 	

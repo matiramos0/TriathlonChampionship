@@ -2,7 +2,11 @@ package Model.Discipline;
 
 public class Swimming extends Discipline {
 
-	public Swimming() {
+	public Swimming() {}
+
+	@Override
+	public String getDescription() {
+		return "Swimming";
 	}
 
 }
