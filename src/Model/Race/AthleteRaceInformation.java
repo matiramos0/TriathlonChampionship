@@ -3,6 +3,7 @@ package Model.Race;
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Modality.Modality;
+import view.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	
@@ -18,6 +19,7 @@ public class AthleteRaceInformation extends Thread{
 	private float energy;
 	private float velocity;
 	private boolean isOut = false;
+	private AthletePanel panel;//panel de carrera
 	
 	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition) {
 		this.athlete = athlete;
@@ -34,7 +36,7 @@ public class AthleteRaceInformation extends Thread{
 	public void run() {
 		
 		try {
-			
+      
 			while (advancedDistance < modality.getFirstTransition() && isOut != true) {
 				if (energy == 0)
 					isOut = true;
@@ -124,6 +126,22 @@ public class AthleteRaceInformation extends Thread{
 
 	public void setEnergy(float energy) {
 		this.energy = energy;
+	}
+
+	public AthletePanel getPanel() {
+		return panel;
+	}
+
+	public void setPanel(AthletePanel panel) {
+		this.panel = panel;
+	}
+
+	public Modality getModality() {
+		return modality;
+	}
+
+	public void setModality(Modality modality) {
+		this.modality = modality;
 	}		
 
 }

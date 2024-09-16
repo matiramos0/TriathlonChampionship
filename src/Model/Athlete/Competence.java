@@ -64,7 +64,7 @@ private String category;
 
 	@Override
 	public float getVelocity(Discipline discipline) {
-		
+    
 		float velocity = 0;
 		
 		if (discipline.getClass().equals(Swimming.class))

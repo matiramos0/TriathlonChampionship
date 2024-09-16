@@ -9,6 +9,8 @@ import java.util.TimerTask;
 import Model.Athlete.Athlete;
 import Model.Race.Race;
 import XML.XMLCharge;
+import view.MainView;
+import view.RaceView;
 
 public class Championship {
 	
@@ -16,19 +18,13 @@ public class Championship {
 	
 	private static List<Race> races;
 	private static List<Athlete> athletes;
+	private static MainView mainView;
 
-	public static void main(String[] args) {
-		
+	private Championship() {
 		races = new ArrayList<>();
-		athletes = new ArrayList<>();
-		
+		athletes = new ArrayList<>();	
 		XMLCharge.chargeTriathlon(athletes, races);
 		
-		Race race = createNewRace();
-		
-		race.startRace();
-		
-
 	}
 	
 	public static Race createNewRace() {
@@ -47,6 +43,24 @@ public class Championship {
 		return newRace;
 	}
 	
-	 
+	 public void listenStartNewChampionship() {	
+		//Race race = createNewRace();	
+		//race.startRace();
+		
+	 }
+	 public static Championship getInstance() {
+	        if (currentInstance == null) {
+	        	currentInstance = new Championship();
+	        }
+	        return currentInstance;
+	    }
+
+	public static MainView getMainView() {
+		return mainView;
+	}
+
+	public static void setMainView(MainView mainView) {
+		Championship.mainView = mainView;
+	}
 
 }

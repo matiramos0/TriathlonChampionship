@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import DAO.WeatherConditionsDAO;
 import Model.City.City;
 import Model.Modality.Modality;
+import view.RaceView;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
@@ -43,7 +44,8 @@ public class Race {
 		
 	//	ClimateCondition climateCondition = new ClimateCondition(); 
 		
-		for (Athlete athlete: athletes) {
+		for (int i = 0; i < 7; i++) {
+      Athlete athlete = athletes.get(i);
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather);
 			listAthletes.add(athleteRace);
 			
@@ -52,13 +54,9 @@ public class Race {
 	
 	public void startRace() {
 		
-		Random random = new Random();
-		
-		AthleteRaceInformation athlete1 = listAthletes.get(0);
-		//Thread athlete2 = listAthletes.get(1);
-		
-		athlete1.start();
-		//athlete2.start();
+    for (AthleteRaceInformation athlete: listAthletes) {
+      athlete.start();
+    }
 		
 		Timer timer = new Timer();
 		
