@@ -9,6 +9,8 @@ import java.util.TimerTask;
 import Model.Athlete.Athlete;
 import Model.Race.Race;
 import XML.XMLCharge;
+import view.MainView;
+import view.RaceView;
 
 public class Championship {
 	
@@ -16,22 +18,16 @@ public class Championship {
 	
 	private static List<Race> races;
 	private static List<Athlete> athletes;
+	private static MainView mainView;
 
-	public static void main(String[] args) {
-		
+	private Championship() {
 		races = new ArrayList<>();
-		athletes = new ArrayList<>();
-		
+		athletes = new ArrayList<>();	
 		XMLCharge.chargeTriathlon(athletes, races);
 		
-		Race race = newRace();
-		
-		race.startRace();
-		
-
 	}
 	
-	public static Race newRace() {
+	public static Race createNewRace() {
 		
 		Random random = new Random();
 				
@@ -40,13 +36,31 @@ public class Championship {
 		newRace.prepareRace(athletes);
 		
 		System.out.println("Datos de la carrera" + "\n");
-		System.out.println("Modalidad: " + newRace.getModality().getDescription());
+		System.out.println("Modalidad: " + newRace.getModality().getModality().getDescription());
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
-		System.out.println("Distancia: " + newRace.getModality().totalDistance() + "\n");
+		System.out.println("Distancia: " + newRace.getModality().getTotalDistance() + "\n");
 		
 		return newRace;
 	}
 	
-	 
+	 public void listenStartNewChampionship() {	
+		//Race race = createNewRace();	
+		//race.startRace();
+		
+	 }
+	 public static Championship getInstance() {
+	        if (currentInstance == null) {
+	        	currentInstance = new Championship();
+	        }
+	        return currentInstance;
+	    }
+
+	public static MainView getMainView() {
+		return mainView;
+	}
+
+	public static void setMainView(MainView mainView) {
+		Championship.mainView = mainView;
+	}
 
 }

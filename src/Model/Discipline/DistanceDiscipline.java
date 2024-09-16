@@ -11,6 +11,16 @@ public class DistanceDiscipline {
 		this.distance = distance;
 		this.discipline = discipline;
 	}
+	
+	//Getters and Setters
+	
+	public Discipline getDiscipline() {
+		return discipline;
+	}
+
+	public void setDiscipline(Discipline discipline) {
+		this.discipline = discipline;
+	}
 
 	public float getDistance() {
 		return distance;

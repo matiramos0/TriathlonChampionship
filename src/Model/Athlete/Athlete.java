@@ -2,6 +2,8 @@ package Model.Athlete;
 
 import java.util.Date;
 
+import Model.Discipline.Discipline;
+
 public abstract class Athlete {
 
     public enum Gender {MALE, FEMALE};
@@ -59,9 +61,23 @@ public abstract class Athlete {
 		this.dni = dni;
 	}
 	
+	public Stats getPhysicalsConditions() {
+		return physicalsConditions;
+	}
+
+	public void setPhysicalsConditions(Stats physicalsConditions) {
+		this.physicalsConditions = physicalsConditions;
+	}
+	
 	//Abstract Methods
 
 	public abstract void setGender(Gender gender);
+	
+	protected abstract String calculateCategory(String birthdate);
+	
+	public abstract String getCategory();
+
+	public abstract float getVelocity(Discipline discipline);
 	
 	//public abstract String getCategory();
 }

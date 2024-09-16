@@ -1,13 +1,17 @@
 package Model.Race;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import DAO.WeatherConditionsDAO;
 import Model.City.City;
 import Model.Modality.Modality;
+import view.RaceView;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
@@ -16,16 +20,21 @@ public class Race {
 
 	private Modality modality;
 	private City city;
-	//private List <Provisioning> listPrivisioning = new ArrayList<>();
-	//private List <ClimateCondition> listClimateCondition = new ArrayList<>();
+	private Map <Integer, Provisioning> listPrivisioning;
+	private ClimateCondition currentWeather;
 	private List <AthleteRaceInformation> listAthletes;
 	
 	//Constructor Method
 	
-	public Race(Modality modality, City city) {
+	public Race(Modality modality, City city, Map <Integer, Provisioning> list) throws SQLException{
 		this.modality = modality;
 		this.city = city;
-	}
+		this.listPrivisioning = list;
+		
+		  List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
+	        this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
+	 }
+	
 	
 	//Methods
 	
@@ -33,39 +42,36 @@ public class Race {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
 		
-		for (Athlete athlete: athletes) {
-			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete);
-			listAthletes.add(athleteRace);
-		}
+	//	ClimateCondition climateCondition = new ClimateCondition(); 
 		
+		for (int i = 0; i < 7; i++) {
+      Athlete athlete = athletes.get(i);
+			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather);
+			listAthletes.add(athleteRace);
+			
+		}
 	}
 	
 	public void startRace() {
 		
-		Random random = new Random();
-		
-		AthleteRaceInformation athlete = listAthletes.get(random.nextInt(listAthletes.size()));
-		
-		System.out.println("Info Atleta" + "\n");
-		System.out.println("Numero: " + athlete.getAthlete().getNumber());
-		System.out.println("Nombre: " + athlete.getAthlete().getName());
-		System.out.println("DNI: " + athlete.getAthlete().getDni());
-		System.out.println("Categoria: " + athlete.getAthlete().toString());
+    for (AthleteRaceInformation athlete: listAthletes) {
+      athlete.start();
+    }
 		
 		Timer timer = new Timer();
 		
 		TimerTask task = new TimerTask() {
 			
-			int i = 0;
-
+			int time = 0;
+			
 			@Override
 			public void run() {
+				System.out.println("Tiempo: " + time);
+				time++;
 				
-				System.out.println("Distancia del atleta: " + athlete.getAdvancedDistance());
-				System.out.println("Tiempo: " + i);
-				i++;
+				if (time == 50)
+					timer.cancel();
 			}
-			
 		};
 		
 		timer.schedule(task, 0, 1000);

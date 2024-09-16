@@ -12,4 +12,28 @@ public class Provisioning {
 		this.discipline = discipline;
 	}
 
+	public float getDistance() {
+		return distance;
+	}
+
+	public void setDiscipline(Discipline discipline) {
+		this.discipline = discipline;
+	}
+	
+	public Discipline getDiscipline() {
+		return discipline;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public void setDistance(float distance) {
+		this.distance = distance;
+	}
+
 }
