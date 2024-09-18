@@ -1,4 +1,4 @@
-package view;
+package Model.View;
 
 import java.awt.Graphics;
 

@@ -11,7 +11,7 @@ import java.util.TimerTask;
 import DAO.WeatherConditionsDAO;
 import Model.City.City;
 import Model.Modality.Modality;
-import view.RaceView;
+import Model.View.RaceView;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
@@ -20,8 +20,8 @@ public class Race {
 
 	private Modality modality;
 	private City city;
-	private Map <Integer, Provisioning> listPrivisioning;
 	private ClimateCondition currentWeather;
+	private Map <Integer, Provisioning> listPrivisioning;
 	private List <AthleteRaceInformation> listAthletes;
 	
 	//Constructor Method
@@ -42,10 +42,8 @@ public class Race {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
 		
-	//	ClimateCondition climateCondition = new ClimateCondition(); 
-		
 		for (int i = 0; i < 7; i++) {
-      Athlete athlete = athletes.get(i);
+			Athlete athlete = athletes.get(i);
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather);
 			listAthletes.add(athleteRace);
 			
@@ -54,9 +52,9 @@ public class Race {
 	
 	public void startRace() {
 		
-    for (AthleteRaceInformation athlete: listAthletes) {
-      athlete.start();
-    }
+		for (AthleteRaceInformation athlete: listAthletes) {
+			athlete.start();
+		}
 		
 		Timer timer = new Timer();
 		

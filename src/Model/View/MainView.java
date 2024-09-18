@@ -1,4 +1,4 @@
-package view;
+package Model.View;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -27,6 +27,7 @@ import javax.swing.border.TitledBorder;
 
 import Controller.Championship;
 import Model.Race.Race;
+import Model.View.BackgroundMainView;
 
 import javax.swing.border.EtchedBorder;
 

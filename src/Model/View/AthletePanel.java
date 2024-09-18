@@ -1,4 +1,4 @@
-package view;
+package Model.View;
 
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
