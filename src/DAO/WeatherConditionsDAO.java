@@ -13,10 +13,10 @@ public class WeatherConditionsDAO {
 	private static ArrayList<ClimateCondition> weatherConditions = new ArrayList<>();
 
 	 public static List<ClimateCondition> getAllWeatherConditions() throws SQLException {
-	        String queryclimatecond = "SELECT idconditions, description, measureunit, lowermark, uppermark FROM weatherConditions";
+	        String queryclimatecond = "SELECT* FROM weatherConditions";
 
 	        try{
-	        	 Connection connection = DBConnection.getConnection();
+			Connection connection = DBConnection.getConnection();
 	             Statement statement = connection.createStatement();
 	             ResultSet rs = statement.executeQuery(queryclimatecond);
 	             
@@ -28,9 +28,9 @@ public class WeatherConditionsDAO {
 	                String measureUnit = rs.getString("measureunit");
 	                double lowerMark = rs.getDouble("lowermark");
 	                double upperMark = rs.getDouble("uppermark");
-	                double swimmingWear = rs.getDouble("swimming");
-	                double cyclingWear = rs.getDouble("cycling");
-	                double runningWear = rs.getDouble("running");
+	                double swimmingWear = rs.getDouble("wearswimming");
+	                double cyclingWear = rs.getDouble("wearcycling");
+	                double runningWear = rs.getDouble("wearunning");
 	                
 	                UnitMeasure unitMeasure = new UnitMeasure(measureUnit);
 
