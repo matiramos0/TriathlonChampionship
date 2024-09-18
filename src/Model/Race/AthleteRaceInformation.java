@@ -3,7 +3,7 @@ package Model.Race;
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Modality.Modality;
-import view.AthletePanel;
+import Model.View.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	

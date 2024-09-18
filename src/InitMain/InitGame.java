@@ -1,15 +1,15 @@
-
+package InitMain;
 
 import Controller.Championship;
-import Model.Race.Race;
-import view.MainView;
+import Model.View.MainView;
 
-public class InitTriathlon {
+public class InitGame {
 
 private static MainView mainView;
 private static Championship championship;
 
 	public static void main (String[] args) {
+		
 		mainView = new MainView(Championship.getInstance());
 		mainView.setVisible(true);
 		mainView.setLocationRelativeTo(null);
