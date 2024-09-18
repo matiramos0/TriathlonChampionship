@@ -13,10 +13,10 @@ public class WeatherConditionsDAO {
 	private static ArrayList<ClimateCondition> weatherConditions = new ArrayList<>();
 
 	 public static List<ClimateCondition> getAllWeatherConditions() throws SQLException {
-	        String queryclimatecond = "SELECT idconditions, description, measureunit, lowermark, uppermark, wearswimming, wearcycling, wearunning FROM weatherConditions";
+	        String queryclimatecond = "SELECT* FROM weatherConditions";
 
 	        try{
-	        	 Connection connection = DBConnection.getConnection();
+			Connection connection = DBConnection.getConnection();
 	             Statement statement = connection.createStatement();
 	             ResultSet rs = statement.executeQuery(queryclimatecond);
 	             
