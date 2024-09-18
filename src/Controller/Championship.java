@@ -9,8 +9,8 @@ import java.util.TimerTask;
 import Model.Athlete.Athlete;
 import Model.Race.Race;
 import XML.XMLCharge;
-import Model.View.MainView;
-import Model.View.RaceView;
+import view.MainView;
+import view.RaceView;
 
 public class Championship {
 	
