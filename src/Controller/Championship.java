@@ -44,8 +44,8 @@ public class Championship {
 	}
 	
 	 public void listenStartNewChampionship() {	
-		//Race race = createNewRace();	
-		//race.startRace();
+		Race race = createNewRace();	
+		race.startRace();
 		
 	 }
 	 public static Championship getInstance() {
