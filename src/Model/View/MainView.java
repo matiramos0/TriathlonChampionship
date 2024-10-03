@@ -35,11 +35,11 @@ public class MainView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	//private static RaceView raceView;
-	//private Championship controller;
+	// private static RaceView raceView; Dberia tenerlo la Race ??
+	private Championship controller;
 	 
-	public MainView(Championship controller) {
-		//this.controller = controllerr;
+	public MainView(Championship controllerr) {
+		this.controller = controllerr;
 		setIconImage(Toolkit.getDefaultToolkit().getImage("img\\Triatlon background.png"));
 		setTitle("Triathlon Championship");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -101,5 +101,15 @@ public class MainView extends JFrame {
 	
 	
 	}
+	/*
+	 public RaceView getRaceView() { //Sacarlo?????
+		if (raceView == null) {
+			raceView = new RaceView("");
+			raceView.setVisible(true);
+			
+		}
+		return raceView;		
+	}
+	 */
 
 }

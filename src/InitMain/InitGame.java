@@ -1,6 +1,7 @@
 package InitMain;
 
 import Controller.Championship;
+import Model.Race.Race;
 import Model.View.MainView;
 
 public class InitGame {

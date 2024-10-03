@@ -20,10 +20,11 @@ public class RaceView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JPanel racePanel;
-	//private AthletePanel athletePanel;
+	private JLabel lblClimateCondition;
+	private JLabel lblRaceTime;
+	private JLabel lblTitulo;
 	
-	public RaceView() {
+	public RaceView(String titulo) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 	setTitle("Race");
 		setBounds(100, 100, 1410, 1000);
@@ -34,11 +35,11 @@ public class RaceView extends JFrame {
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
-		JLabel lblRaceTime = new JLabel("Race Time:");
+		lblRaceTime = new JLabel("Race Time:");
 		lblRaceTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblRaceTime.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRaceTime.setHorizontalAlignment(SwingConstants.LEFT);
 		lblRaceTime.setIcon(new ImageIcon("img\\gestion-del-tiempo.png"));
-		lblRaceTime.setBounds(72, 84, 263, 41);
+		lblRaceTime.setBounds(65, 84, 202, 41);
 		contentPane.add(lblRaceTime);
 		
 		JLabel lblNewLabel_2 = new JLabel("SWIMMING");
@@ -59,18 +60,18 @@ public class RaceView extends JFrame {
 		lblNewLabel_2_2.setBounds(1049, 106, 138, 39);
 		contentPane.add(lblNewLabel_2_2);
 		
-		JLabel lblClimateCondition = new JLabel("Climate condition:");
+		lblClimateCondition = new JLabel("Climate condition:");
 		lblClimateCondition.setIcon(new ImageIcon("img\\nublado.png"));
-		lblClimateCondition.setHorizontalAlignment(SwingConstants.CENTER);
+		lblClimateCondition.setHorizontalAlignment(SwingConstants.LEFT);
 		lblClimateCondition.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblClimateCondition.setBounds(120, 35, 203, 39);
+		lblClimateCondition.setBounds(65, 35, 344, 39);
 		contentPane.add(lblClimateCondition);
 		
-		JLabel lblTitulo = new JLabel("RACE:");
+		lblTitulo = new JLabel("RACE: " + titulo);
 		lblTitulo.setFont(new Font("Montserrat Black", Font.BOLD, 50));
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setBounds(465, 6, 466, 78);
-		contentPane.add(lblTitulo);
+		lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTitulo.setBounds(520, 6, 846, 78);
+		contentPane.add(lblTitulo);	
 		
 		JButton btnExitRace = new JButton("Exit");
 		btnExitRace.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -80,17 +81,50 @@ public class RaceView extends JFrame {
 				dispose();
 			}
 		});
-		contentPane.add(btnExitRace);
+		contentPane.add(btnExitRace);	
 		
-		racePanel = new JPanel();
-		racePanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		racePanel.setBounds(233, 135, 1056, 580);
-		contentPane.add(racePanel);
 	}
 	
 	public void initializePanels(AthleteRaceInformation athlete, int startPosition, Map <Integer, Provisioning> listPrivisioning) {
 		AthletePanel athletePanel = new AthletePanel(startPosition, listPrivisioning, athlete.getModality());
+		athletePanel.getLblAthlete().setText("Athlete: "+athlete.getAthlete().getName());
 		athlete.setPanel(athletePanel);
-		racePanel.add(athletePanel);	
+		athletePanel.setVisible(true);
+		contentPane.add(athletePanel);
+	}
+
+	//Getters and Setters
+
+	/*
+	 public JPanel getContentPane() {
+		return contentPane;
+	}
+
+	public void setContentPane(JPanel contentPane) {
+		this.contentPane = contentPane;
+	}
+	*/
+	public JLabel getLblClimateCondition() {
+		return lblClimateCondition;
+	}
+
+	public void setLblClimateCondition(JLabel lblClimateCondition) {
+		this.lblClimateCondition = lblClimateCondition;
+	}
+
+	public JLabel getLblRaceTime() {
+		return lblRaceTime;
+	}
+
+	public void setLblRaceTime(JLabel lblRaceTime) {
+		this.lblRaceTime = lblRaceTime;
+	}
+
+	public JLabel getLblTitulo() {
+		return lblTitulo;
+	}
+
+	public void setLblTitulo(JLabel lblTitulo) {
+		this.lblTitulo = lblTitulo;
 	}
 }

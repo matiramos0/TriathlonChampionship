@@ -27,7 +27,7 @@ public class Championship {
 		
 	}
 	
-	public static Race createNewRace() {
+	public Race createNewRace() {
 		
 		Random random = new Random();
 				
@@ -39,7 +39,7 @@ public class Championship {
 		System.out.println("Modalidad: " + newRace.getModality().getModalities().getDescription());
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
 		System.out.println("Distancia: " + newRace.getModality().getTotalDistance() + "\n");
-		
+
 		return newRace;
 	}
 	

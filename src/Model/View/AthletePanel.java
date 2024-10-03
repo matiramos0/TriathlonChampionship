@@ -33,8 +33,10 @@ public class AthletePanel extends JPanel{
 	private Modality modality;
 	
 	public AthletePanel(int position, Map <Integer, Provisioning> listProvisioning, Modality modality) {
+		this.position = position;
 		setLayout(null);
-		setBounds(5, 5+70*position, 1050,70);
+		setBounds(256, 73 + 70*position, 1056, 70);
+		//setBounds(5, 5+70*position, 1050,70);
 		this.listPrivisioning = listProvisioning;
 		this.modality = modality;
 		
@@ -47,12 +49,12 @@ public class AthletePanel extends JPanel{
 		spinnerSpeed.setBounds(10, 27, 40, 20);
 		add(spinnerSpeed);
 		
-		lblAthlete = new JLabel("Athlete:");
-		lblAthlete.setBounds(10, 4, 70, 20);
+		lblAthlete = new JLabel();
+		lblAthlete.setBounds(10, 4, 150, 20);
 		add(lblAthlete);
 		
 		lblEnergy = new JLabel("Energy:");
-		lblEnergy.setBounds(10, 45, 70, 20);
+		lblEnergy.setBounds(10, 45, 150, 20);
 		add(lblEnergy);
 		
 		lblDistance = new JLabel("");
@@ -61,64 +63,57 @@ public class AthletePanel extends JPanel{
 		lblDistance.setIcon(new ImageIcon("img\\nadando.png"));
 		add(lblDistance);
 		
-		/*Timer timer = new Timer();
-		timer.schedule(new TimerTask(){
-			int fila1=37;
-			@Override
-			public void run() {
-				String actual;
-				actual = "nadando";
-				fila1 +=4;
-				lblDistance.setLocation(fila1, 21);
-				
-				if(((333<fila1)&&(fila1<666))&&(actual!="ciclismo")) {
-					lblDistance.setIcon(new ImageIcon("img\\ciclismo.png"));
-					actual ="ciclismo";
-				}else if(((fila1>666)&&(fila1<999)) && (actual != "capacitacion"))
-						lblDistance.setIcon(new ImageIcon("img\\capacitacion.png"));
-						else if(fila1==1000)
-							  timer.cancel();
-				repaint();
-				
-			}}, 0, 100); */
 	}
 
 	
-
 	@Override
 	public void paint(Graphics g) {
+		int transition1 = (this.getWidth()-56)/3;//-56 due to the start of the lbldistance
+		int transition2 = transition1*2;
 		super.paint(g);
-		g.drawLine(55, 37, this.getWidth(), 37);//Race line
-		g.setColor(new Color(255,0,0));
-		g.drawLine(this.getWidth()/3, 0, this.getWidth()/3, 75);//Transition 1 line
-		g.drawLine(this.getWidth()/3*2, 0, this.getWidth()/3*2, 75);//Transition 2 line
-		g.setColor(new Color(0,255,0));
+		g.setColor((Color.BLACK));
+		g.drawLine(56, 37, this.getWidth(), 37);//Race line
+		g.setColor(Color.RED);
+		g.drawLine(transition1, 0, transition1, 75);//Transition 1 line
+		g.drawLine(transition2, 0, transition2, 75);//Transition 2 line
+		g.setColor(Color.GREEN);
 		for(int i = 1; i <= this.listPrivisioning.size(); i++) {
 			Integer mapKey = Integer.valueOf(i);
 			if (listPrivisioning.get(mapKey).getDiscipline() instanceof Cycling ) {
-				float relation = (modality.getCycling().getDistance() / this.listPrivisioning.get(mapKey).getDistance());
-				g.drawLine((int)(this.getWidth()/3*relation), 0, (int)(this.getWidth()/3*relation), 75);
+				float relation = (modality.getCycling().getDistance() / this.listPrivisioning.get(mapKey).getDistance());//Position of the provision line in relation to the transition line(in pixels)
+				g.drawLine((int)(transition1 + transition1/relation), 0, (int)(transition1 + transition1/relation), 75);
 			} else if(this.listPrivisioning.get(mapKey).getDiscipline() instanceof Pedestrianism) {
 				float relation = (modality.getCycling().getDistance() / this.listPrivisioning.get(mapKey).getDistance());
-				g.drawLine((int)(this.getWidth()/3 + this.getWidth()/3*relation), 0, (int)(this.getWidth()/3+ this.getWidth()/3*relation), 75);
+				g.drawLine((int)((transition2 + transition2/relation)), 0, (int)((transition2 + transition2/relation)), 75);// - 50 porque ahi arranca el label a correr
 			}
-			//g.drawLine((int) this.listPrivisioning.get(mapKey).getDistance(), 0, (int) this.listPrivisioning.get(mapKey).getDistance(), 75);
 		}
+			
 	}
 	
-	public void advance(AthletePanel panel, float advancedDistance) {
-		panel.getLblDistance().setLocation((int)advancedDistance, 21);
-		panel.repaint();
+	public void advance(/*AthletePanel panel,*/ float advancedDistance) {
+		
+		this.lblDistance.setLocation(50 + (int)(advancedDistance*35), 21);
+		this.repaint();
+
+		if(this.position <= 8) {
+			this.setVisible(true);
+		} else {			      // show only first 8 athletes
+			  this.setVisible(false);
+		}
+		int transition1 = (this.getWidth()-56)/3;//-56 is due to the start of the lbldistance
+		int transition2 = transition1* 2;
 		String actual;
 		actual = "nadando";
-		if(((345<(int)advancedDistance)&&((int)advancedDistance<345*2))&& actual!="ciclismo") {
-			lblDistance.setIcon(new ImageIcon("img\\ciclismo.png"));
+		if(((transition1<(int)advancedDistance)&&((int)advancedDistance<transition2))&& actual!="ciclismo") {
+			this.lblDistance.setIcon(new ImageIcon("img\\ciclismo.png"));
 			actual ="ciclismo";
-		}		else if((((int)advancedDistance>345*2)&&((int)advancedDistance<345*3)) && (actual != "capacitacion"))
-					lblDistance.setIcon(new ImageIcon("img\\capacitacion.png"));
-						//else if((int)advancedDistance==1000);
+		}		else if((((int)advancedDistance > transition2) && (actual != "capacitacion"))) {
+						this.lblDistance.setIcon(new ImageIcon("img\\capacitacion.png"));
+						actual = "capacitacion";
+						}
 	}
 	
+	//Getters and Setters
 	public JLabel getLblDistance() {
 		return lblDistance;
 	}
@@ -150,5 +145,5 @@ public class AthletePanel extends JPanel{
 	public void setSpinnerSpeed(JSpinner spinnerSpeed) {
 		this.spinnerSpeed = spinnerSpeed;
 	}
-	
+
 }

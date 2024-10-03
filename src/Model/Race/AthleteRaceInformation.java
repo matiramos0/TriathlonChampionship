@@ -35,6 +35,7 @@ public class AthleteRaceInformation extends Thread{
 	
 	//Methods
 	
+	
 	@Override
 	public void run() {
 		
@@ -50,8 +51,9 @@ public class AthleteRaceInformation extends Thread{
 				velocity -= getFatigueEffect();  
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
-				
-				sleep(speedOfRace);
+				panel.advance(/*this.panel,*/ advancedDistance);
+				//getLblEnergy --> show energy 
+				sleep(SpeedOfRace);
 			}
 			
 			sleep(timeOfTranscition);
