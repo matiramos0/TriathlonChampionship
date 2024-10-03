@@ -68,19 +68,4 @@ private String category;
         this.gender = gender;
     }
 
-	@Override
-	public float getVelocity(Discipline discipline) {
-		
-		float velocity = 0;
-		
-		if (discipline.getClass().equals(Swimming.class))
-			velocity = physicalsConditions.getVelocitySwimming();
-		else if (discipline.getClass().equals(Cycling.class))
-			velocity = physicalsConditions.getVelocityCycling();
-		else if (discipline.getClass().equals(Pedestrianism.class))
-			velocity = physicalsConditions.getVelocityStoning();
-		
-		return velocity;
-	}
-
 }

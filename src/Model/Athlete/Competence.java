@@ -51,29 +51,5 @@ private String category;
     public void setGender(Gender gender) {
         this.gender = gender;
     }
-	
-	/*public String getCategory() {
-    	String categoria;
-    	if ((this.getCategory() > 14) && (this.getCategory() <20))
-    		 categoria="junior";							
-    		else if ((this.getCategory() > 19) && (this.getCategory() < 24))
-    			categoria="sub23";					
-    				else  categoria="elite";	
-    	return categoria;
-    }*/
 
-	@Override
-	public float getVelocity(Discipline discipline) {
-    
-		float velocity = 0;
-		
-		if (discipline.getClass().equals(Swimming.class))
-			velocity = physicalsConditions.getVelocitySwimming();
-		else if (discipline.getClass().equals(Cycling.class))
-			velocity = physicalsConditions.getVelocityCycling();
-		else if (discipline.getClass().equals(Pedestrianism.class))
-			velocity = physicalsConditions.getVelocityStoning();
-		
-		return velocity;
-	}
 }

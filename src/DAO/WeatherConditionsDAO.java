@@ -16,7 +16,7 @@ public class WeatherConditionsDAO {
 	        String queryclimatecond = "SELECT* FROM weatherConditions";
 
 	        try{
-			Connection connection = DBConnection.getConnection();
+	        	 Connection connection = DBConnection.getConnection();
 	             Statement statement = connection.createStatement();
 	             ResultSet rs = statement.executeQuery(queryclimatecond);
 	             

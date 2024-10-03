@@ -34,11 +34,11 @@ public class Modality {
 	
 	//Getters and Setters
 	
-	public Modalities getModality() {
+	public Modalities getModalities() {
 		return modality;
 	}
 
-	public void setModality(Modalities modality) {
+	public void setModalities(Modalities modality) {
 		this.modality = modality;
 	}
 
