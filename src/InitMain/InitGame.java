@@ -1,6 +1,7 @@
 package InitMain;
 
 import Controller.Championship;
+import Model.Race.Race;
 import Model.View.MainView;
 
 public class InitGame {
@@ -10,14 +11,12 @@ private static Championship championship;
 
 	public static void main (String[] args) {
 		
-		mainView = new MainView(Championship.getInstance());
+		championship = Championship.getInstance();	
+		mainView = new MainView(championship);
+		championship.setMainView(mainView);	
+
 		mainView.setVisible(true);
 		mainView.setLocationRelativeTo(null);
-		Championship.setMainView(mainView);	
-		//Race race = Championship.createNewRace();
-		//race.startRace();
 		
-		//championship = Championship.getInstance();	
-		//championship.getMainView();
-	}
+		}
 }

@@ -23,16 +23,16 @@ public class Race {
 	private ClimateCondition currentWeather;
 	private Map <Integer, Provisioning> listPrivisioning;
 	private List <AthleteRaceInformation> listAthletes;
-	
+	private RaceView raceView; // Agregado, sacar de mainview?
 	//Constructor Method
 	
 	public Race(Modality modality, City city, Map <Integer, Provisioning> list) throws SQLException{
 		this.modality = modality;
 		this.city = city;
 		this.listPrivisioning = list;
-		
-		  List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
-	        this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
+		List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
+	    this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
+	    
 	 }
 	
 	
@@ -41,10 +41,14 @@ public class Race {
 	public void prepareRace(List<Athlete> athletes) {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
-		
-		for (int i = 0; i < 7; i++) {
-			Athlete athlete = athletes.get(i);
+		raceView = new RaceView(city.getDescription());
+	    raceView.setVisible(true);  
+		int pos = 0;
+		for (Athlete athlete : athletes) {
+			//Athlete athlete = athletes.get(i);
+			pos++;
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather);
+			raceView.initializePanels(athleteRace, pos, listPrivisioning);
 			listAthletes.add(athleteRace);
 			
 		}
@@ -60,12 +64,16 @@ public class Race {
 		
 		TimerTask task = new TimerTask() {
 			
-			int time = 0;
+			int time =0;
 			
 			@Override
 			public void run() {
+				
 				System.out.println("Tiempo: " + time);
 				time++;
+	
+				raceView.getLblRaceTime().setText("Race Time: " + Integer.toString(time) + " seconds");
+				raceView.getLblClimateCondition().setText("Climate condition:"+currentWeather.getDescription());
 				
 				if (time == 50)
 					timer.cancel();
@@ -75,6 +83,7 @@ public class Race {
 		timer.schedule(task, 0, 1000);
 	}
 
+	//Getters and Setters
 	public Modality getModality() {
 		return modality;
 	}
@@ -105,6 +114,16 @@ public class Race {
 
 	public void setListAthletes(List<AthleteRaceInformation> listathletes) {
 		this.listAthletes = listathletes;
+	}
+
+
+	public RaceView getRaceView() {
+		return raceView;
+	}
+
+
+	public void setRaceView(RaceView raceView) {
+		this.raceView = raceView;
 	}
 	
 	

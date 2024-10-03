@@ -145,7 +145,7 @@ public class XMLCharge {
                 	
                 	String type = elementChild.getAttributeNode("tipo").getValue();
                 	
-                	int number = Integer.parseInt(elementChild.getAttributeNode("numero").getValue());
+                	int number = j+1;
                 	
                 	float distance = Float.parseFloat(elementChild.getElementsByTagName("distancia").item(0).getTextContent());
                 	

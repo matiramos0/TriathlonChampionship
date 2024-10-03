@@ -32,6 +32,7 @@ public class AthleteRaceInformation extends Thread{
 	
 	//Methods
 	
+	
 	@Override
 	public void run() {
 		
@@ -45,7 +46,8 @@ public class AthleteRaceInformation extends Thread{
 				
 				velocity = athlete.getVelocity(modality.getSwimming().getDiscipline());
 				advancedDistance += velocity;
-				
+				panel.advance(/*this.panel,*/ advancedDistance);
+				//getLblEnergy --> show energy 
 				sleep(SpeedOfRace);
 			}
 			

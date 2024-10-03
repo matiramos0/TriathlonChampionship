@@ -27,7 +27,7 @@ public class Championship {
 		
 	}
 	
-	public static Race createNewRace() {
+	public Race createNewRace() {
 		
 		Random random = new Random();
 				
@@ -36,14 +36,15 @@ public class Championship {
 		newRace.prepareRace(athletes);
 		
 		System.out.println("Datos de la carrera" + "\n");
-		System.out.println("Modalidad: " + newRace.getModality().getModality().getDescription());
+		//System.out.println("Modalidad: " + newRace.getModality().getModality().getDescription());
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
 		System.out.println("Distancia: " + newRace.getModality().getTotalDistance() + "\n");
-		
+
 		return newRace;
 	}
 	
 	 public void listenStartNewChampionship() {	
+		//mainView.getRaceView();
 		Race race = createNewRace();	
 		race.startRace();
 		
