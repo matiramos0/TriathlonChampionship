@@ -125,13 +125,13 @@ public class XMLCharge {
                 Modality modality = new Modality(swimming, cycling, stoning);
                 
                 if (Modalities.SPRINT.getDescription().equals(descriptModality))
-                	modality.setModality(Modalities.SPRINT);
+                	modality.setModalities(Modalities.SPRINT);
                 else if (Modalities.OLYMPIC.getDescription().equals(descriptModality))
-                	modality.setModality(Modalities.OLYMPIC);
+                	modality.setModalities(Modalities.OLYMPIC);
                 else if (Modalities.MIDDLE.getDescription().equals(descriptModality))
-                	modality.setModality(Modalities.MIDDLE);
+                	modality.setModalities(Modalities.MIDDLE);
                 else if (Modalities.LONG.getDescription().equals(descriptModality))
-                	modality.setModality(Modalities.LONG);
+                	modality.setModalities(Modalities.LONG);
                 
                 setModalities.add(descriptModality);
                 
