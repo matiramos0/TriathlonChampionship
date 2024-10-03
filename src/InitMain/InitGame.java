@@ -6,17 +6,10 @@ import Model.View.MainView;
 
 public class InitGame {
 
-private static MainView mainView;
-private static Championship championship;
-
 	public static void main (String[] args) {
 		
-		championship = Championship.getInstance();	
-		mainView = new MainView(championship);
-		championship.setMainView(mainView);	
-
+		Championship currentChampionship = new Championship();
+		MainView mainView = new MainView(currentChampionship);
 		mainView.setVisible(true);
-		mainView.setLocationRelativeTo(null);
-		
-		}
+	}
 }

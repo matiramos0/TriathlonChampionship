@@ -60,8 +60,9 @@ public class MainView extends JFrame {
 		btnClose.setBounds(338, 419, 167, 86);
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				dispose();
-				}
+			}
 		});
 		btnClose.setFont(new Font("Montserrat Medium", Font.PLAIN, 20));
 		
@@ -80,6 +81,10 @@ public class MainView extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				controller.listenStartNewChampionship();
+				controller.OpenWindowRace();
+				//frame.setExtendedState(MAXIMIZED_BOTH);
+				//frame.setVisible(true);
+				//frame.setLocationRelativeTo(null);
 			}
 		});
 		contentPane.add(btnNewButton);

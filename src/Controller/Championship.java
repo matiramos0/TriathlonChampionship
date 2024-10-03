@@ -18,9 +18,9 @@ public class Championship {
 	
 	private static List<Race> races;
 	private static List<Athlete> athletes;
-	private static MainView mainView;
+	private static Race currentRace;
 
-	private Championship() {
+	public Championship() {
 		races = new ArrayList<>();
 		athletes = new ArrayList<>();	
 		XMLCharge.chargeTriathlon(athletes, races);
@@ -36,7 +36,7 @@ public class Championship {
 		newRace.prepareRace(athletes);
 		
 		System.out.println("Datos de la carrera" + "\n");
-		//System.out.println("Modalidad: " + newRace.getModality().getModality().getDescription());
+		System.out.println("Modalidad: " + newRace.getModality().getModalities().getDescription());
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
 		System.out.println("Distancia: " + newRace.getModality().getTotalDistance() + "\n");
 
@@ -44,24 +44,22 @@ public class Championship {
 	}
 	
 	 public void listenStartNewChampionship() {	
-		//mainView.getRaceView();
-		Race race = createNewRace();	
-		race.startRace();
+		currentRace = createNewRace();	
+		currentRace.startRace();
 		
 	 }
+	 
+	 public void OpenWindowRace() {
+		 RaceView raceView = new RaceView();
+		 raceView.setVisible(true);
+	 }
+	 
 	 public static Championship getInstance() {
 	        if (currentInstance == null) {
 	        	currentInstance = new Championship();
 	        }
+	        
 	        return currentInstance;
 	    }
-
-	public static MainView getMainView() {
-		return mainView;
-	}
-
-	public static void setMainView(MainView mainView) {
-		Championship.mainView = mainView;
-	}
 
 }

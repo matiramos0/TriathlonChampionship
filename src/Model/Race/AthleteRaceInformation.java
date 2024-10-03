@@ -7,19 +7,20 @@ import Model.View.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	
-	public static final long SpeedOfRace = 100; // miliseconds
-	
+	private static final long speedOfRace = 100; // miliseconds
 	private static final long timeOfTranscition = 1000;
+	private static final long maxFatigue = 99;
+	private static final float baseFatigueValue = 0.2F;
 	
 	private Athlete athlete;
 	private Modality modality;
 	private ClimateCondition climateCondition;
 	private float advancedDistance;
 	private float advancedTime;
-	private float energy;
+	private float fatigue;
 	private float velocity;
-	private boolean isOut = false;
-	private AthletePanel panel;//panel de carrera
+	private boolean isOut;
+	private AthletePanel panel; //panel de carrera
 	
 	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition) {
 		this.athlete = athlete;
@@ -27,7 +28,9 @@ public class AthleteRaceInformation extends Thread{
 		this.climateCondition = climateCondition;
 		this.advancedDistance = 0;
 		this.advancedTime = 0;
-		this.energy = 100;
+		this.fatigue = 0;
+		this.isOut = false;
+		
 	}
 	
 	//Methods
@@ -39,12 +42,14 @@ public class AthleteRaceInformation extends Thread{
 		try {
       
 			while (advancedDistance < modality.getFirstTransition() && isOut != true) {
-				if (energy == 0)
+				if (fatigue > maxFatigue)
 					isOut = true;
 				
-				System.out.println(advancedDistance + "\t" + velocity);
+				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getSwimming().getDiscipline());
+				velocity -= getFatigueEffect();  
+				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				panel.advance(/*this.panel,*/ advancedDistance);
 				//getLblEnergy --> show energy 
@@ -54,33 +59,44 @@ public class AthleteRaceInformation extends Thread{
 			sleep(timeOfTranscition);
 			
 			while (advancedDistance < modality.getSecondTransition() && isOut != true) {
-				if (energy == 0)
+				if (fatigue > maxFatigue)
 					isOut = true;
 				
-				System.out.println(advancedDistance + "\t" + velocity);
+				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getCycling().getDiscipline());
+				velocity -= getFatigueEffect();  
+				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
-				sleep(SpeedOfRace);
+				sleep(speedOfRace);
 			}
 			
 			sleep(timeOfTranscition);
 			
 			while (advancedDistance < modality.getTotalDistance() && isOut != true) {
+				if (fatigue > maxFatigue)
+					isOut = true;
 				
-				System.out.println(advancedDistance + "\t" + velocity);
+				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getPedestrianism().getDiscipline());
+				velocity -= getFatigueEffect();  
+				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
-				sleep(SpeedOfRace);
+				sleep(speedOfRace);
 			}
 			
 			
 		} catch (InterruptedException e) {
 			System.out.println("Error hilo " + e);
 		}
+	}
+	
+	private float getFatigueEffect() {
+		float effect = velocity*(fatigue/100);
+		return effect;
 	}
 
 	public void info() {
@@ -90,10 +106,6 @@ public class AthleteRaceInformation extends Thread{
 		System.out.println("DNI: " + athlete.getDni());
 		System.out.println("Categoria: " + athlete.getCategory() + "\n");
 		
-	}
-	
-	public float getEnergyWear() {
-		return 0;
 	}
 	
 	//Getters and Setters
@@ -122,12 +134,12 @@ public class AthleteRaceInformation extends Thread{
 		this.advancedTime = advancedTime;
 	}
 
-	public float getEnergy() {
-		return energy;
+	public float getFatigue() {
+		return fatigue;
 	}
 
-	public void setEnergy(float energy) {
-		this.energy = energy;
+	public void setFatigue(float fatigue) {
+		this.fatigue = fatigue;
 	}
 
 	public AthletePanel getPanel() {

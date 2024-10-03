@@ -2,10 +2,13 @@ package Model.Athlete;
 
 import java.util.Date;
 
+import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
+import Model.Discipline.Pedestrianism;
+import Model.Discipline.Swimming;
 
 public abstract class Athlete {
-
+	
     public enum Gender {MALE, FEMALE};
 
     protected String number;
@@ -77,7 +80,19 @@ public abstract class Athlete {
 	
 	public abstract String getCategory();
 
-	public abstract float getVelocity(Discipline discipline);
+	public float getVelocity(Discipline discipline) {
+		
+		float velocity = 0;
+		
+		if (discipline.getClass().equals(Swimming.class))
+			velocity = physicalsConditions.getVelocitySwimming();
+		else if (discipline.getClass().equals(Cycling.class))
+			velocity = physicalsConditions.getVelocityCycling();
+		else if (discipline.getClass().equals(Pedestrianism.class))
+			velocity = physicalsConditions.getVelocityStoning();
+		
+		return velocity;
+	}
 	
 	//public abstract String getCategory();
 }
