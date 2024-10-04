@@ -9,4 +9,10 @@ public class Swimming extends Discipline {
 		return "Swimming";
 	}
 
+	@Override
+	public boolean equals() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

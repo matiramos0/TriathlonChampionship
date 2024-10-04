@@ -7,26 +7,16 @@ import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Swimming;
 
-public class Amateur extends Athlete {
-
-private String category;	
+public class Amateur extends Athlete {	
 
 	public Amateur(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted, float weight, float height, double economy, String birthdate, Stats physicalsConditions) {
         super(number, name, last, nacionality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, physicalsConditions);
-        this.category = calculateCategory(birthdate);
+        this.category = calculateCategory(calculateAge(birthdate));
 	}
 	
 	@Override
-	protected String calculateCategory(String birthDate) {	
+	protected String calculateCategory(int years) {	
     	//split the birthDate string and compare to the current date to get how years old the athlete is
-    	String[] birth = birthDate.split("-");
-    	LocalDate current = LocalDate.now();
-    	
-    	int years = current.getYear() - Integer.parseInt(birth[0]);
-    	if ((current.getMonthValue() < Integer.parseInt(birth[1]))) 
-    		years--;
-    		else if ((current.getMonthValue() == Integer.parseInt(birth[1])) && (current.getDayOfMonth() < Integer.parseInt(birth[3])))
-    			years--;
     	String categoria;
 		
     	if ((years >= 19) && (years <= 24))
@@ -54,18 +44,5 @@ private String category;
 																					else categoria = "+75";
     	return categoria;
 	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
-	@Override
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
+	
 }

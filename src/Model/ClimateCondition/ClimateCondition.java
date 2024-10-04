@@ -17,7 +17,6 @@ public class ClimateCondition {
 	
 	public ClimateCondition(int wearId, String description, UnitMeasure unitmeasure, double lowerMarck,
 			double upperMark, double swimmingWear, double cyclingWear, double runningWear) {
-		super();
 		this.wearId = wearId;
 		this.description = description;
 		this.unitmeasure = unitmeasure;
