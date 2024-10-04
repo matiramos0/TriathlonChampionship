@@ -1,25 +1,45 @@
 package Controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.swing.JOptionPane;
+
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 
+import EventListeners.FinishRaceListener;
+import EventListeners.NewChampionshipListener;
+import EventListeners.NewRaceListener;
+import EventListeners.RefreshViewListener;
 import Model.Athlete.Athlete;
+import Model.ClimateCondition.ClimateCondition;
+import Model.Discipline.Provisioning;
+import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
 import XML.XMLCharge;
+import Model.View.AthletePanel;
 import Model.View.MainView;
 import Model.View.RaceView;
 
-public class Championship {
+public class Championship implements NewRaceListener, RefreshViewListener, FinishRaceListener, NewChampionshipListener{
 	
 	private static Championship currentInstance;
 	
 	private static List<Race> races;
 	private static List<Athlete> athletes;
 	private static Race currentRace;
-
+	private static RaceView currentRaceView;
+	private Map<AthleteRaceInformation, AthletePanel> panels;
+	
 	public Championship() {
 		races = new ArrayList<>();
 		athletes = new ArrayList<>();	
@@ -28,38 +48,123 @@ public class Championship {
 	}
 	
 	public Race createNewRace() {
-		
-		Random random = new Random();
-				
+		Random random = new Random();			
 		Race newRace = races.get(random.nextInt(races.size()));
 		
-		newRace.prepareRace(athletes);
+		newRace.prepareRace(athletes); // los carga como AthleteRace
+		
+		currentRaceView = new RaceView(newRace.getCity().getDescription(), currentInstance);
+		currentRaceView.setVisible(true);
+		
+		panels = listenCreatePanels(newRace.getListAthletes(), newRace.getListPrivisioning());
 		
 		System.out.println("Datos de la carrera" + "\n");
 		System.out.println("Modalidad: " + newRace.getModality().getModalities().getDescription());
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
 		System.out.println("Distancia: " + newRace.getModality().getTotalDistance() + "\n");
-
+		
 		return newRace;
 	}
 	
-	 public void listenStartNewChampionship() {	
+	 
+	 
+	 @Override
+	public HashMap<AthleteRaceInformation, AthletePanel> listenCreatePanels(List<AthleteRaceInformation> athletes, Map<Integer, Provisioning> provisioning ) {
+		 
+		 HashMap<AthleteRaceInformation, AthletePanel> map= new HashMap<AthleteRaceInformation, AthletePanel>();
+		 int pos = 0;
+		 for(AthleteRaceInformation athleteRace : athletes) {
+				pos++;
+				AthletePanel athletePanel = new AthletePanel(pos, provisioning, athleteRace.getModality());
+				currentRaceView.getContentPane().add(athletePanel);
+				athletePanel.setVisible(true);
+				//athleteRace.setPanel(athletePanel);
+				athletePanel.getLblAthlete().setText("Athlete: "+ athleteRace.getAthlete().getName());
+				
+				map.put(athleteRace, athletePanel);
+			}
+		 
+		 return map;
+	}
+	 
+	 //	Listeners
+
+	 @Override    
+	public synchronized void listenAdvancePanel(AthleteRaceInformation athleteRace) {//se ejecuta cada actualizacion de athleteRace
+		try{
+			AthletePanel panel = panels.get(athleteRace); 
+		  
+			panel.advance(athleteRace.getAdvancedDistance());
+			panel.getLblEnergy().setText(String.format("Fatigue: %.2f" , athleteRace.getFatigue()));
+			
+		}catch(Exception e) {
+			 e.printStackTrace(System.err);
+		}
+	}
+	 
+	 @Override
+	public void listenStartNewChampionship() {	
+		currentInstance = this;
+		listenStartNewRace();		
+	 }
+	 
+	 @Override  
+	public void listenStartNewRace() {	
 		currentRace = createNewRace();	
 		currentRace.startRace();
+		 //createNewRace();
+	 }
+	 
+	 @Override
+	public void listenFinishRace() {
+		//guardar estadisticas
+		currentRaceView.dispose();
 		
-	 }
+		if(currentRaceView.askNewRace()) {
+			 listenStartNewRace();
+		}  
+	}
 	 
-	 public void OpenWindowRace() {
-		 RaceView raceView = new RaceView();
-		 raceView.setVisible(true);
-	 }
+	 @Override
+	public void listenRefreshView(int time, ClimateCondition currentWeather) {
+		currentRaceView.getLblRaceTime().setText("Race Time: " + Integer.toString(time) + " seconds");
+		currentRaceView.getLblClimateCondition().setText("Climate condition:"+currentWeather.getDescription());
+		
+	}	
 	 
+	 @Override
+	public void listenRefreshPositions() {
+		 //panels = getPanelsSortedByPosition(panels);
+		 //ArrayList<AthleteRaceInformation> athletesSorted = null;
+		 Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
+						@Override
+						public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
+							return (int) (o1.getAdvancedDistance() - o2.getAdvancedDistance());
+						}
+				 		}); 
+		 int i = 0;
+		 for (AthleteRaceInformation athleteRace : currentRace.getListAthletes()) {
+			 i++;						//Change Position attribute of each athlete sorted by advanced distance
+			 athleteRace.setPosition(i); 
+		 }
+		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
+			  AthletePanel panel = panels.get(athleteRace);	    
+			  panel.refreshPositions(athleteRace.getPosition());
+		 }	 		
+	}
+
+	//Getters and Setters
 	 public static Championship getInstance() {
 	        if (currentInstance == null) {
 	        	currentInstance = new Championship();
-	        }
-	        
+	        }     
 	        return currentInstance;
 	    }
 
+	
+
+	
+
+	
+	
 }

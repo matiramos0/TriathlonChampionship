@@ -7,14 +7,17 @@ import java.awt.event.ActionListener;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
+import Controller.Championship;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
+import javax.swing.JTabbedPane;
 
 public class RaceView extends JFrame {
 
@@ -23,8 +26,10 @@ public class RaceView extends JFrame {
 	private JLabel lblClimateCondition;
 	private JLabel lblRaceTime;
 	private JLabel lblTitulo;
+	private Championship controller;
 	
-	public RaceView(String titulo) {
+	public RaceView(String titulo, Championship controller) {
+		this.controller = controller;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 	setTitle("Race");
 		setBounds(100, 100, 1410, 1000);
@@ -74,32 +79,45 @@ public class RaceView extends JFrame {
 		contentPane.add(lblTitulo);	
 		
 		JButton btnExitRace = new JButton("Exit");
-		btnExitRace.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnExitRace.setBounds(1217, 742, 109, 37);
+		//btnExitRace.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnExitRace.setBounds(41, 246, 187, 57);
 		btnExitRace.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-		contentPane.add(btnExitRace);	
+		contentPane.add(btnExitRace);
+		
+		JButton btnNewButton = new JButton("Championship \r\nStatistics");
+		btnNewButton.setBounds(41, 350, 187, 62);
+		contentPane.add(btnNewButton);
+		
 		
 	}
-	
+	/*
 	public void initializePanels(AthleteRaceInformation athlete, int startPosition, Map <Integer, Provisioning> listPrivisioning) {
+
 		AthletePanel athletePanel = new AthletePanel(startPosition, listPrivisioning, athlete.getModality());
-		athletePanel.getLblAthlete().setText("Athlete: "+athlete.getAthlete().getName());
 		athlete.setPanel(athletePanel);
+		
+		athletePanel.getLblAthlete().setText("Athlete: "+athlete.getAthlete().getName());
 		athletePanel.setVisible(true);
 		contentPane.add(athletePanel);
 	}
-
+	 
+	 */
+	public Boolean askNewRace() {
+		if (JOptionPane.showConfirmDialog(null, "Do you want to start the following race? ", "Championship", JOptionPane.OK_CANCEL_OPTION) == 0)
+			return true;
+		else
+			return false;
+	}
+	
 	//Getters and Setters
-
-	/*
 	 public JPanel getContentPane() {
 		return contentPane;
 	}
-
+	 /*
 	public void setContentPane(JPanel contentPane) {
 		this.contentPane = contentPane;
 	}

@@ -35,11 +35,10 @@ public class MainView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	// private static RaceView raceView; Dberia tenerlo la Race ??
 	private Championship controller;
 	 
-	public MainView(Championship controllerr) {
-		this.controller = controllerr;
+	public MainView() {
+		//this.controller = controllerr;
 		setIconImage(Toolkit.getDefaultToolkit().getImage("img\\Triatlon background.png"));
 		setTitle("Triathlon Championship");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,11 +79,8 @@ public class MainView extends JFrame {
 		btnNewButton.setHorizontalAlignment(SwingConstants.LEFT);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				controller = new Championship();
 				controller.listenStartNewChampionship();
-				controller.OpenWindowRace();
-				//frame.setExtendedState(MAXIMIZED_BOTH);
-				//frame.setVisible(true);
-				//frame.setLocationRelativeTo(null);
 			}
 		});
 		contentPane.add(btnNewButton);

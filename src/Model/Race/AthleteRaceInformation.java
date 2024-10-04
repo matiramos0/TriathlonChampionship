@@ -1,5 +1,6 @@
 package Model.Race;
 
+import Controller.Championship;
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Modality.Modality;
@@ -20,7 +21,7 @@ public class AthleteRaceInformation extends Thread{
 	private float fatigue;
 	private float velocity;
 	private boolean isOut;
-	private AthletePanel panel; //panel de carrera
+	private int position;
 	
 	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition) {
 		this.athlete = athlete;
@@ -51,9 +52,10 @@ public class AthleteRaceInformation extends Thread{
 				velocity -= getFatigueEffect();  
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
-				panel.advance(/*this.panel,*/ advancedDistance);
-				//getLblEnergy --> show energy 
-				sleep(SpeedOfRace);
+				
+				Championship.getInstance().listenAdvancePanel(this);// Atributo controller?
+				
+				sleep(speedOfRace);
 			}
 			
 			sleep(timeOfTranscition);
@@ -68,7 +70,9 @@ public class AthleteRaceInformation extends Thread{
 				velocity -= getFatigueEffect();  
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
-				
+
+				Championship.getInstance().listenAdvancePanel(this);
+
 				sleep(speedOfRace);
 			}
 			
@@ -85,6 +89,8 @@ public class AthleteRaceInformation extends Thread{
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
+				Championship.getInstance().listenAdvancePanel(this);
+
 				sleep(speedOfRace);
 			}
 			
@@ -142,13 +148,6 @@ public class AthleteRaceInformation extends Thread{
 		this.fatigue = fatigue;
 	}
 
-	public AthletePanel getPanel() {
-		return panel;
-	}
-
-	public void setPanel(AthletePanel panel) {
-		this.panel = panel;
-	}
 
 	public Modality getModality() {
 		return modality;
@@ -156,6 +155,15 @@ public class AthleteRaceInformation extends Thread{
 
 	public void setModality(Modality modality) {
 		this.modality = modality;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}		
 
+	
 }

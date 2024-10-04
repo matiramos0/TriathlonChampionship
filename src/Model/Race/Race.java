@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import Controller.Championship;
 import DAO.WeatherConditionsDAO;
 import Model.City.City;
 import Model.Modality.Modality;
@@ -23,9 +24,10 @@ public class Race {
 	private ClimateCondition currentWeather;
 	private Map <Integer, Provisioning> listPrivisioning;
 	private List <AthleteRaceInformation> listAthletes;
-	private RaceView raceView; // Agregado, sacar de mainview?
+	//private RaceView raceView; 
+
 	//Constructor Method
-	
+
 	public Race(Modality modality, City city, Map <Integer, Provisioning> list) throws SQLException{
 		this.modality = modality;
 		this.city = city;
@@ -41,14 +43,9 @@ public class Race {
 	public void prepareRace(List<Athlete> athletes) {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
-		raceView = new RaceView(city.getDescription());
-	    raceView.setVisible(true);  
-		int pos = 0;
+		
 		for (Athlete athlete : athletes) {
-			//Athlete athlete = athletes.get(i);
-			pos++;
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather);
-			raceView.initializePanels(athleteRace, pos, listPrivisioning);
 			listAthletes.add(athleteRace);
 			
 		}
@@ -71,12 +68,15 @@ public class Race {
 				
 				System.out.println("Tiempo: " + time);
 				time++;
-	
-				raceView.getLblRaceTime().setText("Race Time: " + Integer.toString(time) + " seconds");
-				raceView.getLblClimateCondition().setText("Climate condition:"+currentWeather.getDescription());
 				
-				if (time == 50)
+				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
+				//Championship.getInstance().advancePanel(); // actualiza todos juntos
+				Championship.getInstance().listenRefreshPositions();
+				
+				if (time == 100) {
 					timer.cancel();
+					Championship.getInstance().listenFinishRace();
+				}
 			}
 		};
 		
@@ -99,31 +99,33 @@ public class Race {
 	public void setCity(City city) {
 		this.city = city;
 	}
-
-	/*public ArrayList<Provisioning> getListprivisioning() {
-		return (ArrayList<Provisioning>) listPrivisioning;
+	
+	public ClimateCondition getCurrentWeather() {
+		return currentWeather;
 	}
 
-	public void setListprivisioning(ArrayList<Provisioning> listprivisioning) {
-		this.listPrivisioning = listprivisioning;
-	}*/
-	
+
+	public void setCurrentWeather(ClimateCondition currentWeather) {
+		this.currentWeather = currentWeather;
+	}
+
+
+	public Map<Integer, Provisioning> getListPrivisioning() {
+		return listPrivisioning;
+	}
+
+
+	public void setListPrivisioning(Map<Integer, Provisioning> listPrivisioning) {
+		this.listPrivisioning = listPrivisioning;
+	}
+
+
 	public ArrayList<AthleteRaceInformation> getListAthletes() {
 		return (ArrayList<AthleteRaceInformation>) listAthletes;
 	}
 
 	public void setListAthletes(List<AthleteRaceInformation> listathletes) {
 		this.listAthletes = listathletes;
-	}
-
-
-	public RaceView getRaceView() {
-		return raceView;
-	}
-
-
-	public void setRaceView(RaceView raceView) {
-		this.raceView = raceView;
 	}
 	
 	
