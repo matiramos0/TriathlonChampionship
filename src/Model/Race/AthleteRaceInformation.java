@@ -1,8 +1,11 @@
 package Model.Race;
 
+import java.util.Map;
+
 import Controller.Championship;
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
+import Model.Discipline.Provisioning;
 import Model.Modality.Modality;
 import Model.View.AthletePanel;
 
@@ -22,8 +25,9 @@ public class AthleteRaceInformation extends Thread{
 	private float velocity;
 	private boolean isOut;
 	private int position;
-	
-	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition) {
+	private Map <Integer, Provisioning> listProvisioning;
+
+	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition, Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning> provisioningPedestrianism){
 		this.athlete = athlete;
 		this.modality = modality;
 		this.climateCondition = climateCondition;
@@ -31,7 +35,7 @@ public class AthleteRaceInformation extends Thread{
 		this.advancedTime = 0;
 		this.fatigue = 0;
 		this.isOut = false;
-		
+		this.listProvisioning = listProvisioning;
 	}
 	
 	//Methods

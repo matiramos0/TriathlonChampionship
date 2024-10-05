@@ -13,5 +13,4 @@ public interface NewRaceListener {
 
 	void listenStartNewRace(); 
 	
-	HashMap<AthleteRaceInformation, AthletePanel> listenCreatePanels(List <AthleteRaceInformation> athletes, Map<Integer, Provisioning> provisioning);
 }

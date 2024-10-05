@@ -22,16 +22,18 @@ public class Race {
 	private Modality modality;
 	private City city;
 	private ClimateCondition currentWeather;
-	private Map <Integer, Provisioning> listPrivisioning;
+	private Map <Integer, Provisioning> provisioningPedestrianism;
+	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
 	//private RaceView raceView; 
 
 	//Constructor Method
 
-	public Race(Modality modality, City city, Map <Integer, Provisioning> list) throws SQLException{
+	public Race(Modality modality, City city, Map <Integer, Provisioning> cycling, Map <Integer, Provisioning> pedestrianism) throws SQLException{
 		this.modality = modality;
 		this.city = city;
-		this.listPrivisioning = list;
+		this.provisioningCycling = cycling;
+		this.provisioningPedestrianism = pedestrianism;
 		List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
 	    this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
 	    
@@ -45,7 +47,7 @@ public class Race {
 		listAthletes = new ArrayList<AthleteRaceInformation>();
 		
 		for (Athlete athlete : athletes) {
-			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather);
+			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather, provisioningPedestrianism, provisioningCycling);
 			listAthletes.add(athleteRace);
 			
 		}
@@ -70,10 +72,9 @@ public class Race {
 				time++;
 				
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
-				//Championship.getInstance().advancePanel(); // actualiza todos juntos
 				Championship.getInstance().listenRefreshPositions();
 				
-				if (time == 100) {
+				if (time == 70) {
 					timer.cancel();
 					Championship.getInstance().listenFinishRace();
 				}
@@ -109,14 +110,23 @@ public class Race {
 		this.currentWeather = currentWeather;
 	}
 
-
-	public Map<Integer, Provisioning> getListPrivisioning() {
-		return listPrivisioning;
+	public Map<Integer, Provisioning> getProvisioningPedestrianism() {
+		return provisioningPedestrianism;
 	}
 
 
-	public void setListPrivisioning(Map<Integer, Provisioning> listPrivisioning) {
-		this.listPrivisioning = listPrivisioning;
+	public void setProvisioningPedestrianism(Map<Integer, Provisioning> provisioningPedestrianism) {
+		this.provisioningPedestrianism = provisioningPedestrianism;
+	}
+
+
+	public Map<Integer, Provisioning> getProvisioningCycling() {
+		return provisioningCycling;
+	}
+
+
+	public void setProvisioningCycling(Map<Integer, Provisioning> provisioningCycling) {
+		this.provisioningCycling = provisioningCycling;
 	}
 
 

@@ -137,26 +137,30 @@ public class XMLCharge {
                 
                 NodeList listPoints = element.getElementsByTagName("puesto");
                 
-                Map <Integer, Provisioning> provisionings = new HashMap<>();
+                Map <Integer, Provisioning> provisioningCycling = new HashMap<>();
+                Map <Integer, Provisioning> provisioningPedestrianism = new HashMap<>();
                 
                 for (int j = 0; j < listPoints.getLength(); j++) {
                 	
                 	Element elementChild = (Element) element.getElementsByTagName("puesto").item(j);
                 	
-                	String type = elementChild.getAttributeNode("tipo").getValue();
+                	String type = elementChild.getAttributeNode("tipo").getValue();                		
                 	
-                	int number = j+1;
+                	int number = Integer.parseInt(elementChild.getAttributeNode("numero").getValue());
                 	
                 	float distance = Float.parseFloat(elementChild.getElementsByTagName("distancia").item(0).getTextContent());
                 	
                 	Provisioning provisioning = null;
                 	
-                	if (type.equals("ciclismo"))
+                	if (type.equals("ciclismo")) {
                 		provisioning = new Provisioning(number, distance, new Cycling());
-                	else if (type.equals("pedestrismo"))
+                    	provisioningCycling.put(number, provisioning);
+
+                	}
+                	else if (type.equals("pedestrismo")) {
                 		provisioning = new Provisioning(number, distance, new Pedestrianism());
-                	
-                	provisionings.put(number, provisioning);
+                		provisioningPedestrianism.put(number, provisioning);
+                	}
                 		
                 	//System.out.println(provisioning);
                 	
@@ -167,7 +171,7 @@ public class XMLCharge {
                 Race race = null;
                 
                 try {
-					race = new Race(modality, new City(city, new Country(country)), provisionings);
+					race = new Race(modality, new City(city, new Country(country)), provisioningCycling, provisioningPedestrianism);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

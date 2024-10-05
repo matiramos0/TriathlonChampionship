@@ -30,14 +30,16 @@ public class AthletePanel extends JPanel{
 	private JLabel lblDistance;
 	private JSpinner spinnerSpeed;
 	//private int position;  in athleteRace
-	private Map <Integer, Provisioning> listPrivisioning;
+	private Map <Integer, Provisioning> provisioningCycling;
+	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Modality modality;
 	
-	public AthletePanel(int startingPosition, Map <Integer, Provisioning> listProvisioning, Modality modality) {
+	public AthletePanel(int startingPosition, Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning>provisioningPedestrianism,Modality modality) {
 		setLayout(null);
 		setBounds(256, 73 + 70*startingPosition, 1056, 70);
 
-		this.listPrivisioning = listProvisioning;
+		this.provisioningCycling = provisioningCycling;
+		this.provisioningPedestrianism = provisioningPedestrianism;
 		this.modality = modality;
 		
 		spinnerSpeed = new JSpinner();
@@ -58,7 +60,7 @@ public class AthletePanel extends JPanel{
 		add(lblEnergy);
 		
 		lblDistance = new JLabel("");
-		lblDistance.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDistance.setHorizontalAlignment(SwingConstants.LEFT);
 		lblDistance.setBounds(56, 21, 32, 32);
 		lblDistance.setIcon(new ImageIcon("img\\nadando.png"));
 		add(lblDistance);
@@ -68,8 +70,8 @@ public class AthletePanel extends JPanel{
 	
 	@Override
 	public void paint(Graphics g) {
-		int transition1 = (this.getWidth()-56)/3;//-56 due to the start of the lbldistance
-		int transition2 = transition1*2;
+		int transition1 = (this.getWidth()-56)/3 +56;//-56 due to the start of the lbldistance
+		int transition2 = (this.getWidth()-56)/3*2 +56;
 		super.paint(g);
 		g.setColor((Color.BLACK));
 		g.drawLine(56, 37, this.getWidth(), 37);//Race line
@@ -77,13 +79,23 @@ public class AthletePanel extends JPanel{
 		g.drawLine(transition1, 0, transition1, 75);
 		g.drawLine(transition2, 0, transition2, 75);
 		g.setColor(Color.GREEN);
-		for(int i = 1; i <= this.listPrivisioning.size(); i++) {
+		for(int i = 1; i <= this.provisioningCycling.size(); i++) {
 			Integer mapKey = Integer.valueOf(i);
-			if (listPrivisioning.get(mapKey).getDiscipline() instanceof Cycling ) {
-				float relation = (modality.getCycling().getDistance() / this.listPrivisioning.get(mapKey).getDistance());//Position of the provision line in relation to the transition line(in pixels)
+			if (provisioningCycling.get(mapKey).getDiscipline() instanceof Cycling ) {
+				float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());//Position of the provision line in relation to the transition line(in pixels)
 				g.drawLine((int)(transition1 + transition1/relation), 0, (int)(transition1 + transition1/relation), 75);
-			} else if(this.listPrivisioning.get(mapKey).getDiscipline() instanceof Pedestrianism) {
-				float relation = (modality.getCycling().getDistance() / this.listPrivisioning.get(mapKey).getDistance());
+			} else if(this.provisioningCycling.get(mapKey).getDiscipline() instanceof Pedestrianism) {
+				float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());
+				g.drawLine((int)((transition2 + transition2/relation)), 0, (int)((transition2 + transition2/relation)), 75);
+			}
+		}
+		for(int i = 1; i <= this.provisioningPedestrianism.size(); i++) {
+			Integer mapKey = Integer.valueOf(i);
+			if (provisioningPedestrianism.get(mapKey).getDiscipline() instanceof Cycling ) {
+				float relation = (modality.getCycling().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());//Position of the provision line in relation to the transition line(in pixels)
+				g.drawLine((int)(transition1 + transition1/relation), 0, (int)(transition1 + transition1/relation), 75);
+			} else if(this.provisioningPedestrianism.get(mapKey).getDiscipline() instanceof Pedestrianism) {
+				float relation = (modality.getCycling().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());
 				g.drawLine((int)((transition2 + transition2/relation)), 0, (int)((transition2 + transition2/relation)), 75);
 			}
 		}
@@ -92,7 +104,7 @@ public class AthletePanel extends JPanel{
 	
 	public synchronized void advance(float advancedDistance) {
 		int panelDist = (this.getWidth()-56)/3;//-56 due to the start of the lbldistance
-		int lblDimensionDistance = 0;
+		int lblDimensionDistance = 56;
 		
 		float t1 = modality.getFirstTransition();
 		float t2 = modality.getSecondTransition(); 
@@ -101,16 +113,23 @@ public class AthletePanel extends JPanel{
 		float pedestrianismEqual = panelDist / modality.getPedestrianism().getDistance();  
 
 		if (advancedDistance < t1)
-			 lblDimensionDistance += (int)(advancedDistance*swimmingEqual);  //Swimming
-		else if(advancedDistance < t2)
-			 	lblDimensionDistance += (int)(333 + (advancedDistance-t1)*cyclingEqual);//Cycling
-			else 
-				lblDimensionDistance += (int)(666 + (advancedDistance-(t1+t1))*pedestrianismEqual);//Pedestrianism
+			lblDimensionDistance += (int)(advancedDistance*swimmingEqual);  //Swimming
+		else if (advancedDistance < t2)
+			 	 lblDimensionDistance += 333 + (int)(advancedDistance-t1)*cyclingEqual;//Cycling
+			else if (advancedDistance < modality.getTotalDistance())
+					 lblDimensionDistance += 666+(int)(advancedDistance-t2)*pedestrianismEqual;//Pedestrianism
 		
 		this.lblDistance.setLocation(lblDimensionDistance, 21);
-
-		int transitionLine1 = panelDist;
-		int transitionLine2 = panelDist* 2;
+		//this.refreshPositions(position);
+		/*if(position <= 8) {
+			setVisible(true);
+			repaint();
+		} else {			      // show only first 8 athletes
+			  setVisible(false);
+		}*/
+		
+		int transitionLine1 = panelDist +56;
+		int transitionLine2 = panelDist*2 +56;
 		
 		String actual;
 		actual = "nadando";
@@ -124,8 +143,8 @@ public class AthletePanel extends JPanel{
 	}
 	
 	public synchronized void refreshPositions(int position) {
-		//this.setBounds(256, 73 + 70*position, 1056, 70);
-		this.setAlignmentY(73 + 70* position);
+		this.setBounds(256, 73 + 70*position, 1056, 70);
+		//this.setAlignmentY(73 + 70*position);
 		if(position <= 8) {
 			this.setVisible(true);
 			this.repaint();

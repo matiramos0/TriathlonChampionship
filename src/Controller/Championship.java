@@ -50,13 +50,13 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	public Race createNewRace() {
 		Random random = new Random();			
 		Race newRace = races.get(random.nextInt(races.size()));
-		
+
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
 		currentRaceView = new RaceView(newRace.getCity().getDescription(), currentInstance);
 		currentRaceView.setVisible(true);
 		
-		panels = listenCreatePanels(newRace.getListAthletes(), newRace.getListPrivisioning());
+		panels = listenCreatePanels(newRace.getListAthletes(), newRace.getProvisioningCycling(), newRace.getProvisioningPedestrianism());
 		
 		System.out.println("Datos de la carrera" + "\n");
 		System.out.println("Modalidad: " + newRace.getModality().getModalities().getDescription());
@@ -68,17 +68,16 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	
 	 
 	 
-	 @Override
-	public HashMap<AthleteRaceInformation, AthletePanel> listenCreatePanels(List<AthleteRaceInformation> athletes, Map<Integer, Provisioning> provisioning ) {
+	 
+	public HashMap<AthleteRaceInformation, AthletePanel> listenCreatePanels(List<AthleteRaceInformation> athletes, Map<Integer, Provisioning> provisioningCycling, Map<Integer, Provisioning> provisioningPedestrianism) {
 		 
 		 HashMap<AthleteRaceInformation, AthletePanel> map= new HashMap<AthleteRaceInformation, AthletePanel>();
 		 int pos = 0;
 		 for(AthleteRaceInformation athleteRace : athletes) {
 				pos++;
-				AthletePanel athletePanel = new AthletePanel(pos, provisioning, athleteRace.getModality());
+				AthletePanel athletePanel = new AthletePanel(pos, provisioningCycling, provisioningPedestrianism,athleteRace.getModality());
 				currentRaceView.getContentPane().add(athletePanel);
 				athletePanel.setVisible(true);
-				//athleteRace.setPanel(athletePanel);
 				athletePanel.getLblAthlete().setText("Athlete: "+ athleteRace.getAthlete().getName());
 				
 				map.put(athleteRace, athletePanel);
@@ -93,10 +92,10 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	public synchronized void listenAdvancePanel(AthleteRaceInformation athleteRace) {//se ejecuta cada actualizacion de athleteRace
 		try{
 			AthletePanel panel = panels.get(athleteRace); 
-		  
+			
 			panel.advance(athleteRace.getAdvancedDistance());
 			panel.getLblEnergy().setText(String.format("Fatigue: %.2f" , athleteRace.getFatigue()));
-			
+
 		}catch(Exception e) {
 			 e.printStackTrace(System.err);
 		}
@@ -112,13 +111,11 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	public void listenStartNewRace() {	
 		currentRace = createNewRace();	
 		currentRace.startRace();
-		 //createNewRace();
 	 }
 	 
 	 @Override
 	public void listenFinishRace() {
-		//guardar estadisticas
-		currentRaceView.dispose();
+		currentRaceView.dispose();		//guardar estadisticas
 		
 		if(currentRaceView.askNewRace()) {
 			 listenStartNewRace();
@@ -134,22 +131,20 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 
 	 @Override
 	public void listenRefreshPositions() {
-		 //panels = getPanelsSortedByPosition(panels);
-		 //ArrayList<AthleteRaceInformation> athletesSorted = null;
-		 Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
+		 /**/Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
 						@Override
 						public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
 							return (int) (o1.getAdvancedDistance() - o2.getAdvancedDistance());
 						}
 				 		}); 
-		 int i = 0;
-		 for (AthleteRaceInformation athleteRace : currentRace.getListAthletes()) {
-			 i++;						//Change Position attribute of each athlete sorted by advanced distance
-			 athleteRace.setPosition(i); 
-		 }
+		 
+		 for (int i = 0; i < currentRace.getListAthletes().size(); i++) {
+			 currentRace.getListAthletes().get(i).setPosition(i+1);;			 												//Change Position attribute of each athlete sorted by advanced distance
+			//Change Position attribute of each athlete sorted by advanced distance		 
+			 }
 		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
-			  AthletePanel panel = panels.get(athleteRace);	    
-			  panel.refreshPositions(athleteRace.getPosition());
+			 AthletePanel panel = panels.get(athleteRace);	    
+			 panel.refreshPositions(athleteRace.getPosition());
 		 }	 		
 	}
 
