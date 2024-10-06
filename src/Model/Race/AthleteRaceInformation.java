@@ -2,6 +2,10 @@ package Model.Race;
 
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
+import Model.Discipline.Cycling;
+import Model.Discipline.Discipline;
+import Model.Discipline.Pedestrianism;
+import Model.Discipline.Swimming;
 import Model.Modality.Modality;
 import Model.View.AthletePanel;
 
@@ -10,7 +14,7 @@ public class AthleteRaceInformation extends Thread{
 	private static final long speedOfRace = 100; // miliseconds
 	private static final long timeOfTranscition = 1000;
 	private static final long maxFatigue = 99;
-	private static final float baseFatigueValue = 0.2F;
+	private static final float baseFatigueValue = 0.15F;
 	
 	private Athlete athlete;
 	private Modality modality;
@@ -48,7 +52,8 @@ public class AthleteRaceInformation extends Thread{
 				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getSwimming().getDiscipline());
-				velocity -= getFatigueEffect();  
+				velocity -= getFatigueEffect();
+				velocity -= getClimateConditionEffect(modality.getSwimming().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				panel.advance(/*this.panel,*/ advancedDistance);
@@ -66,6 +71,7 @@ public class AthleteRaceInformation extends Thread{
 				
 				velocity = athlete.getVelocity(modality.getCycling().getDiscipline());
 				velocity -= getFatigueEffect();  
+				velocity -= getClimateConditionEffect(modality.getCycling().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
@@ -81,7 +87,8 @@ public class AthleteRaceInformation extends Thread{
 				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getPedestrianism().getDiscipline());
-				velocity -= getFatigueEffect();  
+				velocity -= getFatigueEffect();
+				velocity -= getClimateConditionEffect(modality.getPedestrianism().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
@@ -98,6 +105,19 @@ public class AthleteRaceInformation extends Thread{
 		float effect = velocity*(fatigue/100);
 		return effect;
 	}
+	
+	private float getClimateConditionEffect(Discipline discipline) {		
+		float effect = 0;
+		
+		if (discipline.equals(Swimming.class))
+			effect = (float) (velocity*(climateCondition.getSwimmingWear()/100));
+		else if (discipline.equals(Cycling.class))
+			effect = (float) (velocity*(climateCondition.getCyclingWear()/100));
+		else if (discipline.equals(Pedestrianism.class))
+			effect = (float) (velocity*(climateCondition.getRunningWear()/100));
+		
+		return effect;
+	}
 
 	public void info() {
 		
@@ -105,7 +125,7 @@ public class AthleteRaceInformation extends Thread{
 		System.out.println("Nombre: " + athlete.getName());
 		System.out.println("DNI: " + athlete.getDni());
 		System.out.println("Categoria: " + athlete.getCategory() + "\n");
-		
+	
 	}
 	
 	//Getters and Setters
