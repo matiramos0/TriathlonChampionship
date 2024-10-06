@@ -9,5 +9,11 @@ public class Pedestrianism extends Discipline{
 		return "Pedestrianism";
 	}
 
+	@Override
+	public boolean equals() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }
