@@ -1,5 +1,6 @@
 package Model.Athlete;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import Model.Discipline.Cycling;
@@ -15,6 +16,7 @@ public abstract class Athlete {
     protected String name;
     protected String last;
     protected String nacionality;
+    protected String category;
     protected Gender gender;
     protected int dni;
     protected int porcentageRacesCompleted;
@@ -72,13 +74,67 @@ public abstract class Athlete {
 		this.physicalsConditions = physicalsConditions;
 	}
 	
+	public String getNacionality() {
+		return nacionality;
+	}
+
+	public void setNacionality(String nacionality) {
+		this.nacionality = nacionality;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public double getEconomy() {
+		return economy;
+	}
+
+	public void setEconomy(double economy) {
+		this.economy = economy;
+	}
+
+	public String getBirthdate() {
+		return birthdate;
+	}
+
+	public void setBirthdate(String birthdate) {
+		this.birthdate = birthdate;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
 	//Abstract Methods
 
-	public abstract void setGender(Gender gender);
+	protected abstract String calculateCategory(int years);
 	
-	protected abstract String calculateCategory(String birthdate);
+	//Methods
 	
-	public abstract String getCategory();
+	public int calculateAge(String birthdate) {
+		
+		String[] birth = birthdate.split("-");
+    	LocalDate current = LocalDate.now();
+    	
+    	int years = current.getYear() - Integer.parseInt(birth[0]);
+    	
+    	if ((current.getMonthValue() < Integer.parseInt(birth[1])))
+    		years--;
+    	
+    	if (current.getDayOfMonth() < Integer.parseInt(birth[2]))
+    		years--;
+    	
+    	return years;
+	}
 
 	public float getVelocity(Discipline discipline) {
 		
@@ -91,8 +147,12 @@ public abstract class Athlete {
 		else if (discipline.getClass().equals(Pedestrianism.class))
 			velocity = physicalsConditions.getVelocityStoning();
 		
+		if (gender.equals(gender.FEMALE))
+			velocity -= velocity*0.05;
+		
+		velocity -= velocity*(calculateAge(birthdate)*0.01F - 0.2F);
+		
 		return velocity;
 	}
 	
-	//public abstract String getCategory();
 }
