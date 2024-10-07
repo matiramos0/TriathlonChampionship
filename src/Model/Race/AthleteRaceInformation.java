@@ -5,15 +5,12 @@ import java.util.Map;
 import Controller.Championship;
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
-//<<<<<<< HEAD
-//import Model.Discipline.Provisioning;
-//=======
+
 import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Provisioning;
 import Model.Discipline.Swimming;
-//>>>>>>> branch 'linking' of https://github.com/matiramos0/TriathlonChampionship.git
 import Model.Modality.Modality;
 import Model.View.AthletePanel;
 
@@ -193,6 +190,10 @@ public class AthleteRaceInformation extends Thread{
 
 	public void setPosition(int position) {
 		this.position = position;
+	}
+
+	public boolean isOut() {
+		return isOut;
 	}		
 
 	

@@ -95,7 +95,7 @@ public class XMLCharge {
                 if (athlete != null) {
                     if (gender.equals("Masculino"))
                         athlete.setGender(Athlete.Gender.MALE);
-                    else if (gender.equals("Feminino"))
+                    else if (gender.equals("Femenino"))
                         athlete.setGender(Athlete.Gender.FEMALE);
                 }
 

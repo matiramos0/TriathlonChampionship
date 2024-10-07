@@ -134,17 +134,19 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		 /**/Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
 						@Override
 						public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
-							return (int) (o1.getAdvancedDistance() - o2.getAdvancedDistance());
+							if ((o2.getAdvancedDistance() - o1.getAdvancedDistance()) < 0)
+								return -1;
+								else   return 1;
 						}
 				 		}); 
 		 
 		 for (int i = 0; i < currentRace.getListAthletes().size(); i++) {
-			 currentRace.getListAthletes().get(i).setPosition(i+1);;			 												//Change Position attribute of each athlete sorted by advanced distance
-			//Change Position attribute of each athlete sorted by advanced distance		 
+			 currentRace.getListAthletes().get(i).setPosition(i+1);;	
+			 //Change Position attribute of each athlete sorted by advanced distance		 
 			 }
 		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
 			 AthletePanel panel = panels.get(athleteRace);	    
-			 panel.refreshPositions(athleteRace.getPosition());
+			 panel.refreshPositions(athleteRace.getPosition(), athleteRace.isOut());
 		 }	 		
 	}
 

@@ -115,11 +115,16 @@ public class AthletePanel extends JPanel{
 		if (advancedDistance < t1)
 			lblDimensionDistance += (int)(advancedDistance*swimmingEqual);  //Swimming
 		else if (advancedDistance < t2)
-			 	 lblDimensionDistance += 333 + (int)(advancedDistance-t1)*cyclingEqual;//Cycling
+			 	 lblDimensionDistance += 333 + (int)((advancedDistance-t1)*cyclingEqual);//Cycling
 			else if (advancedDistance < modality.getTotalDistance())
-					 lblDimensionDistance += 666+(int)(advancedDistance-t2)*pedestrianismEqual;//Pedestrianism
+					 lblDimensionDistance += 666+(int)((advancedDistance-t2)*pedestrianismEqual);//Pedestrianism
 		
-		this.lblDistance.setLocation(lblDimensionDistance, 21);
+		if (advancedDistance < modality.getTotalDistance())
+			this.lblDistance.setLocation(lblDimensionDistance, 21);
+		else {
+			this.lblDistance.setIcon(new ImageIcon("img\\bandera-de-meta.png"));
+			this.lblDistance.setLocation(this.getWidth()- 32, 21);
+		}
 		//this.refreshPositions(position);
 		/*if(position <= 8) {
 			setVisible(true);
@@ -142,10 +147,13 @@ public class AthletePanel extends JPanel{
 						}
 	}
 	
-	public synchronized void refreshPositions(int position) {
+	public synchronized void refreshPositions(int position, Boolean isOut) {
 		this.setBounds(256, 73 + 70*position, 1056, 70);
 		//this.setAlignmentY(73 + 70*position);
 		if(position <= 8) {
+			if (isOut.equals(true))
+				this.lblDistance.setIcon(new ImageIcon("img\\cerrar.png"));
+			
 			this.setVisible(true);
 			this.repaint();
 		} else {			      // show only first 8 athletes
