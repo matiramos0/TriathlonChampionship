@@ -18,6 +18,9 @@ import Controller.Championship;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 public class RaceView extends JFrame {
 
@@ -27,6 +30,7 @@ public class RaceView extends JFrame {
 	private JLabel lblRaceTime;
 	private JLabel lblTitulo;
 	private Championship controller;
+	private final ButtonGroup buttonGroupPause = new ButtonGroup();
 	
 	public RaceView(String titulo, Championship controller) {
 		this.controller = controller;
@@ -84,6 +88,11 @@ public class RaceView extends JFrame {
 		btnExitRace.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
+				//try {
+				//	controller.listenPauseRace();
+				//} catch (InterruptedException e1) {
+				//	JOptionPane.showMessageDialog(null, "rarao"); 
+				//}
 			}
 		});
 		contentPane.add(btnExitRace);
@@ -91,6 +100,35 @@ public class RaceView extends JFrame {
 		JButton btnNewButton = new JButton("Championship \r\nStatistics");
 		btnNewButton.setBounds(41, 350, 187, 62);
 		contentPane.add(btnNewButton);
+		
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("Pause Race");
+		rdbtnNewRadioButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+						controller.listenPauseRace();
+					} catch (InterruptedException e1) {
+						JOptionPane.showMessageDialog(null, "rarao"); 
+					}/**/
+			}
+		});
+		buttonGroupPause.add(rdbtnNewRadioButton);
+		rdbtnNewRadioButton.setBounds(41, 150, 187, 21);
+		contentPane.add(rdbtnNewRadioButton);
+		
+		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Resume Race");
+		rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					controller.listenResumeGame();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		buttonGroupPause.add(rdbtnNewRadioButton_1);
+		rdbtnNewRadioButton_1.setBounds(41, 187, 187, 21);
+		contentPane.add(rdbtnNewRadioButton_1);
 		
 		
 	}

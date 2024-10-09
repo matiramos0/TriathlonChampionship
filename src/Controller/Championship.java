@@ -48,8 +48,9 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	}
 	
 	public Race createNewRace() {
-		Random random = new Random();			
-		Race newRace = races.get(random.nextInt(races.size()));
+		//Random random = new Random();			
+		//Race newRace = races.get(random.nextInt(races.size()));
+		Race newRace = races.get(0);
 
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
@@ -157,6 +158,22 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	        }     
 	        return currentInstance;
 	    }
+
+	public void listenPauseRace() throws InterruptedException {
+		//currentRace.pauseRace();
+	/**/for(AthleteRaceInformation a : currentRace.getListAthletes()) 
+			a.setStopped(true);
+			//synchronized(currentRace.getListAthletes().get(i)) 
+			
+			
+	}
+
+	public void listenResumeGame() throws InterruptedException {
+		/*
+		for(AthleteRaceInformation athlete : currentRace.getListAthletes()) 
+				athlete.setStopped(false);
+		*/		
+	}
 
 	
 
