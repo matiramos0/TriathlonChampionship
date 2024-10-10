@@ -71,6 +71,7 @@ public class Race {
 				System.out.println("Tiempo: " + time);
 				time++;
 				
+			
 				try {
 					Random random = new Random();
 					if (random.nextInt(35) == 1) {
@@ -148,13 +149,6 @@ public class Race {
 		this.listAthletes = listathletes;
 	}
 
-
-	/*public void pauseRace() throws InterruptedException {
-		for(int i =0; i<getListAthletes().size();i++) {
-			getListAthletes().get(i).stopThread(getListAthletes().get(i));
-			System.out.println("lpmmmmmmmmmmmmmmmmmmm");
-		}	
-	}*/
 	
 	
 	

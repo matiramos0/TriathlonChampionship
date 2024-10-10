@@ -91,7 +91,6 @@ public class RaceView extends JFrame {
 				//try {
 				//	controller.listenPauseRace();
 				//} catch (InterruptedException e1) {
-				//	JOptionPane.showMessageDialog(null, "rarao"); 
 				//}
 			}
 		});
@@ -107,7 +106,7 @@ public class RaceView extends JFrame {
 				try {
 						controller.listenPauseRace();
 					} catch (InterruptedException e1) {
-						JOptionPane.showMessageDialog(null, "rarao"); 
+						//JOptionPane.showMessageDialog(null, "que paso che"); 
 					}/**/
 			}
 		});
@@ -121,7 +120,6 @@ public class RaceView extends JFrame {
 				try {
 					controller.listenResumeGame();
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}

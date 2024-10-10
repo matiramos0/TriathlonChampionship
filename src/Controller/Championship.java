@@ -48,9 +48,9 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	}
 	
 	public Race createNewRace() {
-		//Random random = new Random();			
-		//Race newRace = races.get(random.nextInt(races.size()));
-		Race newRace = races.get(0);
+		Random random = new Random();			
+		Race newRace = races.get(random.nextInt(races.size()));
+		//Race newRace = races.get(0);
 
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
@@ -162,7 +162,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	public void listenPauseRace() throws InterruptedException {
 		//currentRace.pauseRace();
 	/**/for(AthleteRaceInformation a : currentRace.getListAthletes()) 
-			a.setStopped(true);
+		a.setStopped(true);
 			//synchronized(currentRace.getListAthletes().get(i)) 
 			
 			

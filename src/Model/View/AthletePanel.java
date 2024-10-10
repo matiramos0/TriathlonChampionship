@@ -80,9 +80,9 @@ public class AthletePanel extends JPanel{
 		g.drawLine(transition2, 0, transition2, 75);
 		g.setColor(Color.GREEN);
 		for(int i = 1; i <= this.provisioningCycling.size(); i++) {
-			Integer mapKey = Integer.valueOf(i);
+			Integer mapKey = Integer.valueOf(i);	//Cycling provisioning lines in relation to the transition line(in pixels)
 			if (provisioningCycling.get(mapKey).getDiscipline() instanceof Cycling ) {
-				float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());//Position of the provision line in relation to the transition line(in pixels)
+				float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());
 				g.drawLine((int)(transition1 + transition1/relation), 0, (int)(transition1 + transition1/relation), 75);
 			} else if(this.provisioningCycling.get(mapKey).getDiscipline() instanceof Pedestrianism) {
 				float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());
@@ -90,9 +90,9 @@ public class AthletePanel extends JPanel{
 			}
 		}
 		for(int i = 1; i <= this.provisioningPedestrianism.size(); i++) {
-			Integer mapKey = Integer.valueOf(i);
+			Integer mapKey = Integer.valueOf(i);	//Pedestrianism provisioning lines in relation to the transition line(in pixels)
 			if (provisioningPedestrianism.get(mapKey).getDiscipline() instanceof Cycling ) {
-				float relation = (modality.getCycling().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());//Position of the provision line in relation to the transition line(in pixels)
+				float relation = (modality.getCycling().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());
 				g.drawLine((int)(transition1 + transition1/relation), 0, (int)(transition1 + transition1/relation), 75);
 			} else if(this.provisioningPedestrianism.get(mapKey).getDiscipline() instanceof Pedestrianism) {
 				float relation = (modality.getCycling().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());
@@ -103,61 +103,51 @@ public class AthletePanel extends JPanel{
 	}
 	
 	public synchronized void advance(float advancedDistance) {
-		int panelDist = (this.getWidth()-56)/3;//-56 due to the start of the lbldistance
+		int panelDist = (this.getWidth() - 56) / 3;// -56 due to the start of the lbldistance
 		int lblDimensionDistance = 56;
-		
+
 		float t1 = modality.getFirstTransition();
-		float t2 = modality.getSecondTransition(); 
+		float t2 = modality.getSecondTransition();
 		float swimmingEqual = panelDist / modality.getSwimming().getDistance();
-		float cyclingEqual = panelDist / modality.getCycling().getDistance();  
-		float pedestrianismEqual = panelDist / modality.getPedestrianism().getDistance();  
+		float cyclingEqual = panelDist / modality.getCycling().getDistance();
+		float pedestrianismEqual = panelDist / modality.getPedestrianism().getDistance();
 
 		if (advancedDistance < t1)
-			lblDimensionDistance += (int)(advancedDistance*swimmingEqual);  //Swimming
+			lblDimensionDistance += (int) (advancedDistance * swimmingEqual); // Swimming
 		else if (advancedDistance < t2)
-			 	 lblDimensionDistance += 333 + (int)((advancedDistance-t1)*cyclingEqual);//Cycling
-			else if (advancedDistance < modality.getTotalDistance())
-					 lblDimensionDistance += 666+(int)((advancedDistance-t2)*pedestrianismEqual);//Pedestrianism
-		
+			lblDimensionDistance += 333 + (int) ((advancedDistance - t1) * cyclingEqual);// Cycling
+		else if (advancedDistance < modality.getTotalDistance())
+			lblDimensionDistance += 666 + (int) ((advancedDistance - t2) * pedestrianismEqual);// Pedestrianism
+
 		if (advancedDistance < modality.getTotalDistance())
 			this.lblDistance.setLocation(lblDimensionDistance, 21);
 		else {
 			this.lblDistance.setIcon(new ImageIcon("img\\bandera-de-meta.png"));
-			this.lblDistance.setLocation(this.getWidth()- 32, 21);
+			this.lblDistance.setLocation(this.getWidth() - 32, 21);
 		}
-		//this.refreshPositions(position);
-		/*if(position <= 8) {
-			setVisible(true);
-			repaint();
-		} else {			      // show only first 8 athletes
-			  setVisible(false);
-		}*/
-		
-		int transitionLine1 = panelDist +56;
-		int transitionLine2 = panelDist*2 +56;
-		
-		String actual;
-		actual = "nadando";
-		if(((transitionLine1<lblDimensionDistance)&&(lblDimensionDistance<transitionLine2))&& actual!="ciclismo") {
+
+		int transitionLine1 = panelDist + 56;
+		int transitionLine2 = panelDist * 2 + 56;
+
+		String actual = "nadando"; // Icon setted in constructor
+		if (((transitionLine1 < lblDimensionDistance) && (lblDimensionDistance < transitionLine2)) && actual != "ciclismo") {
 			this.lblDistance.setIcon(new ImageIcon("img\\ciclismo.png"));
-			actual ="ciclismo";
-			}	else if(((lblDimensionDistance > transitionLine2) && (actual != "capacitacion"))) {
-						this.lblDistance.setIcon(new ImageIcon("img\\capacitacion.png"));
-						actual = "capacitacion";
-						}
+			actual = "ciclismo";
+		} else if ((lblDimensionDistance > transitionLine2) && (actual != "capacitacion")) {
+			this.lblDistance.setIcon(new ImageIcon("img\\capacitacion.png"));
+			actual = "capacitacion";
+		}
 	}
 	
 	public synchronized void refreshPositions(int position, Boolean isOut) {
-		this.setBounds(256, 73 + 70*position, 1056, 70);
-		//this.setAlignmentY(73 + 70*position);
-		if(position <= 8) {
+		this.setBounds(256, 73 + 70 * position, 1056, 70);
+		if (position <= 8) {
 			if (isOut.equals(true))
 				this.lblDistance.setIcon(new ImageIcon("img\\cerrar.png"));
-			
 			this.setVisible(true);
 			this.repaint();
-		} else {			      // show only first 8 athletes
-			  this.setVisible(false);
+		} else { 					// show only first 8 athletes
+			this.setVisible(false);
 		}
 	}
 	

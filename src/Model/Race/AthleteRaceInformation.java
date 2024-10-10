@@ -68,6 +68,7 @@ public class AthleteRaceInformation extends Thread{
 				advancedDistance += velocity;
 				
 				Championship.getInstance().listenAdvancePanel(this);// Atributo controller?
+				
 				if (stopped == true) {
 					synchronized(this) {
 						wait();
@@ -97,6 +98,16 @@ public class AthleteRaceInformation extends Thread{
 
 				Championship.getInstance().listenAdvancePanel(this);
 
+				if (stopped == true) {
+					synchronized(this) {
+						wait();
+					}
+				}else {
+					synchronized(this) {
+						notify();					
+						}
+				}
+				
 				sleep(speedOfRace);
 			}
 			
@@ -116,6 +127,16 @@ public class AthleteRaceInformation extends Thread{
 				
 				Championship.getInstance().listenAdvancePanel(this);
 
+				if (stopped == true) {
+					synchronized(this) {
+						wait();
+					}
+				}else {
+					synchronized(this) {
+						notify();					
+						}
+				}
+				
 				sleep(speedOfRace);
 			}
 			
