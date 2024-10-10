@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -17,6 +18,8 @@ import javax.swing.border.SoftBevelBorder;
 import Controller.Championship;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
+import Model.Race.Race;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.JRadioButton;
@@ -29,6 +32,7 @@ public class RaceView extends JFrame {
 	private JLabel lblClimateCondition;
 	private JLabel lblRaceTime;
 	private JLabel lblTitulo;
+	private Ranking ranking;
 	private Championship controller;
 	private final ButtonGroup buttonGroupPause = new ButtonGroup();
 	
@@ -98,6 +102,12 @@ public class RaceView extends JFrame {
 		
 		JButton btnNewButton = new JButton("Championship \r\nStatistics");
 		btnNewButton.setBounds(41, 350, 187, 62);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.listenShowCurrentRanking();
+			}
+			
+		});
 		contentPane.add(btnNewButton);
 		
 		JRadioButton rdbtnNewRadioButton = new JRadioButton("Pause Race");
@@ -141,7 +151,15 @@ public class RaceView extends JFrame {
 		contentPane.add(athletePanel);
 	}
 	 
-	 */
+	Methods    */
+	
+	public void seeRanking(List<Race> finishedRaces, Race race) {
+		ranking = new Ranking();
+		ranking.showRaceRanking(finishedRaces, race);
+		ranking.setVisible(true);
+		ranking.setLocationRelativeTo(null);		
+	}
+	
 	public Boolean askNewRace() {
 		if (JOptionPane.showConfirmDialog(null, "Do you want to start the following race? ", "Championship", JOptionPane.OK_CANCEL_OPTION) == 0)
 			return true;
@@ -158,8 +176,18 @@ public class RaceView extends JFrame {
 		this.contentPane = contentPane;
 	}
 	*/
+	 
+	 
 	public JLabel getLblClimateCondition() {
 		return lblClimateCondition;
+	}
+
+	public Ranking getRanking() {
+		return ranking;
+	}
+
+	public void setRanking(Ranking ranking) {
+		this.ranking = ranking;
 	}
 
 	public void setLblClimateCondition(JLabel lblClimateCondition) {
@@ -181,4 +209,5 @@ public class RaceView extends JFrame {
 	public void setLblTitulo(JLabel lblTitulo) {
 		this.lblTitulo = lblTitulo;
 	}
+	
 }

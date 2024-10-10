@@ -85,7 +85,7 @@ public class Race {
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
 				Championship.getInstance().listenRefreshPositions();
 				
-				if (time == 150) {
+				if (time == 9) {
 					timer.cancel();
 					Championship.getInstance().listenFinishRace();
 				}

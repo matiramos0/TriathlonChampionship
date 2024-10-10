@@ -39,12 +39,13 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	private static Race currentRace;
 	private static RaceView currentRaceView;
 	private Map<AthleteRaceInformation, AthletePanel> panels;
+	private static List<Race> finishedRaces;
 	
 	public Championship() {
 		races = new ArrayList<>();
 		athletes = new ArrayList<>();	
 		XMLCharge.chargeTriathlon(athletes, races);
-		
+		finishedRaces = new ArrayList<>();
 	}
 	
 	public Race createNewRace() {
@@ -57,7 +58,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		currentRaceView = new RaceView(newRace.getCity().getDescription(), currentInstance);
 		currentRaceView.setVisible(true);
 		
-		panels = listenCreatePanels(newRace.getListAthletes(), newRace.getProvisioningCycling(), newRace.getProvisioningPedestrianism());
+		panels = createPanels(newRace.getListAthletes(), newRace.getProvisioningCycling(), newRace.getProvisioningPedestrianism());
 		
 		System.out.println("Datos de la carrera" + "\n");
 		System.out.println("Modalidad: " + newRace.getModality().getModalities().getDescription());
@@ -70,7 +71,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 
 	 
 	 
-	public HashMap<AthleteRaceInformation, AthletePanel> listenCreatePanels(List<AthleteRaceInformation> athletes, Map<Integer, Provisioning> provisioningCycling, Map<Integer, Provisioning> provisioningPedestrianism) {
+	public HashMap<AthleteRaceInformation, AthletePanel> createPanels(List<AthleteRaceInformation> athletes, Map<Integer, Provisioning> provisioningCycling, Map<Integer, Provisioning> provisioningPedestrianism) {
 		 
 		 HashMap<AthleteRaceInformation, AthletePanel> map= new HashMap<AthleteRaceInformation, AthletePanel>();
 		 int pos = 0;
@@ -116,11 +117,17 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 
 	 @Override
 	public void listenFinishRace() {
-		currentRaceView.dispose();		//guardar estadisticas
+		finishedRaces.add(currentRace); // Remove from races?
+		currentRaceView.seeRanking(finishedRaces, currentRace);
 		
+		currentRaceView.dispose();		
 		if(currentRaceView.askNewRace()) {
 			 listenStartNewRace();
 		}  
+	}
+	 
+	public void listenShowCurrentRanking(){
+		currentRaceView.seeRanking(finishedRaces, currentRace);
 	}
 	 
 	 @Override
@@ -141,10 +148,10 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 						}
 				 		}); 
 		 
-		 for (int i = 0; i < currentRace.getListAthletes().size(); i++) {
+		 for (int i = 0; i < currentRace.getListAthletes().size(); i++)
 			 currentRace.getListAthletes().get(i).setPosition(i+1);;	
 			 //Change Position attribute of each athlete sorted by advanced distance		 
-			 }
+			 
 		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
 			 AthletePanel panel = panels.get(athleteRace);	    
 			 panel.refreshPositions(athleteRace.getPosition(), athleteRace.isOut());

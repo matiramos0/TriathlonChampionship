@@ -129,7 +129,7 @@ public class AthletePanel extends JPanel{
 		int transitionLine1 = panelDist + 56;
 		int transitionLine2 = panelDist * 2 + 56;
 
-		String actual = "nadando"; // Icon setted in constructor
+		String actual = "nadando"; // Swimming Icon setted in constructor
 		if (((transitionLine1 < lblDimensionDistance) && (lblDimensionDistance < transitionLine2)) && actual != "ciclismo") {
 			this.lblDistance.setIcon(new ImageIcon("img\\ciclismo.png"));
 			actual = "ciclismo";
