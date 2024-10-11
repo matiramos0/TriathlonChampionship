@@ -36,20 +36,21 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	
 	private static List<Race> races;
 	private static List<Athlete> athletes;
+	private static List<Race> racesRuned;
 	private static Race currentRace;
 	private static RaceView currentRaceView;
 	private Map<AthleteRaceInformation, AthletePanel> panels;
 	
 	public Championship() {
-		races = new ArrayList<>();
-		athletes = new ArrayList<>();	
+		races = new ArrayList<Race>();
+		athletes = new ArrayList<Athlete>();	
 		XMLCharge.chargeTriathlon(athletes, races);
 		
 	}
 	
 	public Race createNewRace() {
 		Random random = new Random();			
-		Race newRace = races.get(random.nextInt(races.size()));
+		Race newRace = races.get(0);
 
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
@@ -75,7 +76,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		 int pos = 0;
 		 for(AthleteRaceInformation athleteRace : athletes) {
 				pos++;
-				AthletePanel athletePanel = new AthletePanel(pos, provisioningCycling, provisioningPedestrianism,athleteRace.getModality());
+				AthletePanel athletePanel = new AthletePanel(pos, provisioningCycling, provisioningPedestrianism, athleteRace.getModality());
 				currentRaceView.getContentPane().add(athletePanel);
 				athletePanel.setVisible(true);
 				athletePanel.getLblAthlete().setText("Athlete: "+ athleteRace.getAthlete().getName());
@@ -89,7 +90,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 //	Listeners
 
 	 @Override    
-	public synchronized void listenAdvancePanel(AthleteRaceInformation athleteRace) {//se ejecuta cada actualizacion de athleteRace
+	public void listenAdvancePanel(AthleteRaceInformation athleteRace) { //se ejecuta cada actualizacion de athleteRace
 		try{
 			AthletePanel panel = panels.get(athleteRace); 
 			
@@ -110,12 +111,13 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 @Override  
 	public void listenStartNewRace() {	
 		currentRace = createNewRace();	
-		currentRace.startRace();
+		currentRace.start();
 	 }
 	 
 	 @Override
 	public void listenFinishRace() {
-		currentRaceView.dispose();		//guardar estadisticas
+		currentRaceView.dispose();	//guardar estadisticas
+
 		
 		if(currentRaceView.askNewRace()) {
 			 listenStartNewRace();
@@ -123,8 +125,8 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	}
 	 
 	 @Override
-	public void listenRefreshView(int time, ClimateCondition currentWeather) {
-		currentRaceView.getLblRaceTime().setText("Race Time: " + Integer.toString(time) + " seconds");
+	public void listenRefreshView(float time, ClimateCondition currentWeather) {
+		currentRaceView.getLblRaceTime().setText("Race Time: " + Float.valueOf(time).shortValue() + " seconds");
 		currentRaceView.getLblClimateCondition().setText("Climate condition:"+currentWeather.getDescription());
 		
 	}	
@@ -134,7 +136,11 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		 /**/Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
 						@Override
 						public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
-							return (int) (o1.getAdvancedDistance() - o2.getAdvancedDistance());
+							if ((o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0))
+								return -1;
+							else 
+								return 1;
+							
 						}
 				 		}); 
 		 

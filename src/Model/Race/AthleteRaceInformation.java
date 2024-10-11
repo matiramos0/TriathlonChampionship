@@ -1,5 +1,8 @@
 package Model.Race;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import Controller.Championship;
@@ -19,10 +22,10 @@ import Model.View.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	
-	private static final long speedOfRace = 100; // miliseconds
-	private static final long timeOfTranscition = 1000;
-	private static final long maxFatigue = 99;
-	private static final float baseFatigueValue = 0.15F;
+	public static final long speedOfRace = 100; // miliseconds
+	public static final long timeOfTranscition = 1000;
+	public static final long maxFatigue = 99;
+	public static final float baseFatigueValue = 0.15F;
 	
 	private Athlete athlete;
 	private Modality modality;
@@ -36,7 +39,8 @@ public class AthleteRaceInformation extends Thread{
 	private Map <Integer, Provisioning> provisioningCycling;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 
-	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition, Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning> provisioningPedestrianism){
+	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition, 
+			Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning> provisioningPedestrianism) {
 		this.athlete = athlete;
 		this.modality = modality;
 		this.climateCondition = climateCondition;
@@ -55,12 +59,26 @@ public class AthleteRaceInformation extends Thread{
 	public void run() {
 		
 		try {
+			
+			/*ArrayList<Provisioning> provisionings = new ArrayList<>();
+			
+			int nextProv = 1;
+			
+			while (provisioningCycling.containsKey(nextProv)) {
+				Provisioning prov = provisioningCycling.get(nextProv);
+				provisionings.add(prov);
+			}
+			
+			while (provisioningPedestrianism.containsKey(nextProv)) {
+				Provisioning prov = provisioningPedestrianism.get(nextProv);
+				provisionings.add(prov);
+			}*/
       
 			while (advancedDistance < modality.getFirstTransition() && isOut != true) {
 				if (fatigue > maxFatigue)
 					isOut = true;
 				
-				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
+				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getSwimming().getDiscipline());
 				velocity -= getFatigueEffect();
@@ -75,17 +93,37 @@ public class AthleteRaceInformation extends Thread{
 			
 			sleep(timeOfTranscition);
 			
+			int nextProv = 1;
+			
+			Provisioning provisioning = provisioningCycling.get(nextProv);
+			
+			float pointProv = provisioning.getDistance();
+			
 			while (advancedDistance < modality.getSecondTransition() && isOut != true) {
 				if (fatigue > maxFatigue)
 					isOut = true;
 				
-				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
-				
+				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
+					
 				velocity = athlete.getVelocity(modality.getCycling().getDiscipline());
 				velocity -= getFatigueEffect();  
 				velocity -= getClimateConditionEffect(modality.getCycling().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
+				
+				//System.out.println(advancedDistance);
+				
+				if (advancedDistance - modality.getFirstTransition() >= pointProv) {
+					//System.out.println(nextProv);
+					fatigue -= fatigue*0.1;
+					nextProv++;
+					
+					if (nextProv <= provisioningCycling.size()) {
+						provisioning = provisioningCycling.get(nextProv);
+						pointProv = provisioning.getDistance();
+					} else
+						pointProv = modality.getSecondTransition();
+				}
 
 				Championship.getInstance().listenAdvancePanel(this);
 
@@ -94,17 +132,34 @@ public class AthleteRaceInformation extends Thread{
 			
 			sleep(timeOfTranscition);
 			
+			nextProv = 1;
+			
+			provisioning = provisioningPedestrianism.get(nextProv);
+			
+			pointProv = provisioning.getDistance();
+			
 			while (advancedDistance < modality.getTotalDistance() && isOut != true) {
 				if (fatigue > maxFatigue)
 					isOut = true;
 				
-				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
+				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getPedestrianism().getDiscipline());
 				velocity -= getFatigueEffect();
 				velocity -= getClimateConditionEffect(modality.getPedestrianism().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
+				
+				if (advancedDistance - modality.getSecondTransition() >= pointProv) {
+					//System.out.println(nextProv);
+					fatigue -= fatigue*0.15;
+					nextProv++;
+					if (nextProv <= provisioningPedestrianism.size()) {
+						provisioning = provisioningPedestrianism.get(nextProv);
+						pointProv = provisioning.getDistance();
+					} else
+						pointProv = modality.getTotalDistance();
+				}
 				
 				Championship.getInstance().listenAdvancePanel(this);
 

@@ -2,6 +2,7 @@ package Model.Race;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -17,7 +18,7 @@ import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
 
-public class Race {
+public class Race extends Thread{
 
 	private Modality modality;
 	private City city;
@@ -29,7 +30,8 @@ public class Race {
 
 	//Constructor Method
 
-	public Race(Modality modality, City city, Map <Integer, Provisioning> cycling, Map <Integer, Provisioning> pedestrianism) throws SQLException{
+	public Race(Modality modality, City city, Map <Integer, Provisioning> cycling, 
+			Map <Integer, Provisioning> pedestrianism) throws SQLException{
 		this.modality = modality;
 		this.city = city;
 		this.provisioningCycling = cycling;
@@ -47,41 +49,44 @@ public class Race {
 		listAthletes = new ArrayList<AthleteRaceInformation>();
 		
 		for (Athlete athlete : athletes) {
-			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather, provisioningPedestrianism, provisioningCycling);
+			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather, provisioningCycling, provisioningPedestrianism);
 			listAthletes.add(athleteRace);
 			
 		}
 	}
 	
-	public void startRace() {
+	@Override
+	public void run() {
 		
-		for (AthleteRaceInformation athlete: listAthletes) {
-			athlete.start();
-		}
-		
-		Timer timer = new Timer();
-		
-		TimerTask task = new TimerTask() {
+		try {
 			
-			int time =0;
+			for (AthleteRaceInformation athlete: listAthletes)
+				athlete.start();
 			
-			@Override
-			public void run() {
+			//listAthletes.get(0).start();
+			
+			float time = 0;
+			
+			while (!listAthletes.isEmpty() && time <= 40) {
 				
-				System.out.println("Tiempo: " + time);
-				time++;
+				//System.out.println("Tiempo: " + time);
 				
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
 				Championship.getInstance().listenRefreshPositions();
 				
-				if (time == 70) {
-					timer.cancel();
-					Championship.getInstance().listenFinishRace();
-				}
+				time = time + 0.1F;
+				
+				sleep(AthleteRaceInformation.speedOfRace);
 			}
-		};
-		
-		timer.schedule(task, 0, 1000);
+			
+			Championship.getInstance().listenFinishRace();
+			
+			for (AthleteRaceInformation athlete: listAthletes)
+				athlete.stop();
+			
+		} catch (InterruptedException e) {
+			e.getStackTrace();
+		}		
 	}
 
 	//Getters and Setters

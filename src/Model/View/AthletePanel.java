@@ -119,7 +119,8 @@ public class AthletePanel extends JPanel{
 			else if (advancedDistance < modality.getTotalDistance())
 					 lblDimensionDistance += 666+(int)(advancedDistance-t2)*pedestrianismEqual;//Pedestrianism
 		
-		this.lblDistance.setLocation(lblDimensionDistance, 21);
+		if (advancedDistance < modality.getTotalDistance())
+			this.lblDistance.setLocation(lblDimensionDistance, 21);
 		//this.refreshPositions(position);
 		/*if(position <= 8) {
 			setVisible(true);

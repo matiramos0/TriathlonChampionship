@@ -11,7 +11,7 @@ public class Provisioning {
 		this.distance = distance;
 		this.discipline = discipline;
 	}
-
+	
 	public float getDistance() {
 		return distance;
 	}
