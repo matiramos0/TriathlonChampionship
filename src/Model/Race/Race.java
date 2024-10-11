@@ -71,6 +71,17 @@ public class Race extends Thread{
 				
 				//System.out.println("Tiempo: " + time);
 				
+			
+				try {
+					Random random = new Random();
+					if (random.nextInt(35) == 1) {
+						List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
+						currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			    
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
 				Championship.getInstance().listenRefreshPositions();
 				
@@ -79,10 +90,10 @@ public class Race extends Thread{
 				sleep(AthleteRaceInformation.speedOfRace);
 			}
 			
-			Championship.getInstance().listenFinishRace();
-			
 			for (AthleteRaceInformation athlete: listAthletes)
-				athlete.stop();
+			athlete.stop();
+
+			Championship.getInstance().listenFinishRace();
 			
 		} catch (InterruptedException e) {
 			e.getStackTrace();
@@ -142,7 +153,5 @@ public class Race extends Thread{
 	public void setListAthletes(List<AthleteRaceInformation> listathletes) {
 		this.listAthletes = listathletes;
 	}
-	
-	
-	
+
 }

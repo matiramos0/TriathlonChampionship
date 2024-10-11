@@ -8,15 +8,12 @@ import java.util.Map;
 import Controller.Championship;
 import Model.Athlete.Athlete;
 import Model.ClimateCondition.ClimateCondition;
-//<<<<<<< HEAD
-//import Model.Discipline.Provisioning;
-//=======
+
 import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Provisioning;
 import Model.Discipline.Swimming;
-//>>>>>>> branch 'linking' of https://github.com/matiramos0/TriathlonChampionship.git
 import Model.Modality.Modality;
 import Model.View.AthletePanel;
 
@@ -38,6 +35,7 @@ public class AthleteRaceInformation extends Thread{
 	private int position;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
+	private boolean stopped;
 
 	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition, 
 			Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning> provisioningPedestrianism) {
@@ -50,6 +48,7 @@ public class AthleteRaceInformation extends Thread{
 		this.isOut = false;
 		this.provisioningCycling = provisioningCycling;
 		this.provisioningPedestrianism = provisioningPedestrianism;
+		this.stopped = false;
 	}
 	
 	//Methods
@@ -87,6 +86,16 @@ public class AthleteRaceInformation extends Thread{
 				advancedDistance += velocity;
 				
 				Championship.getInstance().listenAdvancePanel(this);// Atributo controller?
+				
+				if (stopped == true) {
+					synchronized(this) {
+						wait();
+					}
+				}else {
+					synchronized(this) {
+						notify();					
+						}
+				}
 				
 				sleep(speedOfRace);
 			}
@@ -127,6 +136,16 @@ public class AthleteRaceInformation extends Thread{
 
 				Championship.getInstance().listenAdvancePanel(this);
 
+				if (stopped == true) {
+					synchronized(this) {
+						wait();
+					}
+				}else {
+					synchronized(this) {
+						notify();					
+						}
+				}
+				
 				sleep(speedOfRace);
 			}
 			
@@ -163,6 +182,16 @@ public class AthleteRaceInformation extends Thread{
 				
 				Championship.getInstance().listenAdvancePanel(this);
 
+				if (stopped == true) {
+					synchronized(this) {
+						wait();
+					}
+				}else {
+					synchronized(this) {
+						notify();					
+						}
+				}
+				
 				sleep(speedOfRace);
 			}
 			
@@ -180,11 +209,11 @@ public class AthleteRaceInformation extends Thread{
 	private float getClimateConditionEffect(Discipline discipline) {		
 		float effect = 0;
 		
-		if (discipline.equals(Swimming.class))
+		if (discipline instanceof Swimming)
 			effect = (float) (velocity*(climateCondition.getSwimmingWear()/100));
-		else if (discipline.equals(Cycling.class))
+		else if (discipline instanceof Cycling)
 			effect = (float) (velocity*(climateCondition.getCyclingWear()/100));
-		else if (discipline.equals(Pedestrianism.class))
+		else if (discipline instanceof Pedestrianism)
 			effect = (float) (velocity*(climateCondition.getRunningWear()/100));
 		
 		return effect;
@@ -199,6 +228,9 @@ public class AthleteRaceInformation extends Thread{
 	
 	}
 	
+/*public void stopThread() throws InterruptedException {
+	}*/
+	
 	//Getters and Setters
 
 	public Athlete getAthlete() {
@@ -207,6 +239,14 @@ public class AthleteRaceInformation extends Thread{
 
 	public void setAthlete(Athlete athlete) {
 		this.athlete = athlete;
+	}
+	
+	public boolean isStopped() {
+		return stopped;
+	}
+
+	public void setStopped(boolean stopped) {
+		this.stopped = stopped;
 	}
 
 	public float getAdvancedDistance() {
@@ -248,6 +288,10 @@ public class AthleteRaceInformation extends Thread{
 
 	public void setPosition(int position) {
 		this.position = position;
+	}
+
+	public boolean isOut() {
+		return isOut;
 	}		
 
 	
