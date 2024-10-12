@@ -3,6 +3,7 @@ package Model.Race;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,10 +20,13 @@ import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
 
 public class Race extends Thread{
-
+	
+	public static final long speedOfRace = 50; // miliseconds
+	
 	private Modality modality;
 	private City city;
 	private ClimateCondition currentWeather;
+	private boolean stopped;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
@@ -38,7 +42,7 @@ public class Race extends Thread{
 		this.provisioningPedestrianism = pedestrianism;
 		List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
 	    this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
-	    
+	    this.stopped = false;
 	 }
 	
 	
@@ -60,18 +64,16 @@ public class Race extends Thread{
 		
 		try {
 			
+			float time = 0;
+			
 			for (AthleteRaceInformation athlete: listAthletes)
 				athlete.start();
 			
 			//listAthletes.get(0).start();
 			
-			float time = 0;
-			
-			while (!listAthletes.isEmpty() && time <= 40) {
-				
+			while (!listAthletes.isEmpty()) {
 				//System.out.println("Tiempo: " + time);
 				
-			
 				try {
 					Random random = new Random();
 					if (random.nextInt(35) == 1) {
@@ -87,17 +89,36 @@ public class Race extends Thread{
 				
 				time = time + 0.1F;
 				
-				sleep(AthleteRaceInformation.speedOfRace);
+				try {
+					
+					if (stopped) {
+						synchronized (this) {
+							while(stopped)
+								sleep(0);
+						}
+					}
+				} catch (InterruptedException i) {
+					i.printStackTrace();
+				}
+				
+				sleep(speedOfRace);
 			}
 			
-			for (AthleteRaceInformation athlete: listAthletes)
-			athlete.stop();
-
 			Championship.getInstance().listenFinishRace();
 			
 		} catch (InterruptedException e) {
 			e.getStackTrace();
 		}		
+	}
+	
+	public void pauseRace() throws InterruptedException {
+		for (AthleteRaceInformation athlete: listAthletes)
+			athlete.setStopped(stopped);
+	}
+	
+	public void resumeRace() throws InterruptedException {
+		for (AthleteRaceInformation athlete: listAthletes)
+			athlete.setStopped(stopped);
 	}
 
 	//Getters and Setters
@@ -152,6 +173,14 @@ public class Race extends Thread{
 
 	public void setListAthletes(List<AthleteRaceInformation> listathletes) {
 		this.listAthletes = listathletes;
+	}
+
+	public boolean isStopped() {
+		return stopped;
+	}
+
+	public void setStopped(boolean stopped) {
+		this.stopped = stopped;
 	}
 
 }

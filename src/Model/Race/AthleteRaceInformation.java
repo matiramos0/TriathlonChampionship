@@ -19,10 +19,10 @@ import Model.View.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	
-	public static final long speedOfRace = 100; // miliseconds
-	public static final long timeOfTranscition = 1000;
-	public static final long maxFatigue = 99;
-	public static final float baseFatigueValue = 0.15F;
+	public static final long timeOfTranscition = 1000; // miliseconds
+	public static final long maxFatigue = 99; //porcentage
+	public static final float restoreFatigue = 0.2F; //porcentage
+	public static final float baseFatigueValue = 0.12F; //porcentage
 	
 	private Athlete athlete;
 	private Modality modality;
@@ -31,11 +31,11 @@ public class AthleteRaceInformation extends Thread{
 	private float advancedTime;
 	private float fatigue;
 	private float velocity;
-	private boolean isOut;
 	private int position;
+	private boolean isOut;
+	private boolean stopped;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
-	private boolean stopped;
 
 	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition, 
 			Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning> provisioningPedestrianism) {
@@ -46,9 +46,9 @@ public class AthleteRaceInformation extends Thread{
 		this.advancedTime = 0;
 		this.fatigue = 0;
 		this.isOut = false;
+		this.stopped = false;
 		this.provisioningCycling = provisioningCycling;
 		this.provisioningPedestrianism = provisioningPedestrianism;
-		this.stopped = false;
 	}
 	
 	//Methods
@@ -58,20 +58,6 @@ public class AthleteRaceInformation extends Thread{
 	public void run() {
 		
 		try {
-			
-			/*ArrayList<Provisioning> provisionings = new ArrayList<>();
-			
-			int nextProv = 1;
-			
-			while (provisioningCycling.containsKey(nextProv)) {
-				Provisioning prov = provisioningCycling.get(nextProv);
-				provisionings.add(prov);
-			}
-			
-			while (provisioningPedestrianism.containsKey(nextProv)) {
-				Provisioning prov = provisioningPedestrianism.get(nextProv);
-				provisionings.add(prov);
-			}*/
       
 			while (advancedDistance < modality.getFirstTransition() && isOut != true) {
 				if (fatigue > maxFatigue)
@@ -85,19 +71,22 @@ public class AthleteRaceInformation extends Thread{
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
-				Championship.getInstance().listenAdvancePanel(this);// Atributo controller?
+				Championship.getInstance().listenAdvancePanel(this); // Atributo controller?
 				
-				if (stopped == true) {
-					synchronized(this) {
-						wait();
-					}
-				}else {
-					synchronized(this) {
-						notify();					
+				try {
+					
+					if (stopped) {
+						synchronized (this) {
+							while(stopped)
+								sleep(0);
 						}
+					}
+					
+				} catch (InterruptedException i) {
+					i.printStackTrace();
 				}
 				
-				sleep(speedOfRace);
+				sleep(Race.speedOfRace);
 			}
 			
 			sleep(timeOfTranscition);
@@ -124,7 +113,7 @@ public class AthleteRaceInformation extends Thread{
 				
 				if (advancedDistance - modality.getFirstTransition() >= pointProv) {
 					//System.out.println(nextProv);
-					fatigue -= fatigue*0.1;
+					fatigue -= fatigue*restoreFatigue;
 					nextProv++;
 					
 					if (nextProv <= provisioningCycling.size()) {
@@ -135,18 +124,21 @@ public class AthleteRaceInformation extends Thread{
 				}
 
 				Championship.getInstance().listenAdvancePanel(this);
-
-				if (stopped == true) {
-					synchronized(this) {
-						wait();
-					}
-				}else {
-					synchronized(this) {
-						notify();					
+				
+				try {
+					
+					if (stopped) {
+						synchronized (this) {
+							while(stopped)
+								sleep(0);
 						}
+					}
+					
+				} catch (InterruptedException i) {
+					i.printStackTrace();
 				}
 				
-				sleep(speedOfRace);
+				sleep(Race.speedOfRace);
 			}
 			
 			sleep(timeOfTranscition);
@@ -171,7 +163,7 @@ public class AthleteRaceInformation extends Thread{
 				
 				if (advancedDistance - modality.getSecondTransition() >= pointProv) {
 					//System.out.println(nextProv);
-					fatigue -= fatigue*0.15;
+					fatigue -= fatigue*restoreFatigue;
 					nextProv++;
 					if (nextProv <= provisioningPedestrianism.size()) {
 						provisioning = provisioningPedestrianism.get(nextProv);
@@ -181,23 +173,26 @@ public class AthleteRaceInformation extends Thread{
 				}
 				
 				Championship.getInstance().listenAdvancePanel(this);
-
-				if (stopped == true) {
-					synchronized(this) {
-						wait();
-					}
-				}else {
-					synchronized(this) {
-						notify();					
+				
+				try {
+					
+					if (stopped) {
+						synchronized (this) {
+							while(stopped)
+								sleep(0);
 						}
+					}
+					
+				} catch (InterruptedException i) {
+					i.printStackTrace();
 				}
 				
-				sleep(speedOfRace);
+				sleep(Race.speedOfRace);
 			}
 			
 			
 		} catch (InterruptedException e) {
-			System.out.println("Error hilo " + e);
+			e.printStackTrace(System.err);
 		}
 	}
 	
@@ -228,8 +223,11 @@ public class AthleteRaceInformation extends Thread{
 	
 	}
 	
-/*public void stopThread() throws InterruptedException {
-	}*/
+	public void stopThread() throws InterruptedException {
+		synchronized (this) {
+			currentThread().wait();
+		}
+	}
 	
 	//Getters and Setters
 

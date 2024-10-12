@@ -57,7 +57,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
-		currentRaceView = new RaceView(newRace.getCity().getDescription(), currentInstance);
+		currentRaceView = new RaceView(newRace.getCity().getDescription());
 		currentRaceView.setVisible(true);
 		
 		panels = createPanels(newRace.getListAthletes(), newRace.getProvisioningCycling(), newRace.getProvisioningPedestrianism());
@@ -108,14 +108,18 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 @Override
 	public void listenStartNewChampionship() {	
 		currentInstance = this;
-		listenStartNewRace();		
+		listenStartNewRace();
 	 }
 	 
 	 @Override  
 	public void listenStartNewRace() {	
-		currentRace = createNewRace();	
-		currentRace.start();
+		currentRace = createNewRace();
 	 }
+	 
+	 @Override
+	public void listenStartRace() {
+		 currentRace.start();
+	}
 	 
 	 @Override
 	public void listenFinishRace() {
@@ -140,7 +144,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 
 	 @Override
 	public void listenRefreshPositions() {
-		 /**/Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>(), {
+		 /**/Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
 						@Override
 						public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
 							if ((o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0))
@@ -169,25 +173,13 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	    }
 
 	public void listenPauseRace() throws InterruptedException {
-		//currentRace.pauseRace();
-	/**/for(AthleteRaceInformation a : currentRace.getListAthletes()) 
-		a.setStopped(true);
-			//synchronized(currentRace.getListAthletes().get(i)) 
-			
-			
+		currentRace.setStopped(true);
+		currentRace.pauseRace();
 	}
 
 	public void listenResumeGame() throws InterruptedException {
-		/*
-		for(AthleteRaceInformation athlete : currentRace.getListAthletes()) 
-				athlete.setStopped(false);
-		*/		
+			currentRace.setStopped(false);
+			currentRace.resumeRace();
 	}
 
-	
-
-	
-
-	
-	
 }

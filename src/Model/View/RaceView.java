@@ -33,11 +33,9 @@ public class RaceView extends JFrame {
 	private JLabel lblRaceTime;
 	private JLabel lblTitulo;
 	private Ranking ranking;
-	private Championship controller;
 	private final ButtonGroup buttonGroupPause = new ButtonGroup();
 	
-	public RaceView(String titulo, Championship controller) {
-		this.controller = controller;
+	public RaceView(String titleRace) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 	setTitle("Race");
 		setBounds(100, 100, 1410, 1000);
@@ -80,7 +78,7 @@ public class RaceView extends JFrame {
 		lblClimateCondition.setBounds(65, 35, 344, 39);
 		contentPane.add(lblClimateCondition);
 		
-		lblTitulo = new JLabel("RACE: " + titulo);
+		lblTitulo = new JLabel("RACE: " + titleRace);
 		lblTitulo.setFont(new Font("Montserrat Black", Font.BOLD, 50));
 		lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTitulo.setBounds(520, 6, 846, 78);
@@ -88,10 +86,12 @@ public class RaceView extends JFrame {
 		
 		JButton btnExitRace = new JButton("Exit");
 		//btnExitRace.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnExitRace.setBounds(41, 246, 187, 57);
+		btnExitRace.setBounds(41, 255, 187, 57);
 		btnExitRace.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				dispose();
+				System.exit(DISPOSE_ON_CLOSE);
 				//try {
 				//	controller.listenPauseRace();
 				//} catch (InterruptedException e1) {
@@ -100,11 +100,20 @@ public class RaceView extends JFrame {
 		});
 		contentPane.add(btnExitRace);
 		
+		JButton btnStartRace = new JButton("Start");
+		btnStartRace.setBounds(41, 451, 187, 57);
+		btnStartRace.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					Championship.getInstance().listenStartRace();			
+			}
+		});
+		contentPane.add(btnStartRace);
+		
 		JButton btnNewButton = new JButton("Championship \r\nStatistics");
 		btnNewButton.setBounds(41, 350, 187, 62);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controller.listenShowCurrentRanking();
+				Championship.getInstance().listenShowCurrentRanking();
 			}
 			
 		});
@@ -114,7 +123,7 @@ public class RaceView extends JFrame {
 		rdbtnNewRadioButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-						controller.listenPauseRace();
+						Championship.getInstance().listenPauseRace();
 					} catch (InterruptedException e1) {
 						//JOptionPane.showMessageDialog(null, "que paso che"); 
 					}/**/
@@ -128,7 +137,7 @@ public class RaceView extends JFrame {
 		rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					controller.listenResumeGame();
+					Championship.getInstance().listenResumeGame();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
