@@ -56,12 +56,9 @@ public class AthleteRaceInformation extends Thread{
 		try {
       
 			while (advancedDistance < modality.getFirstTransition() && isOut != true) {
-				if (fatigue > maxFatigue) {
+				if (fatigue > maxFatigue)
 					isOut = true;
-					synchronized(this) {
-						//Actulizar time??  advancedTime = currentThread().;
-					}
-				}
+				
 				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(modality.getSwimming().getDiscipline());

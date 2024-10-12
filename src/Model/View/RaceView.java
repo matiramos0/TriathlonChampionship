@@ -161,7 +161,7 @@ public class RaceView extends JFrame {
 	}
 	
 	public Boolean askNewRace() {
-		if (JOptionPane.showConfirmDialog(ranking, "Do you want to start the following race? ", "Championship", JOptionPane.OK_CANCEL_OPTION) == 0)
+		if (JOptionPane.showConfirmDialog(null, "Do you want to start the following race? ", "Championship", JOptionPane.OK_CANCEL_OPTION) == 0)
 			return true;
 		else
 			return false;

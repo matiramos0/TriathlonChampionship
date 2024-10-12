@@ -111,9 +111,9 @@ public class Ranking extends JFrame {
 	public void showRaceRanking(List<Race> finishedRaces, Race race) {
 		/*for(Race r : finishedRaces) 
 			for(AthleteRaceInformation a : r.getListAthletes()) {
-				Object[] row = {a.getAthlete().getName(), a.getPosition(),a.getAdvancedDistance() ,"hola", "3/2/2", 34};
+				Object[] row = {a.getAthlete().getName(), a.getPosition(),a.getAdvancedTime() ,"hola", "3/2/2", 34};
 				tableModel.addRow(row);
-			}Championship stats*/
+			}Chaampionship stats*/
 		for(AthleteRaceInformation a : race.getListAthletes()) {
 			Object[] row = {a.getAthlete().getName(), a.getPosition(),a.getAdvancedTime() ,"hola", "3/2/2", 34};
 			tableModel.addRow(row);

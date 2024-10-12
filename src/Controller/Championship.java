@@ -49,15 +49,9 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	}
 	
 	public Race createNewRace() {
-		//Random random = new Random();			
-		//Race newRace = races.get(random.nextInt(races.size()));
-		Race newRace;
-		int n = 1;
-		if(n==1) {
-			 newRace = races.get(0);
-			 n++;}
-		else
-			 newRace = races.get(2);
+		Random random = new Random();			
+		Race newRace = races.get(random.nextInt(races.size()));
+		//Race newRace = races.get(0);
 
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
