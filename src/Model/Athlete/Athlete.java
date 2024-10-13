@@ -1,5 +1,6 @@
 package Model.Athlete;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -8,9 +9,11 @@ import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Swimming;
 
-public abstract class Athlete {
+public abstract class Athlete implements Serializable{
 	
-    public enum Gender {MALE, FEMALE};
+    private static final long serialVersionUID = 1L;
+
+	public enum Gender {MALE, FEMALE};
 
     protected String number;
     protected String name;

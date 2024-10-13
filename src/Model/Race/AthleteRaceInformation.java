@@ -1,5 +1,6 @@
 package Model.Race;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,8 +18,9 @@ import Model.Discipline.Swimming;
 import Model.Modality.Modality;
 import Model.View.AthletePanel;
 
-public class AthleteRaceInformation extends Thread{
+public class AthleteRaceInformation extends Thread implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	public static final long timeOfTranscition = 1000; // miliseconds
 	public static final long maxFatigue = 99; //porcentage
 	public static final float restoreFatigue = 0.2F; //porcentage

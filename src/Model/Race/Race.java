@@ -1,5 +1,6 @@
 package Model.Race;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,17 +20,21 @@ import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
 
-public class Race extends Thread{
+public class Race extends Thread implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	public static final long speedOfRace = 50; // miliseconds
 	
 	private Modality modality;
 	private City city;
 	private ClimateCondition currentWeather;
 	private boolean stopped;
+	private static int remainingAthletes;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
+	private List<AthleteRaceInformation> activeAthletes;
 	//private RaceView raceView; 
 
 	//Constructor Method
@@ -43,6 +48,8 @@ public class Race extends Thread{
 		List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
 	    this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
 	    this.stopped = false;
+	    this.activeAthletes=new ArrayList<>();
+	    this.remainingAthletes=0;
 	 }
 	
 	
@@ -55,6 +62,8 @@ public class Race extends Thread{
 		for (Athlete athlete : athletes) {
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, modality, currentWeather, provisioningCycling, provisioningPedestrianism);
 			listAthletes.add(athleteRace);
+			activeAthletes.add(athleteRace);
+			remainingAthletes++;
 			
 		}
 	}
@@ -73,6 +82,12 @@ public class Race extends Thread{
 			
 			while (!listAthletes.isEmpty()) {
 				//System.out.println("Tiempo: " + time);
+				
+				for (AthleteRaceInformation athlete : listAthletes) {
+	                if (athlete.getAdvancedDistance() >= athlete.getModality().getTotalDistance()) {
+	                    athleteFinished(athlete);
+	                }
+	            }
 				
 				try {
 					Random random = new Random();
@@ -182,5 +197,19 @@ public class Race extends Thread{
 	public void setStopped(boolean stopped) {
 		this.stopped = stopped;
 	}
+	
+	
+	public List<AthleteRaceInformation> getActiveAthletes() {
+		return activeAthletes;
+	}
+
+	public void athleteFinished(AthleteRaceInformation athlete) {
+	    activeAthletes.remove(athlete);
+	    remainingAthletes--;
+	}
+	    
+	    public boolean isFinished() {
+	        return remainingAthletes == 0;  
+	    }
 
 }

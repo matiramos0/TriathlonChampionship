@@ -19,6 +19,7 @@ import Controller.Championship;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
+import Persistence.Persistence;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
@@ -34,6 +35,7 @@ public class RaceView extends JFrame {
 	private JLabel lblTitulo;
 	private Ranking ranking;
 	private final ButtonGroup buttonGroupPause = new ButtonGroup();
+	private JButton btnSerialize;
 	
 	public RaceView(String titleRace) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -147,8 +149,23 @@ public class RaceView extends JFrame {
 		rdbtnNewRadioButton_1.setBounds(41, 187, 187, 21);
 		contentPane.add(rdbtnNewRadioButton_1);
 		
+		btnSerialize = new JButton("Serialize Race");
+		btnSerialize.setEnabled(false);
+		btnSerialize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Persistence.championshipPersistence(Championship.getInstance());
+			}
+		});
 		
+		btnSerialize.setBounds(41, 540, 187, 62);
+		contentPane.add(btnSerialize);}
+
+		public void listenFinishRace() {
+		    if (Championship.getInstance().FinishedRace()) {
+		        btnSerialize.setEnabled(true);
+		    }
 	}
+		    
 	/*
 	public void initializePanels(AthleteRaceInformation athlete, int startPosition, Map <Integer, Provisioning> listPrivisioning) {
 
@@ -218,5 +235,4 @@ public class RaceView extends JFrame {
 	public void setLblTitulo(JLabel lblTitulo) {
 		this.lblTitulo = lblTitulo;
 	}
-	
 }
