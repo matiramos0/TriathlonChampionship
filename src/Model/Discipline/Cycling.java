@@ -8,11 +8,5 @@ public class Cycling extends Discipline {
 	public String getDescription() {
 		return "Cycling";
 	}
-
-	@Override
-	public boolean equals() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 }

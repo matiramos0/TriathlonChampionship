@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import EventListeners.FinishRaceListener;
 import EventListeners.NewChampionshipListener;
@@ -29,6 +30,7 @@ import XML.XMLCharge;
 import Model.View.AthletePanel;
 import Model.View.MainView;
 import Model.View.RaceView;
+import Model.View.Ranking;
 
 public class Championship implements NewRaceListener, RefreshViewListener, FinishRaceListener, NewChampionshipListener{
 	
@@ -36,32 +38,29 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	
 	private static List<Race> races;
 	private static List<Athlete> athletes;
+	private static List<Race> racesRuned;
 	private static Race currentRace;
 	private static RaceView currentRaceView;
 	private Map<AthleteRaceInformation, AthletePanel> panels;
 	private static List<Race> finishedRaces;
 	
 	public Championship() {
-		races = new ArrayList<>();
-		athletes = new ArrayList<>();	
+		races = new ArrayList<Race>();
+		athletes = new ArrayList<Athlete>();	
 		XMLCharge.chargeTriathlon(athletes, races);
 		finishedRaces = new ArrayList<>();
 	}
 	
 	public Race createNewRace() {
-		//Random random = new Random();			
+
+		Random random = new Random();			
+
 		//Race newRace = races.get(random.nextInt(races.size()));
-		Race newRace;
-		int n = 1;
-		if(n==1) {
-			 newRace = races.get(0);
-			 n++;}
-		else
-			 newRace = races.get(2);
+		Race newRace = races.get(0);
 
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
-		currentRaceView = new RaceView(newRace.getCity().getDescription(), currentInstance);
+		currentRaceView = new RaceView(newRace.getCity().getDescription());
 		currentRaceView.setVisible(true);
 		
 		panels = createPanels(newRace.getListAthletes(), newRace.getProvisioningCycling(), newRace.getProvisioningPedestrianism());
@@ -83,7 +82,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		 int pos = 0;
 		 for(AthleteRaceInformation athleteRace : athletes) {
 				pos++;
-				AthletePanel athletePanel = new AthletePanel(pos, provisioningCycling, provisioningPedestrianism,athleteRace.getModality());
+				AthletePanel athletePanel = new AthletePanel(pos, provisioningCycling, provisioningPedestrianism, athleteRace.getRace().getModality());
 				currentRaceView.getContentPane().add(athletePanel);
 				athletePanel.setVisible(true);
 				athletePanel.getLblAthlete().setText("Athlete: "+ athleteRace.getAthlete().getName());
@@ -94,10 +93,10 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		 return map;
 	}
 	 
-	 //	Listeners
+	 //	Event Listeners
 
 	 @Override    
-	public synchronized void listenAdvancePanel(AthleteRaceInformation athleteRace) {//se ejecuta cada actualizacion de athleteRace
+	public void listenAdvancePanel(AthleteRaceInformation athleteRace) { //se ejecuta cada actualizacion de athleteRace
 		try{
 			AthletePanel panel = panels.get(athleteRace); 
 			
@@ -112,56 +111,76 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 @Override
 	public void listenStartNewChampionship() {	
 		currentInstance = this;
-		listenStartNewRace();		
+		listenStartNewRace();
 	 }
 	 
 	 @Override  
 	public void listenStartNewRace() {	
-		currentRace = createNewRace();	
-		currentRace.startRace();
+		currentRace = createNewRace();
 	 }
+	 
+	 @Override
+	public void listenStartRace() {
+		 currentRace.start();
+	}
 	 
 	 @Override
 	public void listenFinishRace() {
 		finishedRaces.add(currentRace); // Remove from races?
-		currentRaceView.seeRanking(finishedRaces, currentRace);
-		
-		currentRaceView.dispose();		
+		//currentRaceView.seeRanking(finishedRaces, currentRace);
 		if(currentRaceView.askNewRace()) {
+			currentRaceView.dispose();		
 			 listenStartNewRace();
 		}  
 	}
 	 
 	public void listenShowCurrentRanking(){
-		currentRaceView.seeRanking(finishedRaces, currentRace);
+		Ranking r = new Ranking(currentRace);
+		r.setLocationRelativeTo(null);
+		r.setVisible(true);
+		currentRaceView.pause();
 	}
 	 
 	 @Override
-	public void listenRefreshView(int time, ClimateCondition currentWeather) {
-		currentRaceView.getLblRaceTime().setText("Race Time: " + Integer.toString(time) + " seconds");
+	public void listenRefreshView(float time, ClimateCondition currentWeather) {
+		currentRaceView.getLblRaceTime().setText("Race Time: " + Float.valueOf(time).shortValue() + " seconds");
 		currentRaceView.getLblClimateCondition().setText("Climate condition:"+currentWeather.getDescription());
 		
 	}	
 	 
 	 @Override
 	public void listenRefreshPositions() {
-		 /**/Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
+		 Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
 						@Override
 						public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
-							if ((o2.getAdvancedDistance() - o1.getAdvancedDistance()) < 0)
-								return -1;
-								else   return 1;
-						}
-				 		}); 
-		 
+								// IF anidado con el proposito de no seguir actualizando posiciones de atletas que ya llegaron a la meta
+								if(o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance() && o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+									return 0;
+								else if(o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+									return -1;
+								else if(o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+									return 1;
+								 
+								if (o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0)
+									return -1;
+								else 
+									return 1;
+						}		
+		});
+
 		 for (int i = 0; i < currentRace.getListAthletes().size(); i++)
-			 currentRace.getListAthletes().get(i).setPosition(i+1);;	
+			 if(currentRace.getListAthletes().get(i).isOut() == false)
+				 currentRace.getListAthletes().get(i).setPosition(i+1);	
 			 //Change Position attribute of each athlete sorted by advanced distance		 
 			 
 		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
 			 AthletePanel panel = panels.get(athleteRace);	    
 			 panel.refreshPositions(athleteRace.getPosition(), athleteRace.isOut());
-		 }	 		
+		}	 		
+	}
+
+	public void listenInterruptRace(boolean interruption) throws InterruptedException {
+		currentRace.interruptRace(interruption);
 	}
 
 	//Getters and Setters
@@ -172,26 +191,5 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	        return currentInstance;
 	    }
 
-	public void listenPauseRace() throws InterruptedException {
-		//currentRace.pauseRace();
-	/**/for(AthleteRaceInformation a : currentRace.getListAthletes()) 
-		a.setStopped(true);
-			//synchronized(currentRace.getListAthletes().get(i)) 
-			
-			
-	}
 
-	public void listenResumeGame() throws InterruptedException {
-		/*
-		for(AthleteRaceInformation athlete : currentRace.getListAthletes()) 
-				athlete.setStopped(false);
-		*/		
-	}
-
-	
-
-	
-
-	
-	
 }

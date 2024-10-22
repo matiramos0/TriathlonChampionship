@@ -24,103 +24,49 @@ import javax.swing.JTree;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.ButtonGroup;
+import javax.swing.JScrollPane;
 
 public class Ranking extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JTabbedPane tabbedPane;
 	private JPanel racePane;
-	private JTable raceTable;
-	private DefaultTableModel tableModel;
 	private JPanel championshipPane;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JPanel athletesInfoPane;
 	
 	
-	public Ranking() {
+	public Ranking(Race race) {
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1010, 700);
 		//setAlwaysOnTop(true);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setContentPane(contentPane);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(10, 10, 976, 643);
 		contentPane.add(tabbedPane);
 		
-		racePane = new JPanel();
+		racePane = new StatsPanel(race);
+		racePane.setBackground(new Color(255, 255, 255));
+		racePane.setLayout(null);
+
 		tabbedPane.addTab("Race ranking", null, racePane, null);
 		tabbedPane.setEnabledAt(0, true);
-		racePane.setLayout(null);
 		
-		tableModel = new DefaultTableModel(){
-	        @Override
-	        public boolean isCellEditable(int row, int column) {
-	            return false; // Hacer que todas las celdas sean no editables
-	        }
-	    };	    	
-		tableModel.addColumn("Nombre");
-		tableModel.addColumn("Categoria");
-		tableModel.addColumn("Monto");
-		tableModel.addColumn("Descripcion");
-		tableModel.addColumn("Fecha");
-		tableModel.addColumn("numero pago");
+		athletesInfoPane = new AthletesInfo(race); 
+		athletesInfoPane.setBackground(new Color(255, 255, 255));
+		athletesInfoPane.setLayout(null);
 		
-		raceTable = new JTable(tableModel);
-		raceTable.setFont(new Font("Tahoma", Font.PLAIN, 13));
-	    raceTable.setFillsViewportHeight(true);
-	    raceTable.setBorder(new LineBorder(new Color(0, 0, 0)));
-		raceTable.setBounds(10, 59, 951, 547);
-		racePane.add(raceTable);
-		
-		raceTable.getColumnModel().getColumn(0).setPreferredWidth(75);
-		raceTable.getColumnModel().getColumn(1).setPreferredWidth(75);
-		raceTable.getColumnModel().getColumn(2).setPreferredWidth(60);
-		raceTable.getColumnModel().getColumn(3).setPreferredWidth(260);
-		raceTable.getColumnModel().getColumn(4).setPreferredWidth(80);
-		raceTable.getColumnModel().getColumn(5).setPreferredWidth(40);
-		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("Competence");
-		buttonGroup.add(chckbxNewCheckBox);
-		chckbxNewCheckBox.setBounds(300, 16, 118, 21);
-		racePane.add(chckbxNewCheckBox);
-		
-		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("All");
-		chckbxNewCheckBox_1.setSelected(true);
-		buttonGroup.add(chckbxNewCheckBox_1);
-		chckbxNewCheckBox_1.setBounds(206, 16, 92, 21);
-		racePane.add(chckbxNewCheckBox_1);
-		
-		JLabel lblNewLabel = new JLabel("Filter Positions by:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNewLabel.setBounds(63, 6, 137, 36);
-		racePane.add(lblNewLabel);
-		
-		JCheckBox chckbxAmateur = new JCheckBox("Amateur");
-		buttonGroup.add(chckbxAmateur);
-		chckbxAmateur.setBounds(420, 16, 118, 21);
-		racePane.add(chckbxAmateur);
+		tabbedPane.addTab("Athletes", null, athletesInfoPane, null);
+		tabbedPane.setEnabledAt(1, true);
 		
 		championshipPane = new JPanel();
 		tabbedPane.addTab("Championship Ranking", null, championshipPane, null);
-		tabbedPane.setEnabledAt(1, true);
+		tabbedPane.setEnabledAt(2, true);
 	}
 	
-	public void showRaceRanking(List<Race> finishedRaces, Race race) {
-		/*for(Race r : finishedRaces) 
-			for(AthleteRaceInformation a : r.getListAthletes()) {
-				Object[] row = {a.getAthlete().getName(), a.getPosition(),a.getAdvancedDistance() ,"hola", "3/2/2", 34};
-				tableModel.addRow(row);
-			}Championship stats*/
-		for(AthleteRaceInformation a : race.getListAthletes()) {
-			Object[] row = {a.getAthlete().getName(), a.getPosition(),a.getAdvancedTime() ,"hola", "3/2/2", 34};
-			tableModel.addRow(row);
-		}
-	}
 	
-	//public void showRaceRanking(Race race) {
-		
-	//}
 }

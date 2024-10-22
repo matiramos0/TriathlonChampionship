@@ -29,14 +29,13 @@ public class AthletePanel extends JPanel{
 	private JLabel lblEnergy;
 	private JLabel lblDistance;
 	private JSpinner spinnerSpeed;
-	//private int position;  in athleteRace
 	private Map <Integer, Provisioning> provisioningCycling;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Modality modality;
 	
 	public AthletePanel(int startingPosition, Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning>provisioningPedestrianism,Modality modality) {
 		setLayout(null);
-		setBounds(256, 73 + 70*startingPosition, 1056, 70);
+		setBounds(281, 73 + 70*startingPosition, 1056, 70);
 
 		this.provisioningCycling = provisioningCycling;
 		this.provisioningPedestrianism = provisioningPedestrianism;
@@ -140,7 +139,7 @@ public class AthletePanel extends JPanel{
 	}
 	
 	public synchronized void refreshPositions(int position, Boolean isOut) {
-		this.setBounds(256, 73 + 70 * position, 1056, 70);
+		this.setBounds(281, 73 + 70 * position, 1056, 70);
 		if (position <= 8) {
 			if (isOut.equals(true))
 				this.lblDistance.setIcon(new ImageIcon("img\\cerrar.png"));
@@ -183,7 +182,5 @@ public class AthletePanel extends JPanel{
 	public void setSpinnerSpeed(JSpinner spinnerSpeed) {
 		this.spinnerSpeed = spinnerSpeed;
 	}
-
-
-
+	
 }

@@ -8,12 +8,5 @@ public class Pedestrianism extends Discipline{
 	public String getDescription() {
 		return "Pedestrianism";
 	}
-
-	@Override
-	public boolean equals() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	
 }

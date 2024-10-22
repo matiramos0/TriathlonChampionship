@@ -26,7 +26,4 @@ public class Penalty {
 		this.disqualification = disqualification;
 	}
 	
-	
-
-	
 }

@@ -10,8 +10,6 @@ public abstract class Discipline {
 	}
 
 	//Abstract methods
-	
-	public abstract boolean equals();
-	
+		
 	public abstract String getDescription();
 }

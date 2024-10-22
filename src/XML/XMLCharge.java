@@ -91,7 +91,7 @@ public class XMLCharge {
                 } else if (category.equals("Competición")) {
                     athlete = new Competence(number, name, last, nationality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, stats);
                 }
-
+                
                 if (athlete != null) {
                     if (gender.equals("Masculino"))
                         athlete.setGender(Athlete.Gender.MALE);
@@ -137,8 +137,8 @@ public class XMLCharge {
                 
                 NodeList listPoints = element.getElementsByTagName("puesto");
                 
-                Map <Integer, Provisioning> provisioningCycling = new HashMap<>();
-                Map <Integer, Provisioning> provisioningPedestrianism = new HashMap<>();
+                HashMap <Integer, Provisioning> provisioningCycling = new HashMap<>();
+                HashMap <Integer, Provisioning> provisioningPedestrianism = new HashMap<>();
                 
                 for (int j = 0; j < listPoints.getLength(); j++) {
                 	
@@ -162,7 +162,7 @@ public class XMLCharge {
                 		provisioningPedestrianism.put(number, provisioning);
                 	}
                 		
-                	//System.out.println(provisioning);
+                	//System.out.println();
                 	
                 }
                 

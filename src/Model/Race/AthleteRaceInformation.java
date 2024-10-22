@@ -1,5 +1,8 @@
 package Model.Race;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import Controller.Championship;
@@ -16,46 +19,40 @@ import Model.View.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	
-	private static final long speedOfRace = 100; // miliseconds
-	private static final long timeOfTranscition = 1000;
-	private static final long maxFatigue = 99;
-	private static final float baseFatigueValue = 0.15F;
+	public static final long timeOfTranscition = 1000; //miliseconds
+	public static final long maxFatigue = 99;		   //porcentage
+	public static final float restoreFatigue = 0.2F;   //porcentage
+	public static final float baseFatigueValue = 0.12F;//porcentage
 	
 	private Athlete athlete;
-	private Modality modality;
-	private ClimateCondition climateCondition;
+	private Race race;
 	private float advancedDistance;
 	private float advancedTime;
 	private float fatigue;
 	private float velocity;
-	private boolean isOut;
 	private int position;
-	private Map <Integer, Provisioning> provisioningCycling;
-	private Map <Integer, Provisioning> provisioningPedestrianism;
-	private boolean stopped;
-
-	public AthleteRaceInformation(Athlete athlete, Modality modality, ClimateCondition climateCondition, Map <Integer, Provisioning> provisioningCycling, Map <Integer, Provisioning> provisioningPedestrianism){
-		this.athlete = athlete;
-		this.modality = modality;
-		this.climateCondition = climateCondition;
-		this.advancedDistance = 0;
-		this.advancedTime = 0;
-		this.fatigue = 0;
-		this.isOut = false;
-		this.provisioningCycling = provisioningCycling;
-		this.provisioningPedestrianism = provisioningPedestrianism;
-		this.stopped = false;
-	}
+	private boolean isOut;
+	//private boolean stopped; // Usar el stopped de race?
 	
 	//Methods
 	
 	
+	public AthleteRaceInformation(Athlete athlete2, Race race) {
+		this.athlete = athlete2;
+		this.race = race;
+		this.advancedDistance = 0;
+		this.advancedTime = 0;
+		this.fatigue = 0;
+		this.isOut = false;
+		//this.stopped = false;
+	}
+
 	@Override
 	public void run() {
 		
 		try {
       
-			while (advancedDistance < modality.getFirstTransition() && isOut != true) {
+			while (advancedDistance < race.getModality().getFirstTransition() && isOut != true) {
 				if (fatigue > maxFatigue) {
 					isOut = true;
 					synchronized(this) {
@@ -64,88 +61,127 @@ public class AthleteRaceInformation extends Thread{
 				}
 				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
-				velocity = athlete.getVelocity(modality.getSwimming().getDiscipline());
+				velocity = athlete.getVelocity(race.getModality().getSwimming().getDiscipline());
 				velocity -= getFatigueEffect();
-				velocity -= getClimateConditionEffect(modality.getSwimming().getDiscipline());
+				velocity -= getClimateConditionEffect(race.getModality().getSwimming().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
-				Championship.getInstance().listenAdvancePanel(this);// Atributo controller?
+				Championship.getInstance().listenAdvancePanel(this); // Atributo controller?
 				
-				if (stopped == true) {
-					synchronized(this) {
-						wait();
-					}
-				}else {
-					synchronized(this) {
-						notify();					
+				try {
+					
+					if (race.isStopped()) {
+						synchronized (this) {
+							while(race.isStopped())
+								sleep(0);
 						}
+					}
+					
+				} catch (InterruptedException i) {
+					i.printStackTrace();
 				}
 				
-				sleep(speedOfRace);
+				sleep(Race.speedOfRace);
 			}
 			
 			sleep(timeOfTranscition);
 			
-			while (advancedDistance < modality.getSecondTransition() && isOut != true) {
+			int nextProv = 1;
+			
+			Provisioning provisioning = race.getProvisioningCycling().get(nextProv);
+			
+			float pointProv = provisioning.getDistance();
+			
+			while (advancedDistance < race.getModality().getSecondTransition() && isOut != true) {
 				if (fatigue > maxFatigue)
 					isOut = true;
-				
-				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
-				
-				velocity = athlete.getVelocity(modality.getCycling().getDiscipline());
+									
+				velocity = athlete.getVelocity(race.getModality().getCycling().getDiscipline());
 				velocity -= getFatigueEffect();  
-				velocity -= getClimateConditionEffect(modality.getCycling().getDiscipline());
+				velocity -= getClimateConditionEffect(race.getModality().getCycling().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
+								
+				if (advancedDistance - race.getModality().getFirstTransition() >= pointProv) {
+					fatigue -= fatigue*restoreFatigue;
+					nextProv++;
+					
+					if (nextProv <= race.getProvisioningCycling().size()) {
+						provisioning = race.getProvisioningCycling().get(nextProv);
+						pointProv = provisioning.getDistance();
+					} else
+						pointProv = race.getModality().getSecondTransition();
+				}
 
 				Championship.getInstance().listenAdvancePanel(this);
-
-				if (stopped == true) {
-					synchronized(this) {
-						wait();
-					}
-				}else {
-					synchronized(this) {
-						notify();					
+				
+				try {
+					
+					if (race.isStopped()) {
+						synchronized (this) {
+							while(race.isStopped())
+								sleep(0);
 						}
+					}
+					
+				} catch (InterruptedException i) {
+					i.printStackTrace();
 				}
 				
-				sleep(speedOfRace);
+				sleep(Race.speedOfRace);
 			}
 			
 			sleep(timeOfTranscition);
 			
-			while (advancedDistance < modality.getTotalDistance() && isOut != true) {
+			nextProv = 1;
+			
+			provisioning = race.getProvisioningPedestrianism().get(nextProv);
+			
+			pointProv = provisioning.getDistance();
+			
+			while (advancedDistance < race.getModality().getTotalDistance() && isOut != true) {
 				if (fatigue > maxFatigue)
 					isOut = true;
-				
-				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
-				
-				velocity = athlete.getVelocity(modality.getPedestrianism().getDiscipline());
+								
+				velocity = athlete.getVelocity(race.getModality().getPedestrianism().getDiscipline());
 				velocity -= getFatigueEffect();
-				velocity -= getClimateConditionEffect(modality.getPedestrianism().getDiscipline());
+				velocity -= getClimateConditionEffect(race.getModality().getPedestrianism().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
 				
-				Championship.getInstance().listenAdvancePanel(this);
-
-				if (stopped == true) {
-					synchronized(this) {
-						wait();
-					}
-				}else {
-					synchronized(this) {
-						notify();					
-						}
+				if (advancedDistance - race.getModality().getSecondTransition() >= pointProv) {
+					fatigue -= fatigue*restoreFatigue;
+					nextProv++;
+					if (nextProv <= race.getProvisioningPedestrianism().size()) {
+						provisioning = race.getProvisioningPedestrianism().get(nextProv);
+						pointProv = provisioning.getDistance();
+					} else
+						pointProv = race.getModality().getTotalDistance();
 				}
 				
-				sleep(speedOfRace);
+				Championship.getInstance().listenAdvancePanel(this);
+				
+				try {
+					
+					if (race.isStopped()) {
+						synchronized (this) {
+							while(race.isStopped())
+								sleep(0);
+						}
+					}
+					
+				} catch (InterruptedException i) {
+					i.printStackTrace();
+				}
+				
+				sleep(Race.speedOfRace);
 			}
-			
+
+			race.countFinishAthlete();
 			
 		} catch (InterruptedException e) {
-			System.out.println("Error hilo " + e);
+			e.printStackTrace(System.err);
 		}
 	}
 	
@@ -158,11 +194,11 @@ public class AthleteRaceInformation extends Thread{
 		float effect = 0;
 		
 		if (discipline instanceof Swimming)
-			effect = (float) (velocity*(climateCondition.getSwimmingWear()/100));
+			effect = (float) (velocity*(race.getCurrentWeather().getSwimmingWear()/100));
 		else if (discipline instanceof Cycling)
-			effect = (float) (velocity*(climateCondition.getCyclingWear()/100));
+			effect = (float) (velocity*(race.getCurrentWeather().getCyclingWear()/100));
 		else if (discipline instanceof Pedestrianism)
-			effect = (float) (velocity*(climateCondition.getRunningWear()/100));
+			effect = (float) (velocity*(race.getCurrentWeather().getRunningWear()/100));
 		
 		return effect;
 	}
@@ -176,7 +212,10 @@ public class AthleteRaceInformation extends Thread{
 	
 	}
 	
-/*public void stopThread() throws InterruptedException {
+	/*public void stopThread() throws InterruptedException {
+		synchronized (this) {
+			currentThread().wait();
+		}
 	}*/
 	
 	//Getters and Setters
@@ -189,14 +228,18 @@ public class AthleteRaceInformation extends Thread{
 		this.athlete = athlete;
 	}
 	
-	public boolean isStopped() {
+	public Race getRace() {
+		return race;
+	}
+	
+	/*public boolean isStopped() {
 		return stopped;
 	}
 
 	public void setStopped(boolean stopped) {
 		this.stopped = stopped;
 	}
-
+*/
 	public float getAdvancedDistance() {
 		return advancedDistance;
 	}
@@ -219,15 +262,6 @@ public class AthleteRaceInformation extends Thread{
 
 	public void setFatigue(float fatigue) {
 		this.fatigue = fatigue;
-	}
-
-
-	public Modality getModality() {
-		return modality;
-	}
-
-	public void setModality(Modality modality) {
-		this.modality = modality;
 	}
 
 	public int getPosition() {
