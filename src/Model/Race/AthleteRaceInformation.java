@@ -1,6 +1,5 @@
 package Model.Race;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,8 +36,8 @@ public class AthleteRaceInformation extends Thread{
 	//Methods
 	
 	
-	public AthleteRaceInformation(Athlete athlete2, Race race) {
-		this.athlete = athlete2;
+	public AthleteRaceInformation(Athlete athlete, Race race) {
+		this.athlete = athlete;
 		this.race = race;
 		this.advancedDistance = 0;
 		this.advancedTime = 0;
@@ -53,12 +52,9 @@ public class AthleteRaceInformation extends Thread{
 		try {
       
 			while (advancedDistance < race.getModality().getFirstTransition() && isOut != true) {
-				if (fatigue > maxFatigue) {
-					isOut = true;
-					synchronized(this) {
-						//Actulizar time??  advancedTime = currentThread().;
-					}
-				}
+				if (fatigue > maxFatigue) 
+					isOut = true;		
+				
 				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(race.getModality().getSwimming().getDiscipline());

@@ -38,7 +38,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	
 	private static List<Race> races;
 	private static List<Athlete> athletes;
-	private static List<Race> racesRuned;
+	//private static List<Race> racesRuned;
 	private static Race currentRace;
 	private static RaceView currentRaceView;
 	private Map<AthleteRaceInformation, AthletePanel> panels;
