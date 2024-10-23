@@ -55,8 +55,8 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 
 		Random random = new Random();			
 
-		//Race newRace = races.get(random.nextInt(races.size()));
-		Race newRace = races.get(0);
+		Race newRace = races.get(random.nextInt(races.size()));
+		//Race newRace = races.get(0);
 
 		newRace.prepareRace(athletes); // los carga como AthleteRace
 		
@@ -100,6 +100,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		try{
 			AthletePanel panel = panels.get(athleteRace); 
 			
+			//panel.advance(athleteRace.getAdvancedDistance());
 			panel.advance(athleteRace.getAdvancedDistance());
 			panel.getLblEnergy().setText(String.format("Fatigue: %.2f" , athleteRace.getFatigue()));
 
@@ -115,7 +116,9 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 }
 	 
 	 @Override  
-	public void listenStartNewRace() {	
+	public void listenStartNewRace() { 
+		if(currentRaceView != null)
+			currentRaceView.dispose();
 		currentRace = createNewRace();
 	 }
 	 
@@ -127,11 +130,12 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	 @Override
 	public void listenFinishRace() {
 		finishedRaces.add(currentRace); // Remove from races?
+		races.remove(currentRace);
 		//currentRaceView.seeRanking(finishedRaces, currentRace);
-		if(currentRaceView.askNewRace()) {
-			currentRaceView.dispose();		
-			 listenStartNewRace();
-		}  
+		//currentRaceView.dispose();	
+		currentRaceView.finishRace();
+		//listenStartNewRace();
+		 
 	}
 	 
 	public void listenShowCurrentRanking(){
@@ -171,7 +175,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		 for (int i = 0; i < currentRace.getListAthletes().size(); i++)
 			 if(currentRace.getListAthletes().get(i).isOut() == false)
 				 currentRace.getListAthletes().get(i).setPosition(i+1);	
-			 //Change Position attribute of each athlete sorted by advanced distance		 
+			 //Actualizar atributo Position de cada atleta ordenado de mayor a menos distancia avanzada		 
 			 
 		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
 			 AthletePanel panel = panels.get(athleteRace);	    

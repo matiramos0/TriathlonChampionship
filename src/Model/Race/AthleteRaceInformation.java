@@ -1,20 +1,16 @@
 package Model.Race;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import Controller.Championship;
 import Model.Athlete.Athlete;
-import Model.ClimateCondition.ClimateCondition;
-
+import Model.Athlete.Competencia;
 import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Provisioning;
 import Model.Discipline.Swimming;
-import Model.Modality.Modality;
-import Model.View.AthletePanel;
 
 public class AthleteRaceInformation extends Thread{
 	
@@ -52,16 +48,21 @@ public class AthleteRaceInformation extends Thread{
 		try {
       
 			while (advancedDistance < race.getModality().getFirstTransition() && isOut != true) {
+				
+				
 				if (fatigue > maxFatigue) 
 					isOut = true;		
 				
-				System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
+				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(race.getModality().getSwimming().getDiscipline());
 				velocity -= getFatigueEffect();
 				velocity -= getClimateConditionEffect(race.getModality().getSwimming().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
+				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
+				//advancedDistance = actualDistance + velocity;
+				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
 				
 				Championship.getInstance().listenAdvancePanel(this); // Atributo controller?
 				
@@ -98,7 +99,10 @@ public class AthleteRaceInformation extends Thread{
 				velocity -= getClimateConditionEffect(race.getModality().getCycling().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
-								
+				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
+				//advancedDistance = actualDistance + velocity;
+				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
+
 				if (advancedDistance - race.getModality().getFirstTransition() >= pointProv) {
 					fatigue -= fatigue*restoreFatigue;
 					nextProv++;
@@ -145,7 +149,10 @@ public class AthleteRaceInformation extends Thread{
 				velocity -= getClimateConditionEffect(race.getModality().getPedestrianism().getDiscipline());
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
 				advancedDistance += velocity;
-				
+				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
+				//advancedDistance = actualDistance + velocity;
+				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
+			
 				if (advancedDistance - race.getModality().getSecondTransition() >= pointProv) {
 					fatigue -= fatigue*restoreFatigue;
 					nextProv++;

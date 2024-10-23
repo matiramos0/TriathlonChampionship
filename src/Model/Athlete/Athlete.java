@@ -1,12 +1,14 @@
 package Model.Athlete;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Swimming;
+import Model.Race.Race;
 
 public abstract class Athlete {
 	
@@ -25,6 +27,7 @@ public abstract class Athlete {
     protected double economy;
     protected String birthdate;
     protected Stats physicalsConditions;
+	private List<Competencia>championshipInformation;
 
     public Athlete(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted,float weight, float height, double economy,String birthdate, Stats physicalsConditions) {
         this.number = number;
@@ -38,12 +41,25 @@ public abstract class Athlete {
         this.economy = economy;
         this.birthdate = birthdate;
         this.physicalsConditions = physicalsConditions;
+		this.championshipInformation = new ArrayList<>();
     }
     
-    //Getters and Setters
+    public void newRace(Race race) {
+    	championshipInformation.add(new Competencia(race));
+    }
+    
+    //Getters and Setters 
     
     public String getNumber() {
 		return number;
+	}
+
+	public List<Competencia> getChampionshipInformation() {
+		return championshipInformation;
+	}
+
+	public void setChampionshipInformation(List<Competencia> championshipInformation) {
+		this.championshipInformation = championshipInformation;
 	}
 
 	public void setNumber(String number) {

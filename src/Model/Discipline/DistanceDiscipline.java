@@ -10,6 +10,7 @@ public class DistanceDiscipline {
 	public DistanceDiscipline(float distance, Discipline discipline) {
 		this.distance = distance;
 		this.discipline = discipline;
+		this.time = 0;
 	}
 	
 	//Getters and Setters
