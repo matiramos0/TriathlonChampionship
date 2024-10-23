@@ -1,6 +1,7 @@
 package Model.View;
 
 import javax.swing.JFrame;
+
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Window.Type;
@@ -28,6 +29,7 @@ import javax.swing.border.TitledBorder;
 import Controller.Championship;
 import Model.Race.Race;
 import Model.View.BackgroundMainView;
+import Persistence.Persistence;
 
 import javax.swing.border.EtchedBorder;
 
@@ -91,6 +93,9 @@ public class MainView extends JFrame {
 		contentPane.add(btnContinuechampionship);
 		btnContinuechampionship.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Persistence.ChampionshipDeserialization();
+				
+				
 			}
 		});
 		btnContinuechampionship.setFont(new Font("Montserrat Medium", Font.PLAIN, 20));
