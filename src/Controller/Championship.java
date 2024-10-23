@@ -1,5 +1,6 @@
 package Controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import Model.Race.*;
 
 import javax.swing.JOptionPane;
 
@@ -32,8 +34,10 @@ import Model.View.MainView;
 import Model.View.RaceView;
 import Model.View.Ranking;
 
-public class Championship implements NewRaceListener, RefreshViewListener, FinishRaceListener, NewChampionshipListener{
+public class Championship implements Serializable, NewRaceListener, RefreshViewListener, FinishRaceListener, NewChampionshipListener{
 	
+	private static final long serialVersionUID = 1L;
+
 	private static Championship currentInstance;
 	
 	private static List<Race> races;
@@ -70,6 +74,7 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 		System.out.println("Ubicacion: " + newRace.getCity().getDescription() + "\t" + newRace.getCity().getCountry().getDescription());
 		System.out.println("Distancia: " + newRace.getModality().getTotalDistance() + "\n");
 		
+	                           
 		return newRace;
 	}
 	
@@ -191,5 +196,8 @@ public class Championship implements NewRaceListener, RefreshViewListener, Finis
 	        return currentInstance;
 	    }
 
-
+	public boolean FinishedRace() {
+	    return currentRace != null && currentRace.isFinished();  
+	}
+	
 }

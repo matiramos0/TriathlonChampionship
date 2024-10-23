@@ -1,5 +1,6 @@
 package Model.Race;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,19 +20,21 @@ import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Athlete.Athlete;
 
-public class Race extends Thread{
+public class Race extends Thread implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	public static final long speedOfRace = 50; // miliseconds
 	
 	private Modality modality;
 	private City city;
 	private ClimateCondition currentWeather;
 	private boolean stopped;
+	private static int remainingAthletes;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
 	private int finishedAthletesCount;
-
 	//private RaceView raceView; 
 
 	//Constructor Method
@@ -77,6 +80,8 @@ public class Race extends Thread{
 			//while (!listAthletes.isEmpty()) {
 			while(finishedAthletesCount < listAthletes.size()) {
 			
+				//System.out.println("Tiempo: " + time);
+
 				try {
 					Random random = new Random();
 					if (random.nextInt(250) == 1) {
@@ -184,8 +189,19 @@ public class Race extends Thread{
 	public void setStopped(boolean stopped) {
 		this.stopped = stopped;
 	}
-
-
 	
+	
+	public List<AthleteRaceInformation> getActiveAthletes() {
+		return activeAthletes;
+	}
+
+	public void athleteFinished(AthleteRaceInformation athlete) {
+	    activeAthletes.remove(athlete);
+	    remainingAthletes--;
+	}
+	    
+	public boolean isFinished() {
+	    return remainingAthletes == 0;  
+	}
 
 }

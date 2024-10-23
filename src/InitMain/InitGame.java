@@ -12,5 +12,6 @@ public class InitGame {
 		MainView mainView = new MainView();
 		mainView.setVisible(true);
 		mainView.setLocationRelativeTo(null);
+		
 	}
 }
