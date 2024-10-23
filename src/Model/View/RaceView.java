@@ -19,6 +19,7 @@ import Controller.Championship;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
+import Persistence.Persistence;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
@@ -43,6 +44,7 @@ public class RaceView extends JFrame {
 	private JRadioButton rdbtnPause;
 	private JRadioButton rdbtnResume;
 	private JButton btnNextRace;
+	private JButton btnSerialize;
 	
 	public RaceView(String titleRace) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -181,6 +183,21 @@ public class RaceView extends JFrame {
 		btnNextRace.setEnabled(false);
 		contentPane.add(btnNextRace);
 		
+		btnSerialize = new JButton("Serialize Race");
+		btnSerialize.setEnabled(false);
+		btnSerialize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Persistence.championshipPersistence(Championship.getInstance());
+			}
+		});
+		
+		btnSerialize.setBounds(41, 540, 187, 62);
+		contentPane.add(btnSerialize);}
+
+		public void listenFinishRace() {
+		    if (Championship.getInstance().FinishedRace()) {
+		        btnSerialize.setEnabled(true);
+		    }
 	}
 	 
 //	Methods    
@@ -239,4 +256,5 @@ public class RaceView extends JFrame {
 		JOptionPane.showMessageDialog(null, "Race has Finished!");
 		Championship.getInstance().listenShowCurrentRanking();
 	}
+  
 }

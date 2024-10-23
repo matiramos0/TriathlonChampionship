@@ -7,7 +7,7 @@ import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Swimming;
 
-public class Amateur extends Athlete {	
+public class Amateur extends Athlete{	
 
 	public Amateur(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted, float weight, float height, double economy, String birthdate, Stats physicalsConditions) {
         super(number, name, last, nacionality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, physicalsConditions);
