@@ -43,6 +43,7 @@ public class RaceView extends JFrame {
 	private final ButtonGroup buttonGroupPause = new ButtonGroup();
 	private JRadioButton rdbtnPause;
 	private JRadioButton rdbtnResume;
+	private JButton btnNextRace;
 	private JButton btnSerialize;
 	
 	public RaceView(String titleRace) {
@@ -123,6 +124,7 @@ public class RaceView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 					Championship.getInstance().listenStartRace();
 					buttonGroupPause.setSelected(rdbtnResume.getModel(), true);
+					btnStartRace.setEnabled(false);
 			}
 		});
 		contentPane.add(btnStartRace);
@@ -171,6 +173,16 @@ public class RaceView extends JFrame {
 		});
 		buttonGroupPause.add(rdbtnResume);
 		
+		btnNextRace = new JButton("Next Race");
+		btnNextRace.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Championship.getInstance().listenStartNewRace();
+			}
+		});
+		btnNextRace.setBounds(41, 554, 187, 29);
+		btnNextRace.setEnabled(false);
+		contentPane.add(btnNextRace);
+		
 		btnSerialize = new JButton("Serialize Race");
 		btnSerialize.setEnabled(false);
 		btnSerialize.addActionListener(new ActionListener() {
@@ -197,13 +209,6 @@ public class RaceView extends JFrame {
 		ranking.setLocationRelativeTo(null);		
 	}*/
 	
-	public Boolean askNewRace() {
-		if (JOptionPane.showConfirmDialog(null, "Do you want to start the following race? ", "Championship", JOptionPane.OK_CANCEL_OPTION) == 0)
-			return true;
-		else
-			return false;
-	}
-	
 	public void pause() {
 	 	rdbtnPause.doClick();
 	}
@@ -220,6 +225,10 @@ public class RaceView extends JFrame {
 	 	 
 	public JLabel getLblClimateCondition() {
 		return lblClimateCondition;
+	}
+
+	public JButton getBtnNextRace() {
+		return btnNextRace;
 	}
 
 	public void setLblClimateCondition(JLabel lblClimateCondition) {
@@ -242,4 +251,10 @@ public class RaceView extends JFrame {
 		this.lblTitulo = lblTitulo;
 	}
 
+	public void finishRace() {
+		this.getBtnNextRace().setEnabled(true);
+		JOptionPane.showMessageDialog(null, "Race has Finished!");
+		Championship.getInstance().listenShowCurrentRanking();
+	}
+  
 }

@@ -16,6 +16,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Model.Athlete.Amateur;
+import Model.Athlete.Athlete.Gender;
 import Model.Athlete.Competence;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
@@ -46,7 +47,10 @@ public StatsPanel(Race race) {
 	tableModel.addColumn("Athlete Name");
 	tableModel.addColumn("Race Position");
 	tableModel.addColumn("Advanced Distance");
-	tableModel.addColumn("Advanced Time");
+	tableModel.addColumn("Swimming Time");
+	tableModel.addColumn("Cycling Time");
+	tableModel.addColumn("Pedestrianism Time");
+	tableModel.addColumn("Total Time");
 	
 	table = new JTable(tableModel);
 	table.setFont(new Font("Tahoma", Font.LAYOUT_LEFT_TO_RIGHT, 16));
@@ -97,9 +101,34 @@ public StatsPanel(Race race) {
 		}
 	});
 	buttonGroup.add(chckbxAmateur);
-	chckbxAmateur.setBounds(420, 16, 118, 21);
+	chckbxAmateur.setBounds(420, 16, 85, 21);
 	add(chckbxAmateur);
 	
+	JCheckBox chckbxMale = new JCheckBox("Male");
+	chckbxMale.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			List<AthleteRaceInformation> filterList = race.getListAthletes().stream()
+														  .filter(athlete -> athlete.getAthlete().getGender().equals(Gender.MALE))
+														  .collect(Collectors.toList());
+			setInfo(filterList);   
+		}
+	});
+	buttonGroup.add(chckbxMale);
+	chckbxMale.setBounds(510, 16, 70, 21);
+	add(chckbxMale);
+	
+	JCheckBox chckbxFemale = new JCheckBox("Female");
+	chckbxFemale.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			List<AthleteRaceInformation> filterList = race.getListAthletes().stream()
+														  .filter(athlete -> athlete.getAthlete().getGender().equals(Gender.FEMALE))
+														  .collect(Collectors.toList());
+			setInfo(filterList);   
+		}
+	});
+	buttonGroup.add(chckbxFemale);
+	chckbxFemale.setBounds(585, 16, 85, 21);
+	add(chckbxFemale);
 	
 }
 
@@ -110,10 +139,25 @@ public StatsPanel(Race race) {
 			tableModel.addRow(row);
 		}Championship stats*/
 		tableModel.setRowCount(0);
+		//Object[] row = new Object[tableModel.getColumnCount()];	
+		float bestTime = 0;
+		if(!(athletes.getFirst().getAthlete().getChampionshipInformation().getLast().getDistances().size()-2 < 0))//Verificar que ya completo la primer disciplina
+			bestTime = athletes.getFirst().getAthlete().getChampionshipInformation().getLast().getDistances()
+					  .get(athletes.getFirst().getAthlete().getChampionshipInformation().getLast().getDistances().size()-2).getTime();
+		Object[] row = {athletes.getFirst().getAthlete().getName(), athletes.getFirst().getPosition(),String.format("%.3f km", athletes.getFirst().getAdvancedDistance()),bestTime};       
+		tableModel.addRow(row);//Agrega el puntero y guarda su tiempo si es que paso la primer transicion
+		
 		for(AthleteRaceInformation a : athletes) {
-				//if (a.isOut() == true && a.getAdvancedDistance() < a.getRace().getModality().getTotalDistance())
-				Object[] row = {a.getAthlete().getName(), a.getPosition(),String.format("%.3f km", a.getAdvancedDistance()),a.getAdvancedTime()};       
-				tableModel.addRow(row);
+			float time = 0;
+			if(!(a.equals(athletes.getFirst()))) { 
+				if(!(a.getAthlete().getChampionshipInformation().getLast().getDistances().size()-2<0))
+					time = bestTime - a.getAthlete().getChampionshipInformation().getLast().getDistances().
+							get(athletes.getFirst().getAthlete().getChampionshipInformation().getLast().getDistances().size()-2).getTime();
+
+				Object[] row2 = {a.getAthlete().getName(), a.getPosition(),String.format("%.3f km", a.getAdvancedDistance()), time};       
+				tableModel.addRow(row2);	
+			}  
 		}
 	}
+	
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,6 +36,7 @@ public class Race extends Thread implements Serializable{
 	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
 	private int finishedAthletesCount;
+	private float time;
 	//private RaceView raceView; 
 
 	//Constructor Method
@@ -48,7 +50,6 @@ public class Race extends Thread implements Serializable{
 		List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
 	    this.currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);  // Obtener clima aleatorio
 	    this.stopped = false;
-	    this.finishedAthletesCount = 0;
 	 }
 	
 	
@@ -60,6 +61,7 @@ public class Race extends Thread implements Serializable{
 		
 		for (Athlete athlete : athletes) {
 			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, this);
+			athlete.newRace(this);
 			listAthletes.add(athleteRace);
 			
 		}
@@ -69,8 +71,9 @@ public class Race extends Thread implements Serializable{
 	public void run() {
 		
 		try {
-			
-			float time = 0;
+		    
+			finishedAthletesCount = 0;
+			time = 0;
 			
 			for (AthleteRaceInformation athlete: listAthletes)
 				athlete.start();
@@ -134,6 +137,10 @@ public class Race extends Thread implements Serializable{
 		return modality;
 	}
 
+	public float getTime() {
+		return time;
+	}
+	
 	public void setModality(Modality modality) {
 		this.modality = modality;
 	}
@@ -189,8 +196,30 @@ public class Race extends Thread implements Serializable{
 	public void setStopped(boolean stopped) {
 		this.stopped = stopped;
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(city, currentWeather, finishedAthletesCount, listAthletes, modality, provisioningCycling,
+				provisioningPedestrianism, stopped, time);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Race other = (Race) obj;
+		return Objects.equals(city, other.city) && Objects.equals(currentWeather, other.currentWeather)
+				&& finishedAthletesCount == other.finishedAthletesCount
+				&& Objects.equals(listAthletes, other.listAthletes) && Objects.equals(modality, other.modality)
+				&& Objects.equals(provisioningCycling, other.provisioningCycling)
+				&& Objects.equals(provisioningPedestrianism, other.provisioningPedestrianism)
+				&& stopped == other.stopped && Float.floatToIntBits(time) == Float.floatToIntBits(other.time);
+	}
+  
 	public List<AthleteRaceInformation> getActiveAthletes() {
 		return activeAthletes;
 	}
@@ -201,7 +230,7 @@ public class Race extends Thread implements Serializable{
 	}
 	    
 	public boolean isFinished() {
-	    return remainingAthletes == 0;  
+	    return finishedAthletesCount == listAthletes.size();  
 	}
-
+  
 }
