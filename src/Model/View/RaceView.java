@@ -109,7 +109,8 @@ public class RaceView extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				System.exit(DISPOSE_ON_CLOSE);
+				Championship.getInstance().listenFinishRace();
+				//System.exit(DISPOSE_ON_CLOSE);
 				//try {
 				//	controller.listenPauseRace();
 				//} catch (InterruptedException e1) {
@@ -119,7 +120,7 @@ public class RaceView extends JFrame {
 		contentPane.add(btnExitRace);
 		
 		JButton btnStartRace = new JButton("Start");
-		btnStartRace.setBounds(41, 469, 187, 57);
+		btnStartRace.setBounds(41, 456, 187, 57);
 		btnStartRace.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					Championship.getInstance().listenStartRace();
@@ -179,7 +180,7 @@ public class RaceView extends JFrame {
 				Championship.getInstance().listenStartNewRace();
 			}
 		});
-		btnNextRace.setBounds(41, 554, 187, 29);
+		btnNextRace.setBounds(41, 544, 187, 57);
 		btnNextRace.setEnabled(false);
 		contentPane.add(btnNextRace);
 		
@@ -188,17 +189,18 @@ public class RaceView extends JFrame {
 		btnSerialize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Persistence.championshipPersistence(Championship.getInstance());
+				dispose();
 			}
 		});
 		
-		btnSerialize.setBounds(41, 540, 187, 62);
+		btnSerialize.setBounds(41, 626, 187, 62);
 		contentPane.add(btnSerialize);}
 
-		public void listenFinishRace() {
+		/*public void listenFinishRace() {
 		    if (Championship.getInstance().FinishedRace()) {
 		        btnSerialize.setEnabled(true);
 		    }
-	}
+		}*/
 	 
 //	Methods    
 	
@@ -252,9 +254,10 @@ public class RaceView extends JFrame {
 	}
 
 	public void finishRace() {
-		this.getBtnNextRace().setEnabled(true);
 		JOptionPane.showMessageDialog(null, "Race has Finished!");
 		Championship.getInstance().listenShowCurrentRanking();
+		this.getBtnNextRace().setEnabled(true);
+        btnSerialize.setEnabled(true);
 	}
   
 }

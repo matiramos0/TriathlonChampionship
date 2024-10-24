@@ -83,7 +83,7 @@ public class Race extends Thread implements Serializable{
 			//while (!listAthletes.isEmpty()) {
 			while(finishedAthletesCount < listAthletes.size()) {
 			
-				//System.out.println("Tiempo: " + time);
+				System.out.println("Tiempo: " + time);
 
 				try {
 					Random random = new Random();
@@ -122,16 +122,28 @@ public class Race extends Thread implements Serializable{
 		}		
 	}
 	
+	//Methods
+	
 	public void interruptRace(boolean interruption) throws InterruptedException {
 		this.stopped = interruption;
 		//for (AthleteRaceInformation athlete: listAthletes)
 			//athlete.setStopped(interruption);
 	}
 	
-	public void countFinishAthlete() {
+	public synchronized void countFinishAthlete() {
 		this.finishedAthletesCount++ ;
 	}
 
+
+	public void cancelRace() {
+		synchronized(this) {
+			listAthletes.forEach(a -> {	synchronized(a) {
+									   a.setIsOut(true);}
+								});
+			this.interrupt();
+		 }		
+	}
+	
 	//Getters and Setters
 	public Modality getModality() {
 		return modality;
@@ -203,6 +215,14 @@ public class Race extends Thread implements Serializable{
 				provisioningPedestrianism, stopped, time);
 	}
 
+	
+	
+	@Override
+	public String toString() {
+		return city.getDescription() ;
+	}
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -219,18 +239,11 @@ public class Race extends Thread implements Serializable{
 				&& Objects.equals(provisioningPedestrianism, other.provisioningPedestrianism)
 				&& stopped == other.stopped && Float.floatToIntBits(time) == Float.floatToIntBits(other.time);
 	}
-  
-	public List<AthleteRaceInformation> getActiveAthletes() {
-		return activeAthletes;
-	}
-
-	public void athleteFinished(AthleteRaceInformation athlete) {
-	    activeAthletes.remove(athlete);
-	    remainingAthletes--;
-	}
 	    
 	public boolean isFinished() {
 	    return finishedAthletesCount == listAthletes.size();  
 	}
+
+
   
 }

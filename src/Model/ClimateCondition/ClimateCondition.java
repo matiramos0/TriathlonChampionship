@@ -1,10 +1,13 @@
 package Model.ClimateCondition;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-public class ClimateCondition {
+public class ClimateCondition implements Serializable{
 
+	
+	private static final long serialVersionUID = 1L;
 	private int wearId;
 	private String description;
 	private UnitMeasure unitmeasure;

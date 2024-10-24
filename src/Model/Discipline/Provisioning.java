@@ -1,7 +1,10 @@
 package Model.Discipline;
 
-public class Provisioning {
+import java.io.Serializable;
+
+public class Provisioning implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private Discipline discipline;
 	private float distance;
 	private int number;

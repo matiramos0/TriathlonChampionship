@@ -31,6 +31,7 @@ public abstract class Athlete implements Serializable{
     protected String birthdate;
     protected Stats physicalsConditions;
 	private List<Competencia>championshipInformation;
+	private int championshipPoints;
 
     public Athlete(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted,float weight, float height, double economy,String birthdate, Stats physicalsConditions) {
         this.number = number;

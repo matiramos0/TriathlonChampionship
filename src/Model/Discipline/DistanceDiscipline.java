@@ -1,8 +1,10 @@
 package Model.Discipline;
 
+import java.io.Serializable;
 
-public class DistanceDiscipline {
+public class DistanceDiscipline implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private float distance;
 	private float time;
 	private Discipline discipline;

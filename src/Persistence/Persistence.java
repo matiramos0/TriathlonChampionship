@@ -19,6 +19,7 @@ public class Persistence {
 	            oos.flush();
 	            oos.close();
 	        } catch (Exception e) {
+	        	e.printStackTrace();
 	            System.out.println("Excepcion during the serialitation process: " + e);
 	            System.exit(0);
 	        }

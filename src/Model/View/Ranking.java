@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import Model.Athlete.Athlete;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
 
@@ -36,9 +37,9 @@ public class Ranking extends JFrame {
 	private JPanel athletesInfoPane;
 	
 	
-	public Ranking(Race race) {
+	public Ranking(List<Athlete> athletes) {
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1010, 700);
+		setBounds(100, 100, 1340, 700);
 		//setAlwaysOnTop(true);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -46,24 +47,25 @@ public class Ranking extends JFrame {
 		setContentPane(contentPane);
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(10, 10, 976, 643);
+		tabbedPane.setBounds(10, 10, 1300, 643);
 		contentPane.add(tabbedPane);
 		
-		racePane = new StatsPanel(race);
-		racePane.setBackground(new Color(255, 255, 255));
+		racePane = new StatsPanel(athletes);
+		//racePane.setBackground(new Color(255, 255, 255));
 		racePane.setLayout(null);
 
 		tabbedPane.addTab("Race ranking", null, racePane, null);
 		tabbedPane.setEnabledAt(0, true);
 		
-		athletesInfoPane = new AthletesInfo(race); 
-		athletesInfoPane.setBackground(new Color(255, 255, 255));
+		athletesInfoPane = new AthletesInfo(athletes); 
+		//athletesInfoPane.setBackground(new Color(255, 255, 255));
 		athletesInfoPane.setLayout(null);
 		
 		tabbedPane.addTab("Athletes", null, athletesInfoPane, null);
 		tabbedPane.setEnabledAt(1, true);
 		
-		championshipPane = new JPanel();
+		championshipPane = new ChampionshipRanking(athletes);
+
 		tabbedPane.addTab("Championship Ranking", null, championshipPane, null);
 		tabbedPane.setEnabledAt(2, true);
 	}

@@ -55,10 +55,11 @@ public class AthleteRaceInformation extends Thread implements Serializable{
       
 			while (advancedDistance < race.getModality().getFirstTransition() && isOut != true) {
 				
-				
-				if (fatigue > maxFatigue) 
-					isOut = true;		
-				
+				if (fatigue > maxFatigue) { 
+					isOut = true;
+					athlete.getChampionshipInformation().getLast().setAbandon(true);
+				}
+
 				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				velocity = athlete.getVelocity(race.getModality().getSwimming().getDiscipline());
@@ -69,7 +70,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
 				//advancedDistance = actualDistance + velocity;
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
-				
+				athlete.getChampionshipInformation().getLast().setPosition(position);
+
 				Championship.getInstance().listenAdvancePanel(this); // Atributo controller?
 				
 				try {
@@ -97,8 +99,11 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 			float pointProv = provisioning.getDistance();
 			
 			while (advancedDistance < race.getModality().getSecondTransition() && isOut != true) {
-				if (fatigue > maxFatigue)
+				
+				if (fatigue > maxFatigue) { 
 					isOut = true;
+					athlete.getChampionshipInformation().getLast().setAbandon(true);
+				}
 									
 				velocity = athlete.getVelocity(race.getModality().getCycling().getDiscipline());
 				velocity -= getFatigueEffect();  
@@ -108,6 +113,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
 				//advancedDistance = actualDistance + velocity;
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
+				athlete.getChampionshipInformation().getLast().setPosition(position);
 
 				if (advancedDistance - race.getModality().getFirstTransition() >= pointProv) {
 					fatigue -= fatigue*restoreFatigue;
@@ -147,8 +153,11 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 			pointProv = provisioning.getDistance();
 			
 			while (advancedDistance < race.getModality().getTotalDistance() && isOut != true) {
-				if (fatigue > maxFatigue)
+
+				if (fatigue > maxFatigue) { 
 					isOut = true;
+					athlete.getChampionshipInformation().getLast().setAbandon(true);
+				}
 								
 				velocity = athlete.getVelocity(race.getModality().getPedestrianism().getDiscipline());
 				velocity -= getFatigueEffect();
@@ -158,7 +167,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
 				//advancedDistance = actualDistance + velocity;
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
-			
+				athlete.getChampionshipInformation().getLast().setPosition(position);
+
 				if (advancedDistance - race.getModality().getSecondTransition() >= pointProv) {
 					fatigue -= fatigue*restoreFatigue;
 					nextProv++;
@@ -285,5 +295,9 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		return isOut;
 	}		
 
+	public void setIsOut(boolean isOut) {
+		this.isOut = isOut;
+	}
+	
 	
 }

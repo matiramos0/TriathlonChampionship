@@ -40,19 +40,19 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 
 	private static Championship currentInstance;
 	
-	private static List<Race> races;
-	private static List<Athlete> athletes;
+	private List<Race> races;
+	private List<Athlete> athletes;
 	//private static List<Race> racesRuned;
-	private static Race currentRace;
-	private static RaceView currentRaceView;
+	private Race currentRace;
+	private RaceView currentRaceView;
 	private Map<AthleteRaceInformation, AthletePanel> panels;
-	private static List<Race> finishedRaces;
+	private List<Race> finishedRaces;
 	
 	public Championship() {
 		races = new ArrayList<Race>();
 		athletes = new ArrayList<Athlete>();	
 		XMLCharge.chargeTriathlon(athletes, races);
-		finishedRaces = new ArrayList<>();
+		//finishedRaces = new ArrayList<>();
 	}
 	
 	public Race createNewRace() {
@@ -77,9 +77,12 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	                           
 		return newRace;
 	}
-	
-	 
-	 
+ 
+	public void refreshChampionshipPositions() {
+		for(int i = 0; i < athletes.size(); i++) {
+			
+		}
+	}
 	 
 	public HashMap<AthleteRaceInformation, AthletePanel> createPanels(List<AthleteRaceInformation> athletes, Map<Integer, Provisioning> provisioningCycling, Map<Integer, Provisioning> provisioningPedestrianism) {
 		 
@@ -122,7 +125,7 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	 
 	 @Override  
 	public void listenStartNewRace() { 
-		if(currentRaceView != null)
+		if(currentRaceView != null && currentRaceView.isActive())
 			currentRaceView.dispose();
 		currentRace = createNewRace();
 	 }
@@ -134,17 +137,16 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	 
 	 @Override
 	public void listenFinishRace() {
-		finishedRaces.add(currentRace); // Remove from races?
-		races.remove(currentRace);
-		//currentRaceView.seeRanking(finishedRaces, currentRace);
-		//currentRaceView.dispose();	
-		currentRaceView.finishRace();
-		//listenStartNewRace();
-		 
+		 if(currentRace.isFinished()) {
+			 //finishedRaces.add(currentRace);
+			 races.remove(currentRace);
+			 currentRaceView.finishRace();
+		 } else 
+			 currentRace.cancelRace();
 	}
 	 
 	public void listenShowCurrentRanking(){
-		Ranking r = new Ranking(currentRace);
+		Ranking r = new Ranking(athletes);
 		r.setLocationRelativeTo(null);
 		r.setVisible(true);
 		currentRaceView.pause();
@@ -158,23 +160,27 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	}	
 	 
 	 @Override
-	public void listenRefreshPositions() {
+	public synchronized void listenRefreshPositions() {
 		 Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
-						@Override
-						public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
-								// IF anidado con el proposito de no seguir actualizando posiciones de atletas que ya llegaron a la meta
-								if(o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance() && o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-									return 0;
-								else if(o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-									return -1;
-								else if(o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-									return 1;
-								 
-								if (o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0)
-									return -1;
-								else 
-									return 1;
-						}		
+				@Override
+				public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
+					// IF anidado con el proposito de no seguir actualizando posiciones de atletas
+					// que ya llegaron a la meta
+					if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance()
+							&& o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+						return 0;
+					else if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+						return -1;
+					else if (o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+						return 1;
+
+					if (o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0)
+						return -1;
+					else if (o2.getAdvancedDistance() - o1.getAdvancedDistance() > 0)
+						return 1;
+					else
+						return 0;
+				}	
 		});
 
 		 for (int i = 0; i < currentRace.getListAthletes().size(); i++)
