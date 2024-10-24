@@ -28,6 +28,7 @@ public class Modality {
 		else
 			return getTotalDistance();
 	}
+		
 	
 	public float getFirstTransition() {
 		return swimming.getDistance();

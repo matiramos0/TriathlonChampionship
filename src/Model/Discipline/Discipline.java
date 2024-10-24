@@ -12,4 +12,6 @@ public abstract class Discipline {
 	//Abstract methods
 		
 	public abstract String getDescription();
+	
+	public abstract String[] getAccidents();
 }

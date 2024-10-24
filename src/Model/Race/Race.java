@@ -18,7 +18,11 @@ import Model.City.City;
 import Model.Modality.Modality;
 import Model.View.RaceView;
 import Model.ClimateCondition.ClimateCondition;
+import Model.Discipline.Cycling;
+import Model.Discipline.Discipline;
+import Model.Discipline.Pedestrianism;
 import Model.Discipline.Provisioning;
+import Model.Discipline.Swimming;
 import Model.Athlete.Athlete;
 
 public class Race extends Thread implements Serializable{
@@ -219,7 +223,7 @@ public class Race extends Thread implements Serializable{
 				&& Objects.equals(provisioningPedestrianism, other.provisioningPedestrianism)
 				&& stopped == other.stopped && Float.floatToIntBits(time) == Float.floatToIntBits(other.time);
 	}
-  
+  /*
 	public List<AthleteRaceInformation> getActiveAthletes() {
 		return activeAthletes;
 	}
@@ -227,10 +231,11 @@ public class Race extends Thread implements Serializable{
 	public void athleteFinished(AthleteRaceInformation athlete) {
 	    activeAthletes.remove(athlete);
 	    remainingAthletes--;
-	}
+	}*/
 	    
 	public boolean isFinished() {
 	    return finishedAthletesCount == listAthletes.size();  
 	}
+	
   
 }

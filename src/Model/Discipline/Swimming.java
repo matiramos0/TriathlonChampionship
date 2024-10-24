@@ -8,4 +8,17 @@ public class Swimming extends Discipline {
 	public String getDescription() {
 		return "Swimming";
 	}
+
+	@Override
+	public String[] getAccidents() {
+		String[] swimmingAccidents = {
+                "Desprendimiento de gafas",
+                "Problemas con la respiración"
+            };
+		return swimmingAccidents;
+	}
+	
+	
+	
+	
 }
