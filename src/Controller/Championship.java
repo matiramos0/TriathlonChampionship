@@ -124,8 +124,8 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 		
 		if(races.size() == 0)
 			listenFinishChampionship();
-		
-		currentRace = createNewRace();
+		else
+			currentRace = createNewRace();
 	 }
 	 
 	@Override
@@ -144,7 +144,7 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	}
 	
 	private void listenFinishChampionship() {
-		JOptionPane.showInternalMessageDialog(null, "The Winner of the Championship is: " + athletes.getFirst().getName(),"Championship End", 4, (new ImageIcon("img\\trofeo.png")));
+		currentRaceView.finishChampionship(athletes.getFirst().getName() + " " + athletes.getFirst().getLast());
 	}
 
 	@Override 
@@ -162,40 +162,47 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	 
 	@Override
 	public synchronized void listenRefreshRacePositions() {
-	//Ordena por distancia avanzada 
-		 Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
-				@Override
-				public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
+	//Ordena por distancia avanzada 	
+		try {
+			Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
+					@Override
+					public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
 					//IF anidado con el proposito de no seguir actualizando posiciones de atletas que ya llegaron a la meta
 					//Si ambos terminaron, no se cambia la posicion
-					if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance()
-					 && o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-						return 0;   
-					else if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-						return -1;  //Si uno llego a la meta y el otro no, queda Primero el que llego a la meta
-					else if (o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-						return 1;
+						if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance()
+						 && o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+							return 0;   
+						else if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+							return -1;  //Si uno llego a la meta y el otro no, queda Primero el que llego a la meta
+						else if (o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+							return 1;
 
-					if (o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0)
-						return -1;
-					else if (o2.getAdvancedDistance() - o1.getAdvancedDistance() > 0)
-						return 1;
-					else
-						return 0;
-				}	
-		 });
-		 //Actualizar atributo Position de cada atleta basado en el ordenamiento por distancia avanzada
-		 for (int i = 0; i < currentRace.getListAthletes().size(); i++) {								 
-			 currentRace.getListAthletes().get(i).setPosition(i+1);	
-			 currentRace.getListAthletes().get(i).getAthlete().getChampionshipInformation().getLast().setPosition(i+1);
-		 }	
-		 //Actualiza segun las posiciones de los atletas sus respectivos paneles y ubica los primeros 8 visibles 	 
-		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
-			 AthletePanel panel = panels.get(athleteRace);	    
-			 panel.refreshPositions(athleteRace.getPosition(), athleteRace.isOut());
-		}	 		
+						if (o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0)
+							return -1;
+						else if (o2.getAdvancedDistance() - o1.getAdvancedDistance() > 0)
+							return 1;
+						else
+							return 0;
+					}	
+			});
+			//Actualizar atributo Position de cada atleta basado en el ordenamiento por distancia avanzada
+			for (int i = 0; i < currentRace.getListAthletes().size(); i++) {								 
+				currentRace.getListAthletes().get(i).setPosition(i+1);	
+				currentRace.getListAthletes().get(i).getAthlete().getChampionshipInformation().getLast().setPosition(i+1);
+			}	
+			
+			//Actualiza segun las posiciones de los atletas sus respectivos paneles y ubica los primeros 8 visibles 	 
+			for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
+				AthletePanel panel = panels.get(athleteRace);	    
+				panel.refreshPositions(athleteRace.getPosition(), athleteRace.isOut());
+			}	
+			
+		} catch(IllegalArgumentException ex) {
+			currentRaceView.problemPause(); 
+			ex.printStackTrace();
+		}
 	}
-	 
+	
 	@Override
 	public void listenRefreshChampionshipPositions() {
 	//Cada vez que termina una carrera, en base a los puntos totales del cmpeonato del atleta los ordena (de mas a menos puntos)
@@ -212,9 +219,13 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	}
 
 	@Override
-	public void listenInterruptRace(boolean interruption) throws InterruptedException {
+	public void listenInterruptRace(boolean interruption) {
 	//pausa o reanuda la carrera
-		currentRace.interruptRace(interruption);
+		try {
+			currentRace.interruptRace(interruption);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Getters and Setters

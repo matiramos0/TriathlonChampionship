@@ -147,11 +147,8 @@ public class RaceView extends JFrame {
 		panel.add(rdbtnPause);
 		rdbtnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-						Championship.getInstance().listenInterruptRace(true);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
+				Championship.getInstance().listenInterruptRace(true);
+				
 			}
 		});
 		buttonGroupPause.add(rdbtnPause);
@@ -161,11 +158,8 @@ public class RaceView extends JFrame {
 		panel.add(rdbtnResume);
 		rdbtnResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-						Championship.getInstance().listenInterruptRace(false);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+				Championship.getInstance().listenInterruptRace(false);
+
 			}
 		});
 		buttonGroupPause.add(rdbtnResume);
@@ -207,10 +201,18 @@ public class RaceView extends JFrame {
         this.btnSerialize.setEnabled(true);
 	}
 	
+	public void problemPause() {
+		rdbtnPause.doClick();
+		JOptionPane.showMessageDialog(null, "There was a small problem updating the positions, press 'OK' to continue the race.");
+	}
+	
 	public void pause() {
 	 	rdbtnPause.doClick();
 	}
 	
+	public void finishChampionship(String name) {
+		JOptionPane.showInternalMessageDialog(null, "The Winner of the Championship is: " + name, "Championship End", 2, (new ImageIcon("img\\trofeo.png")));
+	}
 	//Getters and Setters
 	
 	public JPanel getContentPane() {

@@ -96,14 +96,7 @@ public class Race extends Thread implements Serializable{
 				}
 			    
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
-				
-				try {
-					 Championship.getInstance().listenRefreshRacePositions();	
-				} catch(IllegalArgumentException e) {
-					 Championship.getInstance().listenInterruptRace(true);	
-					 JOptionPane.showMessageDialog(null, "There was a small problem updating the positions, press 'OK' to continue the race.");
-					 e.printStackTrace();
-				}
+				Championship.getInstance().listenRefreshRacePositions();	
 			
 				time = time + 0.1F;
 				
