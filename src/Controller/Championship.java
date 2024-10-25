@@ -5,36 +5,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import Model.Race.*;
-
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import EventListeners.FinishRaceListener;
 import EventListeners.NewChampionshipListener;
 import EventListeners.NewRaceListener;
 import EventListeners.RefreshPositionListener;
 import EventListeners.RefreshViewListener;
+import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
+import Model.Athlete.Competition;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
-import XML.XMLCharge;
 import Model.View.AthletePanel;
-import Model.View.MainView;
 import Model.View.RaceView;
 import Model.View.Ranking;
+import XML.XMLCharge;
 
 public class Championship implements Serializable, NewRaceListener, RefreshViewListener, RefreshPositionListener, FinishRaceListener, NewChampionshipListener{
 	
@@ -95,19 +85,19 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 		 return map;
 	}
 	 
-	 //	Event Listeners
+	// Event Listeners
 
-	 @Override    
-	public void listenAdvancePanel(AthleteRaceInformation athleteRace) {//se ejecuta cada actualizacion de distancia de athleteRace
-		try{
-			AthletePanel panel = panels.get(athleteRace); 
-			
+	@Override
+	public void listenAdvancePanel(AthleteRaceInformation athleteRace) {
+	//Se ejecuta cada actualizacion de distancia de athleteRace
+		try {
+			AthletePanel panel = panels.get(athleteRace);
 			panel.advance(athleteRace.getAdvancedDistance());
-			panel.getLblEnergy().setText(String.format("Fatigue: %.2f" , athleteRace.getFatigue()));
+			panel.getLblEnergy().setText(String.format("Fatigue: %.2f", athleteRace.getFatigue()));
 
-		}catch(Exception e) {
-			 e.printStackTrace(System.err);
-		}
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+		}	
 	}
 	 
 	 @Override
@@ -118,12 +108,14 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	 
 	@Override  
 	public void listenStartNewRace() { 
+	//Si existe una ventana de carrera activa, se cierra
 		if(currentRaceView != null && currentRaceView.isActive())
 			currentRaceView.dispose();
 		
 		if(races.size() == 0)
 			listenFinishChampionship();
-		currentRace = createNewRace();
+		else
+			currentRace = createNewRace();
 	 }
 	 
 	@Override
@@ -137,67 +129,84 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 			listenRefreshChampionshipPositions();
 			races.remove(currentRace);
 			currentRaceView.finishRace();
-		} else
-			currentRace.cancelRace(); // Se ha abandonado la carrera sin terminar, los datos no se guardan y se interrumpen los hilos
+		} else //Si se ha abandona la carrera sin terminar, los datos no se guardan y se cancela la carrera
+			currentRace.cancelRace(); 
 	}
 	
 	private void listenFinishChampionship() {
-		JOptionPane.showInternalMessageDialog(null, "The Winner of the Championship is: " + athletes.getFirst().getName(),"Championship End", 4, (new ImageIcon("img\\trofeo.png")));
+		int i = 0;
+		while(!(athletes.get(i) instanceof Competition)) 
+			i++;
+		String nameCompetitionChampion = athletes.get(i).getName() + " " + athletes.get(i).getLast();
+		
+		i = 0;
+		while(!(athletes.get(i) instanceof Amateur)) 
+			i++;
+		String nameAmateurChampion = athletes.get(i).getName() + " " + athletes.get(i).getLast();
+		
+		currentRaceView.finishChampionship(nameCompetitionChampion, nameAmateurChampion);
 	}
 
 	@Override 
 	public void listenShowCurrentRanking() {
+		currentRaceView.pause();
 		Ranking r = new Ranking(athletes);
 		r.setLocationRelativeTo(null);
 		r.setVisible(true);
-		currentRaceView.pause();
 	}
 
 	@Override
 	public void listenRefreshView(float time, ClimateCondition currentWeather) {
-		currentRaceView.getLblRaceTime().setText("Race Time: " + Float.valueOf(time).shortValue() + " seconds");
-		currentRaceView.getLblClimateCondition().setText("Climate condition:" + currentWeather.getDescription());
-
+		currentRaceView.refreshInfo(time, currentWeather);
 	}	
 	 
 	@Override
 	public synchronized void listenRefreshRacePositions() {
-		 //Ordena por distancia avanzada 
-		 Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
-				@Override
-				public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
+	//Ordena por distancia avanzada 	
+		try {
+			Collections.sort(currentRace.getListAthletes(), new Comparator<AthleteRaceInformation>() {
+					@Override
+					public int compare(AthleteRaceInformation o1, AthleteRaceInformation o2) {
 					//IF anidado con el proposito de no seguir actualizando posiciones de atletas que ya llegaron a la meta
 					//Si ambos terminaron, no se cambia la posicion
-					if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance()
-					 && o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-						return 0;   
-					else if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-						return -1;  //Si uno termino y el otro no, deja primero el que ya termino 
-					else if (o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
-						return 1;
+						if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance()
+						 && o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+							return 0;   
+						else if (o1.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+							return -1;  //Si uno llego a la meta y el otro no, queda Primero el que llego a la meta
+						else if (o2.getAdvancedDistance() >= currentRace.getModality().getTotalDistance())
+							return 1;
 
-					if (o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0)
-						return -1;
-					else if (o2.getAdvancedDistance() - o1.getAdvancedDistance() > 0)
-						return 1;
-					else
-						return 0;
-				}	
-		 });
-		 //Actualizar atributo Position de cada atleta basado en el ordenamiento por distancia avanzada
-		 for (int i = 0; i < currentRace.getListAthletes().size(); i++)								 
-			 if(currentRace.getListAthletes().get(i).isOut() == false)
-				 currentRace.getListAthletes().get(i).setPosition(i+1);	
-		
-		 //Actualiza segun las posiciones de los atletas sus respectivos paneles y ubica los primeros 8 visibles 	 
-		 for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
-			 AthletePanel panel = panels.get(athleteRace);	    
-			 panel.refreshPositions(athleteRace.getPosition(), athleteRace.isOut());
-		}	 		
+						if (o2.getAdvancedDistance() - o1.getAdvancedDistance() < 0)
+							return -1;
+						else if (o2.getAdvancedDistance() - o1.getAdvancedDistance() > 0)
+							return 1;
+						else
+							return 0;
+					}	
+			});
+			//Actualizar atributo Position de cada atleta basado en el ordenamiento por distancia avanzada
+			for (int i = 0; i < currentRace.getListAthletes().size(); i++) {								 
+				currentRace.getListAthletes().get(i).setPosition(i+1);	
+				currentRace.getListAthletes().get(i).getAthlete().getChampionshipInformation().getLast().setPosition(i+1);
+			}	
+			
+			//Actualiza segun las posiciones de los atletas sus respectivos paneles y ubica los primeros 8 visibles 	 
+			for (AthleteRaceInformation athleteRace : panels.keySet()) {		 
+				AthletePanel panel = panels.get(athleteRace);	    
+				panel.refreshPositions(athleteRace.getPosition(), athleteRace.isOut());
+			}	
+			
+		} catch(IllegalArgumentException ex) {
+			currentRaceView.problemPause(); 
+			ex.printStackTrace();
+		}
 	}
-	 
+	
 	@Override
 	public void listenRefreshChampionshipPositions() {
+	//Cada vez que termina una carrera, en base a los puntos totales del cmpeonato del atleta los ordena (de mas a menos puntos)
+		
 		Collections.sort(athletes, new Comparator<Athlete>() {
 			@Override
 			public int compare(Athlete o1, Athlete o2) {
@@ -210,8 +219,13 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	}
 
 	@Override
-	public void listenInterruptRace(boolean interruption) throws InterruptedException {
-		currentRace.interruptRace(interruption);
+	public void listenInterruptRace(boolean interruption) {
+	//pausa o reanuda la carrera
+		try {
+			currentRace.interruptRace(interruption);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Getters and Setters
@@ -224,6 +238,7 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 
 	@Override
 	public int listenChangeVelocity(AthleteRaceInformation athlete) {
+	//segun el atleta, obtiene su panel y su velocidad actual
 		AthletePanel panel = panels.get(athlete);		
 		return (int) panel.getSpinnerSpeed().getValue();
 	}

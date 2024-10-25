@@ -68,8 +68,8 @@ public class AthletePanel extends JPanel{
 	
 	@Override
 	public void paint(Graphics g) {
-		int transition1 = (this.getWidth()-56)/3 +56;//-56 due to the start of the lbldistance
-		int transition2 = (this.getWidth()-56)/3*2 +56;
+		int transition1 = (this.getWidth()-56)/3 +56; //-56 porque ahi arranca el lblDistance (Recorre la carrera)
+		int transition2 = (this.getWidth()-56)/3 *2 +56;
 		super.paint(g);
 		g.setColor((Color.BLACK));
 		g.drawLine(56, 37, this.getWidth(), 37);//Race line
@@ -77,45 +77,44 @@ public class AthletePanel extends JPanel{
 		g.drawLine(transition1, 0, transition1, 75);
 		g.drawLine(transition2, 0, transition2, 75);
 		g.setColor(Color.GREEN);
-		for(int i = 1; i <= this.provisioningCycling.size(); i++) {
-			Integer mapKey = Integer.valueOf(i);	//Cycling provisioning lines in relation to the transition line(in pixels)
-			if (provisioningCycling.get(mapKey).getDiscipline() instanceof Cycling ) {
-				float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());
-				g.drawLine((int)(transition1 + transition1/relation), 0, (int)(transition1 + transition1/relation), 75);
-			} else if(this.provisioningCycling.get(mapKey).getDiscipline() instanceof Pedestrianism) {
-				float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());
-				g.drawLine((int)((transition2 + transition2/relation)), 0, (int)((transition2 + transition2/relation)), 75);
-			}
+		
+		for (int i = 1; i <= this.provisioningCycling.size(); i++) {
+			Integer mapKey = Integer.valueOf(i); 
+		//Pinta lineas de aprovisionamiento en relacion a la linea de transicion (en pixels)
+			float relation = (modality.getCycling().getDistance() / this.provisioningCycling.get(mapKey).getDistance());
+			g.drawLine((int) (transition1 + ((this.getWidth()-56)/3) / relation), 0,
+					   (int) (transition1 + ((this.getWidth()-56)/3) / relation), 75);
+	
 		}
-		for(int i = 1; i <= this.provisioningPedestrianism.size(); i++) {
-			Integer mapKey = Integer.valueOf(i);	//Pedestrianism provisioning lines in relation to the transition line(in pixels)
-			if (provisioningPedestrianism.get(mapKey).getDiscipline() instanceof Cycling ) {
-				float relation = (modality.getCycling().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());
-				g.drawLine((int)(transition1 + transition1/relation), 0, (int)(transition1 + transition1/relation), 75);
-			} else if(this.provisioningPedestrianism.get(mapKey).getDiscipline() instanceof Pedestrianism) {
-				float relation = (modality.getCycling().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());
-				g.drawLine((int)((transition2 + transition2/relation)), 0, (int)((transition2 + transition2/relation)), 75);
-			}
+		
+		for (int i = 1; i <= this.provisioningPedestrianism.size(); i++) {
+			Integer mapKey = Integer.valueOf(i); 
+		//Pinta lineas de aprovisionamiento en relacion a la linea de transicion (en pixels)
+			float relation = (modality.getPedestrianism().getDistance() / this.provisioningPedestrianism.get(mapKey).getDistance());
+			g.drawLine((int) (transition2 + ((this.getWidth()-56)/3) / relation), 0, 
+					   (int) (transition2 + ((this.getWidth()-56)/3) / relation), 75);
+		
 		}
-			
 	}
 	
 	public synchronized void advance(float advancedDistance) {
-		int panelDist = (this.getWidth() - 56) / 3;// -56 due to the start of the lbldistance
+		int panelDist = (this.getWidth() - 56) / 3; //-56 porque ahi arranca el lblDistance (Recorre la carrera)
 		int lblDimensionDistance = 56;
 
 		float t1 = modality.getFirstTransition();
 		float t2 = modality.getSecondTransition();
+		
+	//Divide la distancia en pixeles de cada disciplina con la distancia real y obtiene la relacion para representar las distancias correctamente
 		float swimmingEqual = panelDist / modality.getSwimming().getDistance();
 		float cyclingEqual = panelDist / modality.getCycling().getDistance();
 		float pedestrianismEqual = panelDist / modality.getPedestrianism().getDistance();
 
 		if (advancedDistance < t1)
-			lblDimensionDistance += (int) (advancedDistance * swimmingEqual); // Swimming
+			lblDimensionDistance += (int) (advancedDistance * swimmingEqual);
 		else if (advancedDistance < t2)
-			lblDimensionDistance += 333 + (int) ((advancedDistance - t1) * cyclingEqual);// Cycling
+			lblDimensionDistance += 333 + (int) ((advancedDistance - t1) * cyclingEqual);
 		else if (advancedDistance < modality.getTotalDistance())
-			lblDimensionDistance += 666 + (int) ((advancedDistance - t2) * pedestrianismEqual);// Pedestrianism
+			lblDimensionDistance += 666 + (int) ((advancedDistance - t2) * pedestrianismEqual);
 
 		if (advancedDistance < modality.getTotalDistance())
 			this.lblDistance.setLocation(lblDimensionDistance, 21);
@@ -127,7 +126,8 @@ public class AthletePanel extends JPanel{
 		int transitionLine1 = panelDist + 56;
 		int transitionLine2 = panelDist * 2 + 56;
 
-		String actual = "nadando"; // Swimming Icon setted in constructor
+		String actual = "nadando"; //Swimming Icono(Iniciada en constructor)
+		//Cuando pasa una transicion y solo la primer vez que lo hace cambia el Icono
 		if (((transitionLine1 < lblDimensionDistance) && (lblDimensionDistance < transitionLine2)) && actual != "ciclismo") {
 			this.lblDistance.setIcon(new ImageIcon("img\\ciclismo.png"));
 			actual = "ciclismo";
@@ -144,7 +144,7 @@ public class AthletePanel extends JPanel{
 				this.lblDistance.setIcon(new ImageIcon("img\\cerrar.png"));
 			this.setVisible(true);
 			this.repaint();
-		} else { 					// show only first 8 athletes
+		} else {
 			this.setVisible(false);
 		}
 	}

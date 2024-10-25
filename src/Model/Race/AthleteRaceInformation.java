@@ -27,12 +27,10 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	private Athlete athlete;
 	private Race race;
 	private float advancedDistance;
-	private float advancedTime;
 	private float fatigue;
 	private float velocity;
 	private int position;
 	private boolean isOut;
-	//private boolean stopped; // Usar el stopped de race?
 	
 	//Methods
 	
@@ -41,10 +39,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		this.athlete = athlete;
 		this.race = race;
 		this.advancedDistance = 0;
-		this.advancedTime = 0;
 		this.fatigue = 0;
 		this.isOut = false;
-		//this.stopped = false;
 	}
 
 	@Override
@@ -57,8 +53,6 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 					isOut = true;
 					athlete.getChampionshipInformation().getLast().setAbandon(true);
 				}
-
-				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				Discipline currentDiscipline = race.getModality().getSwimming().getDiscipline();
 				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
@@ -79,7 +73,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		                    isOut = true;
 		                    System.out.println(athlete.getName() + " ha sido eliminado por " + injury.getDescription());
 		                } else {
-		                    advancedTime += injury.getPenaltyTime();
+		                    //advancedTime += injury.getPenaltyTime();
 		                    System.out.println("Penalización de tiempo: " + injury.getPenaltyTime() + " segundos");
 		                }
 		            }
@@ -90,15 +84,38 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		                System.out.println("Penalización de tiempo: " + randomAccident.getPenaltyTime() + " segundos");
 		                
 		                // Restar el tiempo de penalización al avance total del atleta
-		                advancedTime += randomAccident.getPenaltyTime();
+		                //advancedTime += randomAccident.getPenaltyTime();
 		            }
-				
-				
-				
+
+				//Registrar avances en los objetos Competence y DistanceDiscipline correspondientes a la actual carrera del athlete
+
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
 				athlete.getChampionshipInformation().getLast().setPosition(position);
+				
+				Accident injury = Accident.generateInjury(athlete, fatigue);
+				if (injury != null) {
+					System.out.println("Lesión: " + injury.getDescription());
 
-				Championship.getInstance().listenAdvancePanel(this); // Atributo controller?
+					if (injury.getPenaltyTime() == -1) {
+						isOut = true;
+						System.out.println(athlete.getName() + " ha sido eliminado por " + injury.getDescription());
+					} else {
+						//advancedTime += injury.getPenaltyTime();
+						System.out.println("Penalización de tiempo: " + injury.getPenaltyTime() + " segundos");
+					}
+				}
+
+				Accident randomAccident = Accident.generateRandomAccident(currentDiscipline);
+				if (randomAccident != null) {
+					System.out.println("Accidente aleatorio en " + currentDiscipline.getDescription() + ": "
+							+ randomAccident.getDescription());
+					System.out.println("Penalización de tiempo: " + randomAccident.getPenaltyTime() + " segundos");
+
+					// Restar el tiempo de penalización al avance total del atleta
+					//advancedTime += randomAccident.getPenaltyTime();
+				}	
+
+				Championship.getInstance().listenAdvancePanel(this); 
 				
 				try {
 					
@@ -142,6 +159,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				//fatigue += (levelVelocity*fatigue)/100;
 				advancedDistance += velocity;
 				
+				//Registrar avances en los objetos Competence y DistanceDiscipline correspondientes a la actual carrera del athlete
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
 				athlete.getChampionshipInformation().getLast().setPosition(position);
 
@@ -223,6 +241,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				//fatigue += (levelVelocity*fatigue)/100;
 				advancedDistance += velocity;
 				
+				//Registrar avances en los objetos Competence y DistanceDiscipline correspondientes a la actual carrera del athlete
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
 				athlete.getChampionshipInformation().getLast().setPosition(position);
 
@@ -257,11 +276,9 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	                
 	                // Restar el tiempo de penalización al avance total del atleta
 	                advancedTime += randomAccident.getPenaltyTime();
-	            }
-			
+	            }				
 				
-				
-				Championship.getInstance().listenAdvancePanel(this);
+	            Championship.getInstance().listenAdvancePanel(this);
 				
 				try {
 					

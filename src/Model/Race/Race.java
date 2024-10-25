@@ -44,7 +44,6 @@ public class Race extends Thread implements Serializable{
 	private List <Athlete> athletesNotRun;
 	private int finishedAthletesCount;
 	private float time;
-	//private RaceView raceView; 
 
 	//Constructor Method
 
@@ -95,7 +94,7 @@ public class Race extends Thread implements Serializable{
 			
 				try {
 					Random random = new Random();
-					if (random.nextInt(250) == 1) {
+					if (random.nextInt(600) == 1) {
 						List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
 						currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);
 					}
@@ -104,14 +103,7 @@ public class Race extends Thread implements Serializable{
 				}
 			    
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
-				
-				try {
-					 Championship.getInstance().listenRefreshRacePositions();	
-				} catch(IllegalArgumentException e) {
-					 Championship.getInstance().listenInterruptRace(true);	
-					 JOptionPane.showMessageDialog(null, "There was a small problem updating the positions, press 'OK' to continue the race.");
-					 e.printStackTrace();
-				}
+				Championship.getInstance().listenRefreshRacePositions();	
 			
 				time = time + 0.1F;
 				
@@ -152,8 +144,6 @@ public class Race extends Thread implements Serializable{
 
 	public void interruptRace(boolean interruption) throws InterruptedException {
 		this.stopped = interruption;
-		//for (AthleteRaceInformation athlete: listAthletes)
-			//athlete.setStopped(interruption);
 	}
 	
 	public synchronized void countFinishAthlete() {
@@ -169,7 +159,11 @@ public class Race extends Thread implements Serializable{
 			this.interrupt();
 		 }		
 	}
-	
+    
+	public boolean isFinished() {
+		return finishedAthletesCount == listAthletes.size();
+	}
+
 	//Getters and Setters
 	public Modality getModality() {
 		return modality;
@@ -264,10 +258,6 @@ public class Race extends Thread implements Serializable{
 				&& Objects.equals(provisioningCycling, other.provisioningCycling)
 				&& Objects.equals(provisioningPedestrianism, other.provisioningPedestrianism)
 				&& stopped == other.stopped && Float.floatToIntBits(time) == Float.floatToIntBits(other.time);
-	}
-	    
-	public boolean isFinished() {
-	    return finishedAthletesCount == listAthletes.size();  
 	}
 
 }

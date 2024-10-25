@@ -16,6 +16,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import Controller.Championship;
+import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
@@ -146,11 +147,8 @@ public class RaceView extends JFrame {
 		panel.add(rdbtnPause);
 		rdbtnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-						Championship.getInstance().listenInterruptRace(true);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
+				Championship.getInstance().listenInterruptRace(true);
+				
 			}
 		});
 		buttonGroupPause.add(rdbtnPause);
@@ -160,11 +158,8 @@ public class RaceView extends JFrame {
 		panel.add(rdbtnResume);
 		rdbtnResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-						Championship.getInstance().listenInterruptRace(false);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+				Championship.getInstance().listenInterruptRace(false);
+
 			}
 		});
 		buttonGroupPause.add(rdbtnResume);
@@ -194,17 +189,32 @@ public class RaceView extends JFrame {
 	 
 	//Methods    
 	
+	public void refreshInfo(float time, ClimateCondition currentWeather) {
+		this.lblRaceTime.setText("Race Time: " + Float.valueOf(time).shortValue() + " seconds");
+		this.lblClimateCondition.setText("Climate condition:" + currentWeather.getDescription());
+	}	
+	
 	public void finishRace() {
 		JOptionPane.showMessageDialog(null, "Race has Finished!");
 		Championship.getInstance().listenShowCurrentRanking();
 		this.getBtnNextRace().setEnabled(true);
-        btnSerialize.setEnabled(true);
+        this.btnSerialize.setEnabled(true);
+	}
+	
+	public void problemPause() {
+		rdbtnPause.doClick();
+		JOptionPane.showMessageDialog(null, "There was a small problem updating the positions, press 'OK' to continue the race.");
 	}
 	
 	public void pause() {
 	 	rdbtnPause.doClick();
 	}
 	
+	public void finishChampionship(String amateur,  String competition) {
+		JOptionPane.showInternalMessageDialog(null, "The Competition category Winner of the Championship is: " + competition +
+													"\nThe Amateur category Winner of the Championship is: " + amateur, 
+													"Championship End", 2, (new ImageIcon("img\\trofeo.png")));
+	}
 	//Getters and Setters
 	
 	public JPanel getContentPane() {

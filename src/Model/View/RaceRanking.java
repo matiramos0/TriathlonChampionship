@@ -36,7 +36,7 @@ private static final long serialVersionUID = 1L;
 private DefaultTableModel tableModel;
 private JTable table;
 private JScrollPane scroll;
-private final ButtonGroup buttonGroup = new ButtonGroup();
+private final ButtonGroup buttonGroupFilter = new ButtonGroup();
 private List<Athlete> athletes;
 
 public RaceRanking(List<Athlete> athletesList) {
@@ -83,6 +83,19 @@ public RaceRanking(List<Athlete> athletesList) {
 	add(panel_1);
 	panel_1.setLayout(null);
 	
+	
+	JCheckBox chckbxNewCheckBox_1 = new JCheckBox("All");
+	chckbxNewCheckBox_1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			setInfo(athletes);   
+		}
+	});
+	chckbxNewCheckBox_1.setSelected(true);
+	buttonGroupFilter.add(chckbxNewCheckBox_1);
+	chckbxNewCheckBox_1.setBounds(6, 15, 50, 21);
+	panel_1.add(chckbxNewCheckBox_1);
+	
+	
 	JCheckBox chckbxNewCheckBox = new JCheckBox("Competence");
 	chckbxNewCheckBox.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -92,23 +105,11 @@ public RaceRanking(List<Athlete> athletesList) {
 			setInfo(filterRace);   
 		}
 	});
-	buttonGroup.add(chckbxNewCheckBox);
+	buttonGroupFilter.add(chckbxNewCheckBox);
 	chckbxNewCheckBox.setBounds(58, 15, 97, 21);
-	//add(chckbxNewCheckBox);
 	panel_1.add(chckbxNewCheckBox);
 
-	JCheckBox chckbxNewCheckBox_1 = new JCheckBox("All");
-	chckbxNewCheckBox_1.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			setInfo(athletes);   
-		}
-	});
-	chckbxNewCheckBox_1.setSelected(true);
-	buttonGroup.add(chckbxNewCheckBox_1);
-	chckbxNewCheckBox_1.setBounds(6, 15, 50, 21);
-	//add(chckbxNewCheckBox_1);
-	panel_1.add(chckbxNewCheckBox_1);
-
+	
 	JCheckBox chckbxAmateur = new JCheckBox("Amateur");
 	chckbxAmateur.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -118,11 +119,11 @@ public RaceRanking(List<Athlete> athletesList) {
 			setInfo(filterList);   
 		}
 	});
-	buttonGroup.add(chckbxAmateur);
+	buttonGroupFilter.add(chckbxAmateur);
 	chckbxAmateur.setBounds(157, 15, 77, 21);
-	//add(chckbxAmateur);
 	panel_1.add(chckbxAmateur);
 
+	
 	JCheckBox chckbxMale = new JCheckBox("Male");
 	chckbxMale.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -132,10 +133,10 @@ public RaceRanking(List<Athlete> athletesList) {
 			setInfo(filterList);   
 		}
 	});
-	buttonGroup.add(chckbxMale);
+	buttonGroupFilter.add(chckbxMale);
 	chckbxMale.setBounds(236, 15, 63, 21);
-	//add(chckbxMale);
 	panel_1.add(chckbxMale);
+	
 	
 	JCheckBox chckbxFemale = new JCheckBox("Female");
 	chckbxFemale.addActionListener(new ActionListener() {
@@ -146,10 +147,10 @@ public RaceRanking(List<Athlete> athletesList) {
 			setInfo(filterList);   
 		}
 	});
-	buttonGroup.add(chckbxFemale);
+	buttonGroupFilter.add(chckbxFemale);
 	chckbxFemale.setBounds(301, 15, 78, 21);
-	//add(chckbxFemale);
 	panel_1.add(chckbxFemale);
+
 }
 
 	private void setInfo(List<Athlete> athletes) {
@@ -171,7 +172,7 @@ public RaceRanking(List<Athlete> athletesList) {
 			
 				if (a.equals(athletes.getFirst()) && lastCompetencia.getDistances().getLast().getDistance()
 													>lastCompetencia.getRace().getModality().getTotalDistance()){
-				 //Si es el primero y termino la carrera:																					
+				     //Si es el primero y termino la carrera:																					
 					 bestTime = lastCompetencia.getTotalTime();
 					 row[tableModel.getColumnCount() - 2] = bestTime;
 				} else if (lastCompetencia.getDistances().getLast().getDistance() > lastCompetencia.getRace().getModality().getTotalDistance())// si termino la carrera

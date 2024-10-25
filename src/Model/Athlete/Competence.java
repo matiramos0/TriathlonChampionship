@@ -30,7 +30,9 @@ public Competence(Race race) {
 
 	public void disciplineChange() {
 		int discipline = distances.size();
-	
+	//Cada vez que termina una disciplina, se indica el tiempo tardado y la position en la que termino en esa disciplina
+	//Y se agrega la siguiente (si es que hay)
+		
 		if (discipline == 0)
 			distances.add(new DistanceDiscipline(0, new Swimming()));
 		else if (discipline == 1) {
@@ -48,12 +50,14 @@ public Competence(Race race) {
 	}
 	
 	public void advance(float newDistance) {
+		//Distancia de la proxima transicion
 		float distanceMax = race.getModality().getDistance(distances.getLast().getDiscipline());
+		
 		if(newDistance <= distanceMax)
 			distances.getLast().setDistance(newDistance);
-		else {
+		else { 
+		//Si supero la disciplina actual, Cambia
 			disciplineChange();
-			//if(distances.size() != 3)
 			distances.getLast().setDistance(newDistance);
 		}
 	}
