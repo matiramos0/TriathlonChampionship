@@ -210,8 +210,10 @@ public class RaceView extends JFrame {
 	 	rdbtnPause.doClick();
 	}
 	
-	public void finishChampionship(String name) {
-		JOptionPane.showInternalMessageDialog(null, "The Winner of the Championship is: " + name, "Championship End", 2, (new ImageIcon("img\\trofeo.png")));
+	public void finishChampionship(String amateur,  String competition) {
+		JOptionPane.showInternalMessageDialog(null, "The Competition category Winner of the Championship is: " + competition +
+													"\nThe Amateur category Winner of the Championship is: " + amateur, 
+													"Championship End", 2, (new ImageIcon("img\\trofeo.png")));
 	}
 	//Getters and Setters
 	

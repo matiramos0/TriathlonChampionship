@@ -5,36 +5,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import Model.Race.*;
-
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import EventListeners.FinishRaceListener;
 import EventListeners.NewChampionshipListener;
 import EventListeners.NewRaceListener;
 import EventListeners.RefreshPositionListener;
 import EventListeners.RefreshViewListener;
+import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
+import Model.Athlete.Competition;
 import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
-import XML.XMLCharge;
 import Model.View.AthletePanel;
-import Model.View.MainView;
 import Model.View.RaceView;
 import Model.View.Ranking;
+import XML.XMLCharge;
 
 public class Championship implements Serializable, NewRaceListener, RefreshViewListener, RefreshPositionListener, FinishRaceListener, NewChampionshipListener{
 	
@@ -144,7 +134,17 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	}
 	
 	private void listenFinishChampionship() {
-		currentRaceView.finishChampionship(athletes.getFirst().getName() + " " + athletes.getFirst().getLast());
+		int i = 0;
+		while(!(athletes.get(i) instanceof Competition)) 
+			i++;
+		String nameCompetitionChampion = athletes.get(i).getName() + " " + athletes.get(i).getLast();
+		
+		i = 0;
+		while(!(athletes.get(i) instanceof Amateur)) 
+			i++;
+		String nameAmateurChampion = athletes.get(i).getName() + " " + athletes.get(i).getLast();
+		
+		currentRaceView.finishChampionship(nameCompetitionChampion, nameAmateurChampion);
 	}
 
 	@Override 
