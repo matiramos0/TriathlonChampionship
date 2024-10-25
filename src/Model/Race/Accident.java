@@ -11,9 +11,17 @@ public class Accident {
 	
 	 	private String description;
 	    private boolean causesInjury;
-	    private float penaltyTime;
+	    private long penaltyTime;
+	    private int numberRaceOut;
 
-	    public Accident(String description, boolean causesInjury,float penaltyTime) {
+	    public Accident(String description, boolean causesInjury,long penaltyTime, int numberRaceOut) {
+	        this.description = description;
+	        this.causesInjury = causesInjury;
+	        this.penaltyTime= penaltyTime;
+	        this.numberRaceOut = numberRaceOut;
+	    }
+	    
+	    public Accident(String description, boolean causesInjury,long penaltyTime) {
 	        this.description = description;
 	        this.causesInjury = causesInjury;
 	        this.penaltyTime= penaltyTime;
@@ -36,15 +44,23 @@ public class Accident {
 	    }
 
 
-		public float getPenaltyTime() {
+		public long getPenaltyTime() {
 			return penaltyTime;
 		}
 
-		public void setPenaltyTime(float penaltyTime) {
+		public void setPenaltyTime(long penaltyTime) {
 			this.penaltyTime = penaltyTime;
 		}
 	    
-		 public static Accident generateInjury(AthleteRaceInformation athlete, float fatigue) throws InterruptedException {
+		 public int getNumberRaceOut() {
+			return numberRaceOut;
+		}
+
+		public void setNumberRaceOut(int numberRaceOut) {
+			this.numberRaceOut = numberRaceOut;
+		}
+
+		public static Accident generateInjury(AthleteRaceInformation athlete, float fatigue) {
 		        Random random = new Random();
 		        
 		        float injuryProbability = 0.01f * fatigue; 
@@ -64,23 +80,20 @@ public class Accident {
 		                
 		             boolean isSevereInjury = random.nextFloat(500) < injuryProbability;
 		             String injuryDescription;
-		             float penaltyTime = 0;
-		             long sleepTime = random.nextLong(500) + 1001;
-		             int numberRaceOut = random.nextInt(2) + 1;
+		             long sleepTime = 0;
+		             int numberRaceOut = 0;
 		             boolean causesInjury = true;
 		            
 		             if (isSevereInjury) {
-		            	 athlete.setOut(true);
-		            	 athlete.getAthlete().setNumberRaceOut(numberRaceOut);
 		                 injuryDescription = severeInjuries[random.nextInt(severeInjuries.length)];
-		                 penaltyTime = -1;
+		                 sleepTime = -1;
+		                 numberRaceOut = random.nextInt(2) + 1;
 		             } else {
 		                 injuryDescription = minorInjuries[random.nextInt(minorInjuries.length)];
-		                 penaltyTime = 0.5f + random.nextFloat() * 10;
-		                 athlete.sleep(sleepTime);
+		                 sleepTime = random.nextLong(500) + 1001;
 		             }
 		             
-		             return new Accident(injuryDescription, causesInjury, penaltyTime);
+		             return new Accident(injuryDescription, causesInjury, sleepTime, numberRaceOut);
 		        }
 		        return null;
 		    }
@@ -92,13 +105,13 @@ public class Accident {
 		        
 		        if (random.nextFloat(4000) < accidentProbability) {
 		            String accidentDescription = null;
-		            float penaltyTime = 10.0f;  // Tiempo de penalización fijo (10 segundos)
+		            long sleepTime = 2000;  // Tiempo de penalización fijo (10 segundos)
 		            
 		            String[] accidents = discipline.getAccidents();  // Obtener la lista de accidentes por diciplina(aplicamos polimorfismo)
 		            accidentDescription= accidents[random.nextInt(accidents.length)];
 		            
 		            if (accidentDescription != null) {
-		                return new Accident(accidentDescription, false, penaltyTime);  // Sin lesión, pero con tiempo de penalización fijo
+		                return new Accident(accidentDescription, false, sleepTime);  // Sin lesión, pero con tiempo de penalización fijo
 		            }
 		        }
 		        

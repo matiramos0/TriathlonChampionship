@@ -2,10 +2,10 @@ package Model.Discipline;
 
 public class Pedestrianism extends Discipline{
 	
+	public Pedestrianism() {}
+	
 	private final float fatigueValuePedestrianism = 0.1F; //porcentage
 	private final float VELOCITY_STONING_PROM = 10.5F; // Km/h
-
-	public Pedestrianism() {}
 
 	@Override
 	public String getDescription() {

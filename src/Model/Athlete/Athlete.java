@@ -153,10 +153,6 @@ public abstract class Athlete implements Serializable{
 		this.numberRaceOut = numberRaceOut;
 	}
 
-	public void setChampionshipPoints(int championshipPoints) {
-		this.championshipPoints = championshipPoints;
-	}
-
 	public int getChampionshipPosition() {
 		return championshipPosition;
 	}

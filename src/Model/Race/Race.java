@@ -107,8 +107,12 @@ public class Race extends Thread implements Serializable{
 			
 				time = time + 0.1F;
 				
-				if (time == 120) {
-					getTimeToFinish();
+				if ((int) time == 350) {
+					getTimeToFinish(modality.getSecondTransition());
+				}
+				
+				if ((int) time == 500) {
+					getTimeToFinish(modality.getTotalDistance());
 				}
 				
 				try {
@@ -133,13 +137,15 @@ public class Race extends Thread implements Serializable{
 		}		
 	}
 	
-	public void getTimeToFinish() {
+	public void getTimeToFinish(float distance) {
 		if (modality.getModalities().equals(Modalities.LONG)) {
 			for (AthleteRaceInformation athlete: listAthletes) {
-				if (athlete.getAdvancedDistance() < modality.getSecondTransition())
+				if (athlete.getAdvancedDistance() < distance) {
 					athlete.setOut(true);
+					athlete.getAthlete().getChampionshipInformation().getLast().setAbandon(true);
+				}
 			}
-		}
+		} 
 	}
 
 	public void interruptRace(boolean interruption) throws InterruptedException {
