@@ -49,6 +49,7 @@ public abstract class Athlete implements Serializable{
         this.physicalsConditions = physicalsConditions;
 		this.championshipInformation = new ArrayList<>();
 		this.championshipPoints = 0;
+		this.numberRaceOut = 0;
     }
     
     public void newRace(Race race) {

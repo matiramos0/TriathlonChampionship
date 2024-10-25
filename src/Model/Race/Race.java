@@ -68,7 +68,7 @@ public class Race extends Thread implements Serializable{
 		athletesNotRun = new ArrayList<Athlete>();
 		
 		for (Athlete athlete : athletes) {
-			if (athlete.getNumberRaceOut() != 0) {
+			if (athlete.getNumberRaceOut() == 0) {
 				AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, this);
 				athlete.newRace(this);
 				listAthletes.add(athleteRace);
