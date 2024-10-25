@@ -203,5 +203,11 @@ public class Championship implements Serializable, NewRaceListener, RefreshViewL
 	public boolean FinishedRace() {
 	    return currentRace != null && currentRace.isFinished();  
 	}
+
+	@Override
+	public int listenChangeVelocity(AthleteRaceInformation athlete) {
+		AthletePanel panel = panels.get(athlete);		
+		return (int) panel.getSpinnerSpeed().getValue();
+	}
 	
 }

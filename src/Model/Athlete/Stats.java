@@ -5,7 +5,7 @@ public class Stats {
 	public static final float VELOCITY_STONING_PROM = 10.5F; // Km/h
 	public static final float VELOCITY_SWIMMING_PROM = 2.8F; // Km/h
 	public static final float VELOCITY_CYCLING_PROM = 30F; // Km/h
-	public static final long CONTROL_VELOCITY = 300;
+	public static final long CONTROL_VELOCITY = 250;
 	
 	private float swimming;
 	private float cycling;

@@ -22,8 +22,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	
 	public static final long timeOfTranscition = 1000; // miliseconds
 	public static final long maxFatigue = 99; //porcentage
-	public static final float restoreFatigue = 0.2F; //porcentage
-	public static final float baseFatigueValue = 0.12F; //porcentage
+	public static final float restoreFatigue = 0.4F; //porcentage
+	public static final float baseFatigueValue = 0.075F; //porcentage
 	
 	private Athlete athlete;
 	private Race race;
@@ -54,21 +54,21 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		try {
       
 			while (advancedDistance < race.getModality().getFirstTransition() && isOut != true) {
-				
-				
 				if (fatigue > maxFatigue) 
 					isOut = true;		
 				
 				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
-				velocity = athlete.getVelocity(race.getModality().getSwimming().getDiscipline());
+				Discipline currentDiscipline = race.getModality().getSwimming().getDiscipline();
+				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
+				
+				velocity = athlete.getVelocity(currentDiscipline);
+				velocity += (levelVelocity/5)*velocity;
 				velocity -= getFatigueEffect();
-				velocity -= getClimateConditionEffect(race.getModality().getSwimming().getDiscipline());
+				velocity -= getClimateConditionEffect(currentDiscipline);
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
+				fatigue += (velocity/10)*fatigue;
 				advancedDistance += velocity;
-				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
-				//advancedDistance = actualDistance + velocity;
-			
 				
 				  Accident injury = Accident.generateInjury(athlete, fatigue);
 		            if (injury != null) {
@@ -82,9 +82,6 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		                    System.out.println("Penalización de tiempo: " + injury.getPenaltyTime() + " segundos");
 		                }
 		            }
-		            	        
-		            
-		            Discipline currentDiscipline = race.getModality().getSwimming().getDiscipline();
 
 		            Accident randomAccident = Accident.generateRandomAccident(currentDiscipline);
 		            if (randomAccident != null) {
@@ -128,14 +125,18 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 			while (advancedDistance < race.getModality().getSecondTransition() && isOut != true) {
 				if (fatigue > maxFatigue)
 					isOut = true;
+				
+				Discipline currentDiscipline = race.getModality().getCycling().getDiscipline();
+				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
 									
-				velocity = athlete.getVelocity(race.getModality().getCycling().getDiscipline());
+				velocity = athlete.getVelocity(currentDiscipline);
+				velocity += (levelVelocity/5)*velocity;
 				velocity -= getFatigueEffect();  
-				velocity -= getClimateConditionEffect(race.getModality().getCycling().getDiscipline());
+				velocity -= getClimateConditionEffect(currentDiscipline);
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
+				fatigue += (velocity/10)*fatigue;
 				advancedDistance += velocity;
-				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
-				//advancedDistance = actualDistance + velocity;
+				
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
 
 				if (advancedDistance - race.getModality().getFirstTransition() >= pointProv) {
@@ -162,10 +163,6 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	                    System.out.println("Penalización de tiempo: " + injury.getPenaltyTime() + " segundos");
 	                }
 	            }
-	            
-	            
-	            
-	            Discipline currentDiscipline = race.getModality().getCycling().getDiscipline();
 
 	            Accident randomAccident = Accident.generateRandomAccident(currentDiscipline);
 	            if (randomAccident != null) {
@@ -205,14 +202,18 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 			while (advancedDistance < race.getModality().getTotalDistance() && isOut != true) {
 				if (fatigue > maxFatigue)
 					isOut = true;
+				
+				Discipline currentDiscipline = race.getModality().getPedestrianism().getDiscipline();
+				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
 								
-				velocity = athlete.getVelocity(race.getModality().getPedestrianism().getDiscipline());
+				velocity = athlete.getVelocity(currentDiscipline);
+				velocity += (levelVelocity/5)*velocity;
 				velocity -= getFatigueEffect();
-				velocity -= getClimateConditionEffect(race.getModality().getPedestrianism().getDiscipline());
+				velocity -= getClimateConditionEffect(currentDiscipline);
 				fatigue += baseFatigueValue - baseFatigueValue*(athlete.getPhysicalsConditions().getResistance()/100);
+				fatigue += (levelVelocity/10);
 				advancedDistance += velocity;
-				//float actualDistance = athlete.getChampionshipInformation().getLast().getDistances().getLast().getDistance();
-				//advancedDistance = actualDistance + velocity;
+				
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
 			
 				if (advancedDistance - race.getModality().getSecondTransition() >= pointProv) {
@@ -239,10 +240,6 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	                }
 	            }
 	            
-	            
-	            
-	            Discipline currentDiscipline = race.getModality().getPedestrianism().getDiscipline();
-
 	            Accident randomAccident = Accident.generateRandomAccident(currentDiscipline);
 	            if (randomAccident != null) {
 	                System.out.println("Accidente aleatorio en " + currentDiscipline.getDescription() + ": " + randomAccident.getDescription());
@@ -296,7 +293,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		
 		return effect;
 	}
-
+	
 	public void info() {
 		
 		System.out.println("Atleta Nro: " + athlete.getNumber());
@@ -305,12 +302,6 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		System.out.println("Categoria: " + athlete.getCategory() + "\n");
 	
 	}
-	
-	/*public void stopThread() throws InterruptedException {
-		synchronized (this) {
-			currentThread().wait();
-		}
-	}*/
 	
 	//Getters and Setters
 
@@ -326,14 +317,6 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		return race;
 	}
 	
-	/*public boolean isStopped() {
-		return stopped;
-	}
-
-	public void setStopped(boolean stopped) {
-		this.stopped = stopped;
-	}
-*/
 	public float getAdvancedDistance() {
 		return advancedDistance;
 	}
@@ -368,7 +351,22 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 
 	public boolean isOut() {
 		return isOut;
-	}		
+	}
 
+	public float getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(float velocity) {
+		this.velocity = velocity;
+	}
+
+	public void setRace(Race race) {
+		this.race = race;
+	}
+
+	public void setOut(boolean isOut) {
+		this.isOut = isOut;
+	}
 	
 }

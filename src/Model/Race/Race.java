@@ -15,6 +15,7 @@ import java.util.TimerTask;
 import Controller.Championship;
 import DAO.WeatherConditionsDAO;
 import Model.City.City;
+import Model.Modality.Modalities;
 import Model.Modality.Modality;
 import Model.View.RaceView;
 import Model.ClimateCondition.ClimateCondition;
@@ -29,7 +30,7 @@ public class Race extends Thread implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
-	public static final long speedOfRace = 50; // miliseconds
+	public static final long speedOfRace = 100; // miliseconds
 	
 	private Modality modality;
 	private City city;
@@ -104,6 +105,10 @@ public class Race extends Thread implements Serializable{
 			
 				time = time + 0.1F;
 				
+				if (time == 120) {
+					getTimeToFinish();
+				}
+				
 				try {
 					
 					if (stopped) {
@@ -124,6 +129,15 @@ public class Race extends Thread implements Serializable{
 		} catch (InterruptedException e) {
 			e.getStackTrace();
 		}		
+	}
+	
+	public void getTimeToFinish() {
+		if (modality.getModalities().equals(Modalities.LONG)) {
+			for (AthleteRaceInformation athlete: listAthletes) {
+				if (athlete.getAdvancedDistance() < modality.getSecondTransition())
+					athlete.setOut(true);
+			}
+		}
 	}
 	
 	public void interruptRace(boolean interruption) throws InterruptedException {
@@ -223,16 +237,7 @@ public class Race extends Thread implements Serializable{
 				&& Objects.equals(provisioningPedestrianism, other.provisioningPedestrianism)
 				&& stopped == other.stopped && Float.floatToIntBits(time) == Float.floatToIntBits(other.time);
 	}
-  /*
-	public List<AthleteRaceInformation> getActiveAthletes() {
-		return activeAthletes;
-	}
-
-	public void athleteFinished(AthleteRaceInformation athlete) {
-	    activeAthletes.remove(athlete);
-	    remainingAthletes--;
-	}*/
-	    
+	
 	public boolean isFinished() {
 	    return finishedAthletesCount == listAthletes.size();  
 	}

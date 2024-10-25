@@ -10,4 +10,6 @@ public interface RefreshViewListener {
 	void listenAdvancePanel(AthleteRaceInformation athleteRace);
 	
 	void listenRefreshPositions();
+	
+	int listenChangeVelocity(AthleteRaceInformation athleteRace);
 }

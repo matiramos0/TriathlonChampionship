@@ -2,6 +2,8 @@ package Model.View;
 
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -13,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeListener;
 
+import Controller.Championship;
 import Model.Discipline.Cycling;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Provisioning;
@@ -42,12 +45,8 @@ public class AthletePanel extends JPanel{
 		this.modality = modality;
 		
 		spinnerSpeed = new JSpinner();
-		spinnerSpeed.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				//Event of speed altered
-				}
-		});
 		spinnerSpeed.setBounds(10, 27, 40, 20);
+		spinnerSpeed.setModel( new SpinnerNumberModel(1, 0, 5, 1));
 		add(spinnerSpeed);
 		
 		lblAthlete = new JLabel();
