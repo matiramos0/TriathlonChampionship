@@ -25,8 +25,8 @@ import javax.swing.table.DefaultTableModel;
 
 import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
+import Model.Athlete.Competition;
 import Model.Athlete.Competence;
-import Model.Athlete.Competencia;
 import Model.Athlete.Athlete.Gender;
 import Model.Race.Race;
 import java.awt.event.ItemListener;
@@ -41,8 +41,9 @@ private JTable table;
 private JScrollPane scroll;
 private final ButtonGroup buttonGroupFilter = new ButtonGroup();
 private JComboBox<String> comboBoxRace;
-private JCheckBox chckbxNewCheckBox_1;
+private JCheckBox chckbxAll;
 private List<Athlete> athletes;
+private JCheckBox chckbxChampionshipPosition;
 
 	public ChampionshipRanking(List<Athlete> athletesList) {
 		setLayout(null);
@@ -78,15 +79,15 @@ private List<Athlete> athletes;
 	    //table.setPreferredSize(getPreferredSize());
 	    table.getColumnModel().getColumn(2).setPreferredWidth(130);
 	    
-		chckbxNewCheckBox_1 = new JCheckBox("All");
-		chckbxNewCheckBox_1.setBounds(6, 15, 50, 21);
-		chckbxNewCheckBox_1.addActionListener(new ActionListener() {
+		chckbxAll = new JCheckBox("All");
+		chckbxAll.setBounds(6, 15, 50, 21);
+		chckbxAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setInfo(athletes, comboBoxRace.getSelectedIndex());   
 			}
 		});
-		chckbxNewCheckBox_1.setSelected(true);
-		buttonGroupFilter.add(chckbxNewCheckBox_1);
+		chckbxAll.setSelected(true);
+		buttonGroupFilter.add(chckbxAll);
 		
 	    JLabel lblSelectRace = new JLabel("Select Race");
 		lblSelectRace.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -96,18 +97,16 @@ private List<Athlete> athletes;
 		comboBoxRace = new JComboBox<String>();
 		comboBoxRace.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				chckbxNewCheckBox_1.doClick();
+				chckbxAll.doClick();
 			}
 		});
 		comboBoxRace.setBounds(670, 37, 151, 21);
 		add(comboBoxRace);
 		
-		for(Competencia comp : athletes.getFirst().getChampionshipInformation()){
+		for(Competence comp : athletes.getFirst().getChampionshipInformation()){
 			comboBoxRace.addItem(comp.getRace().toString());
 			//comboBoxRace.setName(comp.getRace().toString());
 		}
-		
-	    setInfo(athletes, comboBoxRace.getSelectedIndex());
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Filter By", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -115,7 +114,7 @@ private List<Athlete> athletes;
 		add(panel_1);
 		panel_1.setLayout(null);
 		
-		panel_1.add(chckbxNewCheckBox_1);
+		panel_1.add(chckbxAll);
 
 		JCheckBox chckbxNewCheckBox = new JCheckBox("Competence");
 		chckbxNewCheckBox.setBounds(58, 15, 97, 21);
@@ -123,7 +122,7 @@ private List<Athlete> athletes;
 		chckbxNewCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				List<Athlete> filterRace = athletes.stream()
-													.filter(athlete -> athlete instanceof Competence)
+													.filter(athlete -> athlete instanceof Competition)
 													.collect(Collectors.toList());
 				setInfo(filterRace, comboBoxRace.getSelectedIndex());   
 			}
@@ -180,8 +179,8 @@ private List<Athlete> athletes;
 		JCheckBox chckbxNewCheckBox_3 = new JCheckBox("Name");
 		chckbxNewCheckBox_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				chckbxAll.setSelected(true);
 				Collections.sort(athletes, new Comparator<Athlete>() {
-
 					@Override
 					public int compare(Athlete o1, Athlete o2) {
 						// TODO Auto-generated method stub
@@ -195,18 +194,33 @@ private List<Athlete> athletes;
 		panel.add(chckbxNewCheckBox_3);
 		sortGroup.add(chckbxNewCheckBox_3);
 		
-		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("Championship Position");
-		chckbxNewCheckBox_2.setBounds(6, 38, 150, 21);
-		panel.add(chckbxNewCheckBox_2);
-		sortGroup.add(chckbxNewCheckBox_2);
+		chckbxChampionshipPosition = new JCheckBox("Championship Position");
+		chckbxChampionshipPosition.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Collections.sort(athletes, new Comparator<Athlete>() {
+					@Override
+					public int compare(Athlete o1, Athlete o2) {
+						return o1.getChampionshipPosition() - o2.getChampionshipPosition();
+					}
+				});
+				chckbxAll.setSelected(true);
+				setInfo(athletes, comboBoxRace.getSelectedIndex());
+			}
+		});
+		chckbxChampionshipPosition.setBounds(6, 38, 150, 21);
+		panel.add(chckbxChampionshipPosition);
+		sortGroup.add(chckbxChampionshipPosition);
 		
-		
+		chckbxChampionshipPosition.doClick();
+	    setInfo(athletes, comboBoxRace.getSelectedIndex());
 	}
 
 		private void setInfo(List<Athlete> athletes, int competenciaIndex) {
 			tableModel.setRowCount(0);
 			float bestTime = 0;
-			Competencia competencia;
+			Competence competencia;
+			//int athleteIndex = 0;
 			/*
 			   Grilla mostrando en las columnas la posición en el
 				campeonato, nombre y, para cada carrera de la temporada, la posición en la carrera
@@ -215,12 +229,13 @@ private List<Athlete> athletes;
 			 */
 
 			for (Athlete a : athletes) {
+				//athleteIndex++;
 				
 				Object[] row = new Object[tableModel.getColumnCount()];
 				competencia = a.getChampionshipInformation().get(competenciaIndex);
 
 				row[0] = a.getName();
-				//row[1] = lastCompetencia.getPosition(); in championship
+				row[1] = a.getChampionshipPosition(); 
 				row[2] = competencia.getRace().getCity().getDescription()+": "+competencia.getRace().getModality().getModalities().name();
 				row[3] = competencia.getPosition(); 
 

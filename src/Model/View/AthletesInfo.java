@@ -21,8 +21,9 @@ import javax.swing.table.DefaultTableModel;
 
 import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
+import Model.Athlete.Competition;
 import Model.Athlete.Competence;
-import Model.Athlete.Competencia;
+import Model.Athlete.Athlete.Gender;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
 
@@ -74,7 +75,7 @@ public AthletesInfo(List<Athlete> athletes) {
 	chckbxNewCheckBox.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			List<Athlete> filterRace = athletes.stream()
-												.filter(athlete -> athlete instanceof Competence)
+												.filter(athlete -> athlete instanceof Competition)
 												.collect(Collectors.toList());
 			setInfo(filterRace);   
 		}
@@ -110,17 +111,44 @@ public AthletesInfo(List<Athlete> athletes) {
 	//add(chckbxAmateur);
 	panel_1.add(chckbxAmateur);
 	
+	JCheckBox chckbxMale = new JCheckBox("Male");
+	chckbxMale.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			List<Athlete> filterList = athletes.stream()
+												.filter(athlete -> athlete.getGender().equals(Gender.MALE))
+												.collect(Collectors.toList());
+			setInfo(filterList);   
+		}
+	});
+	buttonGroup.add(chckbxMale);
+	chckbxMale.setBounds(236, 15, 63, 21);
+	//add(chckbxMale);
+	panel_1.add(chckbxMale);
+	
+	JCheckBox chckbxFemale = new JCheckBox("Female");
+	chckbxFemale.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			List<Athlete> filterList = athletes.stream()
+												.filter(athlete -> athlete.getGender().equals(Gender.FEMALE))
+												.collect(Collectors.toList());
+			setInfo(filterList);   
+		}
+	});
+	buttonGroup.add(chckbxFemale);
+	chckbxFemale.setBounds(301, 15, 78, 21);
+	//add(chckbxFemale);
+	panel_1.add(chckbxFemale);
+	
 }
 
 	private void setInfo(List<Athlete> athletes) {
 	/*
 		Listado de atletas conteniendo Nombre, nacionalidad, cantidad de etapas ganadas
-		en cada disciplina en el campeonato, cantidad de carreras ganadas, cantidad de
+		en cada disciplina en el campeonato (*3), cantidad de carreras ganadas, cantidad de
 		abandonos, cantidad de carreras finalizadas.
 	*/
 		tableModel.setRowCount(0);
-		Competencia lastCompetencia;
-		float bestTime = 0 ;
+		Competence lastCompetencia;
 		
 		for (Athlete a : athletes) {
 			
@@ -128,23 +156,14 @@ public AthletesInfo(List<Athlete> athletes) {
 			lastCompetencia = a.getChampionshipInformation().getLast();
 
 			row[0] = a.getName();
-			row[1] = lastCompetencia.getPosition();
-			row[2] = lastCompetencia.getDistances().getLast().getDistance();
-
-			for (int i = 0; i < lastCompetencia.getDistances().size(); i++) 
-					row[3 + i] = lastCompetencia.getDistances().get(i).getTime();		
-			
-				if (a.equals(athletes.getFirst()) && lastCompetencia.getDistances().getLast().getDistance()
-													>lastCompetencia.getRace().getModality().getTotalDistance()){
-				 //Si es el primero y termino la carrera:																					
-					 bestTime = lastCompetencia.getTotalTime();
-					 row[tableModel.getColumnCount() - 2] = bestTime;
-				} else if (lastCompetencia.getDistances().getLast().getDistance() > lastCompetencia.getRace().getModality().getTotalDistance())// si termino la carrera
-							row[tableModel.getColumnCount() - 2] = bestTime - lastCompetencia.getTotalTime();
-			
-			if(lastCompetencia.isAbandon())
-				row[tableModel.getColumnCount() - 1] = lastCompetencia.getDistances().getLast().getDiscipline().getDescription();
-					  
+			row[1] = a.getNacionality();
+			row[2] = a.getSwimmingStagesWon();
+			row[3] = a.getCyclingStagesWon();
+			row[4] = a.getPedestrianismStagesWon();
+			row[5] = a.getRacesWon();
+			row[6] = a.getRacesFinished();
+			row[7] = a.getRacesAbandoned();
+	  
 			tableModel.addRow(row);
 	
 		}

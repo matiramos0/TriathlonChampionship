@@ -12,6 +12,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
+
 import Controller.Championship;
 import DAO.WeatherConditionsDAO;
 import Model.City.City;
@@ -31,7 +33,6 @@ public class Race extends Thread implements Serializable{
 	private City city;
 	private ClimateCondition currentWeather;
 	private boolean stopped;
-	private static int remainingAthletes;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
@@ -77,14 +78,9 @@ public class Race extends Thread implements Serializable{
 			
 			for (AthleteRaceInformation athlete: listAthletes)
 				athlete.start();
-			
-			//listAthletes.get(0).start();
-			
-			//while (!listAthletes.isEmpty()) {
+						
 			while(finishedAthletesCount < listAthletes.size()) {
 			
-				System.out.println("Tiempo: " + time);
-
 				try {
 					Random random = new Random();
 					if (random.nextInt(250) == 1) {
@@ -96,7 +92,14 @@ public class Race extends Thread implements Serializable{
 				}
 			    
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
-				Championship.getInstance().listenRefreshPositions();
+				
+				try {
+					 Championship.getInstance().listenRefreshRacePositions();	
+				} catch(IllegalArgumentException e) {
+					 Championship.getInstance().listenInterruptRace(true);	
+					 JOptionPane.showMessageDialog(null, "There was a small problem updating the positions, press 'OK' to continue the race.");
+					 e.printStackTrace();
+				}
 			
 				time = time + 0.1F;
 				

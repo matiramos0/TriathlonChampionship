@@ -9,7 +9,7 @@ import java.util.Map;
 
 import Controller.Championship;
 import Model.Athlete.Athlete;
-import Model.Athlete.Competencia;
+import Model.Athlete.Competence;
 import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;

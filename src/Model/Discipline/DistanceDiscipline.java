@@ -8,11 +8,13 @@ public class DistanceDiscipline implements Serializable{
 	private float distance;
 	private float time;
 	private Discipline discipline;
+	private int disciplinePosition;
 	
 	public DistanceDiscipline(float distance, Discipline discipline) {
 		this.distance = distance;
 		this.discipline = discipline;
 		this.time = 0;
+		this.disciplinePosition = 0;
 	}
 	
 	//Getters and Setters
@@ -39,6 +41,14 @@ public class DistanceDiscipline implements Serializable{
 
 	public void setTime(float time) {
 		this.time = time;
+	}
+
+	public int getDisciplinePosition() {
+		return disciplinePosition;
+	}
+
+	public void setDisciplinePosition(int disciplinePosition) {
+		this.disciplinePosition = disciplinePosition;
 	}
 
 }

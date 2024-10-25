@@ -50,7 +50,7 @@ public class Ranking extends JFrame {
 		tabbedPane.setBounds(10, 10, 1300, 643);
 		contentPane.add(tabbedPane);
 		
-		racePane = new StatsPanel(athletes);
+		racePane = new RaceRanking(athletes);
 		//racePane.setBackground(new Color(255, 255, 255));
 		racePane.setLayout(null);
 

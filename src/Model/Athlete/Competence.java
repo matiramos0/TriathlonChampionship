@@ -1,30 +1,114 @@
 package Model.Athlete;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import Model.Discipline.Cycling;
-import Model.Discipline.Discipline;
+import Model.Discipline.DistanceDiscipline;
 import Model.Discipline.Pedestrianism;
 import Model.Discipline.Swimming;
+import Model.Race.Race;
 
-public class Competence extends Athlete {
+public class Competence implements Serializable{
 
-//public enum category{ JUNIOR, SUB23, ELITE };
+private Race race;
+private List<PenaltyAthlete> penaltys;
+private List<DistanceDiscipline> distances;
+private int position;
+private boolean abandon;
+
+private static final long serialVersionUID = 1L;
+
+public Competence(Race race) {
+	this.race = race;
+	this.penaltys = new ArrayList<>();
+	this.distances = new ArrayList<>();
+	this.abandon = false;
+	disciplineChange();
+}
+
+	public void disciplineChange() {
+		int discipline = distances.size();
 	
-    public Competence(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted, float weight, float height, double economy, String birthdate, Stats physicalsConditions) {
-        super(number, name, last, nacionality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, physicalsConditions);
-    	this.category = calculateCategory(calculateAge(birthdate));
-    }
-    
-    @Override
-    protected String calculateCategory(int years) {	
-    	//split the birthDate string and compare to the current date to get how years old the athlete is
-    	if ((years > 14) && (years<20))
-    		return "JUNIOR";							
-    	else if ((years > 19) && (years < 24))
-    		return "SUB23";												
-    	else 
-    		return "ELITE";			
-    }
-    
+		if (discipline == 0)
+			distances.add(new DistanceDiscipline(0, new Swimming()));
+		else if (discipline == 1) {
+			distances.getLast().setTime(race.getTime());
+			distances.getLast().setDisciplinePosition(position);
+			distances.add(new DistanceDiscipline(0, new Cycling()));
+		} else if (discipline == 2) {
+			distances.getLast().setTime(race.getTime() - distances.get(0).getTime());
+			distances.getLast().setDisciplinePosition(position);
+			distances.add(new DistanceDiscipline(0, new Pedestrianism()));
+		} else { 
+			distances.getLast().setDisciplinePosition(position);
+			distances.getLast().setTime(race.getTime() - distances.get(1).getTime() - distances.get(0).getTime());
+		}
+	}
+	
+	public void advance(float newDistance) {
+		float distanceMax = race.getModality().getDistance(distances.getLast().getDiscipline());
+		if(newDistance <= distanceMax)
+			distances.getLast().setDistance(newDistance);
+		else {
+			disciplineChange();
+			//if(distances.size() != 3)
+			distances.getLast().setDistance(newDistance);
+		}
+	}
+	
+	public float getTotalTime() {
+		float time = 0;
+		for(DistanceDiscipline d : distances)
+			time += d.getTime();
+		return time;
+	}
+
+	public Race getRace() {
+		return race;
+	}
+
+	public void setRace(Race race) {
+		this.race = race;
+	}
+
+	public List<PenaltyAthlete> getPenaltys() {
+		return penaltys;
+	}
+
+	public void setPenaltys(List<PenaltyAthlete> penaltys) {
+		this.penaltys = penaltys;
+	}
+
+	public List<DistanceDiscipline> getDistances() {
+		return distances;
+	}
+
+	public void setDistances(List<DistanceDiscipline> distances) {
+		this.distances = distances;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+	
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public boolean isAbandon() {
+		return abandon;
+	}
+
+	public void setAbandon(boolean abandon) {
+		this.abandon = abandon;
+	}
+
+	@Override
+	public String toString() {
+		return race.toString() ;
+	}
+
+	
 }

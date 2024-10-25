@@ -9,5 +9,7 @@ public interface RefreshViewListener {
 	
 	void listenAdvancePanel(AthleteRaceInformation athleteRace);
 	
-	void listenRefreshPositions();
+	void listenInterruptRace(boolean interruption)throws InterruptedException;
+	
+	void listenShowCurrentRanking();
 }

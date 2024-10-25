@@ -15,20 +15,22 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
 import Model.Athlete.Athlete.Gender;
+import Model.Athlete.Competition;
 import Model.Athlete.Competence;
-import Model.Athlete.Competencia;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class StatsPanel extends JPanel{
+public class RaceRanking extends JPanel{
 
 private static final long serialVersionUID = 1L;
 private DefaultTableModel tableModel;
@@ -37,7 +39,7 @@ private JScrollPane scroll;
 private final ButtonGroup buttonGroup = new ButtonGroup();
 private List<Athlete> athletes;
 
-public StatsPanel(List<Athlete> athletesList) {
+public RaceRanking(List<Athlete> athletesList) {
 	setVisible(true);
 	this.athletes = athletesList;
 	
@@ -66,6 +68,7 @@ public StatsPanel(List<Athlete> athletesList) {
 	tableModel.addColumn("Pedestrianism Time");
 	tableModel.addColumn("Total Time");
 	tableModel.addColumn("Abandon in:"); 
+	
 	table = new JTable(tableModel);
 	table.setFont(new Font("Tahoma", Font.LAYOUT_LEFT_TO_RIGHT, 16));
     table.setFillsViewportHeight(true);
@@ -74,19 +77,26 @@ public StatsPanel(List<Athlete> athletesList) {
     
     setInfo(athletes); 
 	
+	JPanel panel_1 = new JPanel();
+	panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Filter By", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+	panel_1.setBounds(75, 10, 385, 48);
+	add(panel_1);
+	panel_1.setLayout(null);
+	
 	JCheckBox chckbxNewCheckBox = new JCheckBox("Competence");
 	chckbxNewCheckBox.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			List<Athlete> filterRace = athletes.stream()
-												.filter(athlete -> athlete instanceof Competence)
+												.filter(athlete -> athlete instanceof Competition)
 												.collect(Collectors.toList());
 			setInfo(filterRace);   
 		}
 	});
 	buttonGroup.add(chckbxNewCheckBox);
 	chckbxNewCheckBox.setBounds(58, 15, 97, 21);
-	add(chckbxNewCheckBox);
-	
+	//add(chckbxNewCheckBox);
+	panel_1.add(chckbxNewCheckBox);
+
 	JCheckBox chckbxNewCheckBox_1 = new JCheckBox("All");
 	chckbxNewCheckBox_1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -96,8 +106,9 @@ public StatsPanel(List<Athlete> athletesList) {
 	chckbxNewCheckBox_1.setSelected(true);
 	buttonGroup.add(chckbxNewCheckBox_1);
 	chckbxNewCheckBox_1.setBounds(6, 15, 50, 21);
-	add(chckbxNewCheckBox_1);
-	
+	//add(chckbxNewCheckBox_1);
+	panel_1.add(chckbxNewCheckBox_1);
+
 	JCheckBox chckbxAmateur = new JCheckBox("Amateur");
 	chckbxAmateur.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -109,8 +120,9 @@ public StatsPanel(List<Athlete> athletesList) {
 	});
 	buttonGroup.add(chckbxAmateur);
 	chckbxAmateur.setBounds(157, 15, 77, 21);
-	add(chckbxAmateur);
-	
+	//add(chckbxAmateur);
+	panel_1.add(chckbxAmateur);
+
 	JCheckBox chckbxMale = new JCheckBox("Male");
 	chckbxMale.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -122,7 +134,8 @@ public StatsPanel(List<Athlete> athletesList) {
 	});
 	buttonGroup.add(chckbxMale);
 	chckbxMale.setBounds(236, 15, 63, 21);
-	add(chckbxMale);
+	//add(chckbxMale);
+	panel_1.add(chckbxMale);
 	
 	JCheckBox chckbxFemale = new JCheckBox("Female");
 	chckbxFemale.addActionListener(new ActionListener() {
@@ -135,14 +148,14 @@ public StatsPanel(List<Athlete> athletesList) {
 	});
 	buttonGroup.add(chckbxFemale);
 	chckbxFemale.setBounds(301, 15, 78, 21);
-	add(chckbxFemale);
-	
+	//add(chckbxFemale);
+	panel_1.add(chckbxFemale);
 }
 
 	private void setInfo(List<Athlete> athletes) {
 		tableModel.setRowCount(0);
 		float bestTime = 0;
-		Competencia lastCompetencia;
+		Competence lastCompetencia;
 
 		for (Athlete a : athletes) {
 			
