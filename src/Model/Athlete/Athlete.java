@@ -183,24 +183,69 @@ public abstract class Athlete implements Serializable{
     	
     	return years;
 	}
-
-	public float getVelocity(Discipline discipline) {
+	
+	// Receives the base fatigue decrease in each discipline
+	// and returns the fatigue increase in the race
+	
+	public float increasesFatigue(Discipline discipline) {
+		float effect = discipline.getEffectFatigue() - discipline.getEffectFatigue()*(physicalsConditions.getResistance()/100);
+		return effect;
+		
+	}
+	
+	// In this methods getVelocity(), 
+	// returns the speed based on the discipline and applies the statistical factor in each one as a percentage
+	
+	public float getVelocity(Swimming swimming) {
 		
 		float velocity = 0;
 		
-		if (discipline.getClass().equals(Swimming.class))
-			velocity = physicalsConditions.getVelocitySwimming();
-		else if (discipline.getClass().equals(Cycling.class))
-			velocity = physicalsConditions.getVelocityCycling();
-		else if (discipline.getClass().equals(Pedestrianism.class))
-			velocity = physicalsConditions.getVelocityStoning();
+		velocity = swimming.getVelocityInDiscipline();
+		velocity += velocity*(physicalsConditions.getSwimming()/100); 
+		
+		effectGenderFactor(velocity);
+		effectAgeFactor(velocity);
+		
+		return velocity;
+	}
+	
+	public float getVelocity(Cycling cycling) {
+		
+		float velocity = 0;
+		
+		velocity = cycling.getVelocityInDiscipline();
+		velocity += velocity*(physicalsConditions.getCycling()/100);
+		
+		effectGenderFactor(velocity);
+		effectAgeFactor(velocity);
+		
+		return velocity;
+	}
+	
+	public float getVelocity(Pedestrianism running) {
+		
+		float velocity = 0;
+		
+		velocity = running.getVelocityInDiscipline();
+		velocity += velocity*(physicalsConditions.getStoning()/100);
+		
+		effectGenderFactor(velocity);
+		effectAgeFactor(velocity);
+
+		return velocity;
+	}
+	
+	private float effectGenderFactor(float velocity) { // gender factor applies
 		
 		if (gender.equals(Gender.FEMALE))
 			velocity -= velocity*0.05;
 		
-		velocity -= velocity*(calculateAge(birthdate)*0.01F - 0.2F);
-		
 		return velocity;
+	}
+	
+	private float effectAgeFactor(float velocity) { // age factor applies
+		
+		return velocity -= velocity*(calculateAge(birthdate)*0.01F - 0.2F);
 	}
 
 	public int getChampionshipPoints() {

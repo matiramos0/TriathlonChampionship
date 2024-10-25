@@ -5,10 +5,6 @@ import java.io.Serializable;
 public class Stats implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	public static final float VELOCITY_STONING_PROM = 10.5F; // Km/h
-	public static final float VELOCITY_SWIMMING_PROM = 2.8F; // Km/h
-	public static final float VELOCITY_CYCLING_PROM = 30F; // Km/h
-	public static final long CONTROL_VELOCITY = 250;
 	
 	private float swimming;
 	private float cycling;
@@ -22,32 +18,6 @@ public class Stats implements Serializable{
 		this.stoning = stoning;
 		this.resistance = resistance;
 		this.psychologicalStrenght = psychologicalStrenght;
-	}
-	
-	//Methods
-	
-	// In these methods, returns the average speed of the athlete,
-	// adding their physical capacity in the discipline as a percentage.
-	
-	public float getVelocitySwimming() { 
-		float velocity = VELOCITY_SWIMMING_PROM/CONTROL_VELOCITY;
-		velocity += velocity*(swimming/100);
-		
-		return velocity;
-	}
-	
-	public float getVelocityCycling() {
-		float velocity = VELOCITY_CYCLING_PROM/CONTROL_VELOCITY;
-		velocity += velocity*(cycling/100);
-		
-		return velocity;
-	}
-	
-	public float getVelocityStoning() {
-		float velocity = VELOCITY_STONING_PROM/CONTROL_VELOCITY;
-		velocity += velocity*(stoning/100);
-		
-		return velocity;
 	}
 	
 	//Getters and Setters
