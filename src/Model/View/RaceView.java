@@ -16,6 +16,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import Controller.Championship;
+import Model.ClimateCondition.ClimateCondition;
 import Model.Discipline.Provisioning;
 import Model.Race.AthleteRaceInformation;
 import Model.Race.Race;
@@ -194,11 +195,16 @@ public class RaceView extends JFrame {
 	 
 	//Methods    
 	
+	public void refreshInfo(float time, ClimateCondition currentWeather) {
+		this.lblRaceTime.setText("Race Time: " + Float.valueOf(time).shortValue() + " seconds");
+		this.lblClimateCondition.setText("Climate condition:" + currentWeather.getDescription());
+	}	
+	
 	public void finishRace() {
 		JOptionPane.showMessageDialog(null, "Race has Finished!");
 		Championship.getInstance().listenShowCurrentRanking();
 		this.getBtnNextRace().setEnabled(true);
-        btnSerialize.setEnabled(true);
+        this.btnSerialize.setEnabled(true);
 	}
 	
 	public void pause() {

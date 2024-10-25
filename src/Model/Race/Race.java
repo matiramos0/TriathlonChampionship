@@ -43,7 +43,6 @@ public class Race extends Thread implements Serializable{
 	private List <AthleteRaceInformation> listAthletes;
 	private int finishedAthletesCount;
 	private float time;
-	//private RaceView raceView; 
 
 	//Constructor Method
 
@@ -88,7 +87,7 @@ public class Race extends Thread implements Serializable{
 			
 				try {
 					Random random = new Random();
-					if (random.nextInt(250) == 1) {
+					if (random.nextInt(600) == 1) {
 						List<ClimateCondition> weatherConditions = WeatherConditionsDAO.getAllWeatherConditions();
 						currentWeather = ClimateCondition.getRandomWeatherCondition(weatherConditions);
 					}
@@ -145,8 +144,6 @@ public class Race extends Thread implements Serializable{
 
 	public void interruptRace(boolean interruption) throws InterruptedException {
 		this.stopped = interruption;
-		//for (AthleteRaceInformation athlete: listAthletes)
-			//athlete.setStopped(interruption);
 	}
 	
 	public synchronized void countFinishAthlete() {
@@ -157,12 +154,16 @@ public class Race extends Thread implements Serializable{
 	public void cancelRace() {
 		synchronized(this) {
 			listAthletes.forEach(a -> {	synchronized(a) {
-									   a.setIsOut(true);}
+									   a.setOut(true);}
 								});
 			this.interrupt();
 		 }		
 	}
-	
+    
+	public boolean isFinished() {
+		return finishedAthletesCount == listAthletes.size();
+	}
+
 	//Getters and Setters
 	public Modality getModality() {
 		return modality;
@@ -257,10 +258,6 @@ public class Race extends Thread implements Serializable{
 				&& Objects.equals(provisioningCycling, other.provisioningCycling)
 				&& Objects.equals(provisioningPedestrianism, other.provisioningPedestrianism)
 				&& stopped == other.stopped && Float.floatToIntBits(time) == Float.floatToIntBits(other.time);
-	}
-	    
-	public boolean isFinished() {
-	    return finishedAthletesCount == listAthletes.size();  
 	}
 
 }

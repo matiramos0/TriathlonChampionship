@@ -31,7 +31,6 @@ public abstract class Athlete implements Serializable{
     protected String birthdate;
     protected Stats physicalsConditions;
 	private List<Competence>championshipInformation;
-	private int championshipPoints;
 	private int championshipPosition;
 
     public Athlete(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted,float weight, float height, double economy,String birthdate, Stats physicalsConditions) {
@@ -47,7 +46,6 @@ public abstract class Athlete implements Serializable{
         this.birthdate = birthdate;
         this.physicalsConditions = physicalsConditions;
 		this.championshipInformation = new ArrayList<>();
-		this.championshipPoints = 0;
     }
     
     public void newRace(Race race) {
@@ -183,6 +181,7 @@ public abstract class Athlete implements Serializable{
 		for(int i = 0; i < championshipInformation.size(); i++) {
 			if(championshipInformation.get(i).getRace().isFinished() && championshipInformation.get(i).isAbandon() == false)
 					points += championshipInformation.get(i).getRace().getListAthletes().size() - championshipInformation.get(i).getPosition() + 1;
+
 		}
 		return points;
 	}
@@ -200,7 +199,7 @@ public abstract class Athlete implements Serializable{
 
 		for (Competence c : championshipInformation) {
 			if (c.getRace().isFinished())
-				if (c.getPosition() == 1)
+				if (c.getPosition() == 1 && c.getDistances().getLast().getDistance() > c.getRace().getModality().getTotalDistance())
 					wins++;
 		}
 
@@ -231,7 +230,7 @@ public abstract class Athlete implements Serializable{
 		return finished;
 	}
 
-	public int getSwimmingStagesWon() {
+	public int getStagesWon(Swimming discipline) {
 		int wins = 0;
 
 		for (Competence c : championshipInformation) {
@@ -243,7 +242,7 @@ public abstract class Athlete implements Serializable{
 		return wins;
 	}
 	
-	public int getCyclingStagesWon() {
+	public int getStagesWon(Cycling discipline) {
 		int wins = 0;
 
 		for (Competence c : championshipInformation) {
@@ -259,7 +258,7 @@ public abstract class Athlete implements Serializable{
 		return wins;
 	}
 	
-	public int getPedestrianismStagesWon() {
+	public int getStagesWon(Pedestrianism discipline) {
 		int wins = 0;
 
 		for (Competence c : championshipInformation) {

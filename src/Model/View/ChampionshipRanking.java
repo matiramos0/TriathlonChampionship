@@ -43,10 +43,9 @@ private final ButtonGroup buttonGroupFilter = new ButtonGroup();
 private JComboBox<String> comboBoxRace;
 private JCheckBox chckbxAll;
 private List<Athlete> athletes;
-private JCheckBox chckbxChampionshipPosition;
+private JCheckBox chckbxSortChampionshipPosition;
 
 	public ChampionshipRanking(List<Athlete> athletesList) {
-		setLayout(null);
 		setVisible(true);
 		this.athletes = athletesList;
 		
@@ -76,9 +75,15 @@ private JCheckBox chckbxChampionshipPosition;
 	    table.setBorder(new LineBorder(new Color(0, 0, 0)));
 	    scroll.setViewportView(table);
 	    
-	    //table.setPreferredSize(getPreferredSize());
 	    table.getColumnModel().getColumn(2).setPreferredWidth(130);
 	    
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Filter By", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_1.setBounds(75, 10, 385, 48);
+		add(panel_1);
+		panel_1.setLayout(null);
+		
 		chckbxAll = new JCheckBox("All");
 		chckbxAll.setBounds(6, 15, 50, 21);
 		chckbxAll.addActionListener(new ActionListener() {
@@ -87,7 +92,58 @@ private JCheckBox chckbxChampionshipPosition;
 			}
 		});
 		chckbxAll.setSelected(true);
-		buttonGroupFilter.add(chckbxAll);
+		buttonGroupFilter.add(chckbxAll);	
+		panel_1.add(chckbxAll);
+		
+		
+	    //Inicio Panel contenedor de titulo "Sort By"
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Sort By", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel.setBounds(486, 3, 174, 65);
+		panel.setLayout(null);
+		add(panel);
+		
+	    ButtonGroup sortGroup = new ButtonGroup();
+
+		JCheckBox chckbxSortName = new JCheckBox("Name");
+		chckbxSortName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Collections.sort(athletes, new Comparator<Athlete>() {
+					@Override
+					public int compare(Athlete o1, Athlete o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+				});
+				
+				chckbxAll.setSelected(true);
+				setInfo(athletes, comboBoxRace.getSelectedIndex());
+			}
+		});
+		chckbxSortName.setBounds(6, 15, 107, 21);
+		panel.add(chckbxSortName);
+		sortGroup.add(chckbxSortName);
+		
+		chckbxSortChampionshipPosition = new JCheckBox("Championship Position");
+		chckbxSortChampionshipPosition.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Collections.sort(athletes, new Comparator<Athlete>() {
+					@Override
+					public int compare(Athlete o1, Athlete o2) {
+						return o1.getChampionshipPosition() - o2.getChampionshipPosition();
+					}
+				});
+				
+				chckbxAll.setSelected(true);
+				setInfo(athletes, comboBoxRace.getSelectedIndex());
+			}
+		});
+		chckbxSortChampionshipPosition.setBounds(6, 38, 150, 21);
+		panel.add(chckbxSortChampionshipPosition);
+		sortGroup.add(chckbxSortChampionshipPosition);
+	    //Fin Panel contenedor de titulo "Sort By"
+
 		
 	    JLabel lblSelectRace = new JLabel("Select Race");
 		lblSelectRace.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -103,19 +159,12 @@ private JCheckBox chckbxChampionshipPosition;
 		comboBoxRace.setBounds(670, 37, 151, 21);
 		add(comboBoxRace);
 		
+		//Carga las Competence(carreras) terminadas al comboBox 
 		for(Competence comp : athletes.getFirst().getChampionshipInformation()){
 			comboBoxRace.addItem(comp.getRace().toString());
-			//comboBoxRace.setName(comp.getRace().toString());
 		}
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Filter By", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(75, 10, 385, 48);
-		add(panel_1);
-		panel_1.setLayout(null);
-		
-		panel_1.add(chckbxAll);
 
+		
 		JCheckBox chckbxNewCheckBox = new JCheckBox("Competence");
 		chckbxNewCheckBox.setBounds(58, 15, 97, 21);
 		panel_1.add(chckbxNewCheckBox);
@@ -154,6 +203,7 @@ private JCheckBox chckbxChampionshipPosition;
 			}
 		});
 		buttonGroupFilter.add(chckbxMale);
+	
 		
 		JCheckBox chckbxFemale = new JCheckBox("Female");
 		chckbxFemale.setBounds(301, 15, 78, 21);
@@ -167,53 +217,11 @@ private JCheckBox chckbxChampionshipPosition;
 			}
 		});
 		buttonGroupFilter.add(chckbxFemale);
+			
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Sort By", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(486, 3, 174, 65);
-		add(panel);
-		panel.setLayout(null);
-		
-		ButtonGroup sortGroup = new ButtonGroup();
-
-		JCheckBox chckbxNewCheckBox_3 = new JCheckBox("Name");
-		chckbxNewCheckBox_3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				chckbxAll.setSelected(true);
-				Collections.sort(athletes, new Comparator<Athlete>() {
-					@Override
-					public int compare(Athlete o1, Athlete o2) {
-						// TODO Auto-generated method stub
-						return o1.getName().compareTo(o2.getName());
-					}
-				});
-				setInfo(athletes, comboBoxRace.getSelectedIndex());
-			}
-		});
-		chckbxNewCheckBox_3.setBounds(6, 15, 107, 21);
-		panel.add(chckbxNewCheckBox_3);
-		sortGroup.add(chckbxNewCheckBox_3);
-		
-		chckbxChampionshipPosition = new JCheckBox("Championship Position");
-		chckbxChampionshipPosition.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				Collections.sort(athletes, new Comparator<Athlete>() {
-					@Override
-					public int compare(Athlete o1, Athlete o2) {
-						return o1.getChampionshipPosition() - o2.getChampionshipPosition();
-					}
-				});
-				chckbxAll.setSelected(true);
-				setInfo(athletes, comboBoxRace.getSelectedIndex());
-			}
-		});
-		chckbxChampionshipPosition.setBounds(6, 38, 150, 21);
-		panel.add(chckbxChampionshipPosition);
-		sortGroup.add(chckbxChampionshipPosition);
-		
-		chckbxChampionshipPosition.doClick();
-	    setInfo(athletes, comboBoxRace.getSelectedIndex());
+		chckbxSortChampionshipPosition.doClick();
+	    //setInfo(athletes, comboBoxRace.getSelectedIndex());
+	    
 	}
 
 		private void setInfo(List<Athlete> athletes, int competenciaIndex) {

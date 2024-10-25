@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,11 +19,12 @@ import javax.swing.table.DefaultTableModel;
 
 import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
-import Model.Athlete.Competition;
-import Model.Athlete.Competence;
 import Model.Athlete.Athlete.Gender;
-import Model.Race.AthleteRaceInformation;
-import Model.Race.Race;
+import Model.Athlete.Competence;
+import Model.Athlete.Competition;
+import Model.Discipline.Cycling;
+import Model.Discipline.Pedestrianism;
+import Model.Discipline.Swimming;
 
 public class AthletesInfo extends JPanel {
 
@@ -71,6 +70,7 @@ public AthletesInfo(List<Athlete> athletes) {
 	add(panel_1);
 	panel_1.setLayout(null);
 	
+	
 	JCheckBox chckbxNewCheckBox = new JCheckBox("Competence");
 	chckbxNewCheckBox.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -82,8 +82,8 @@ public AthletesInfo(List<Athlete> athletes) {
 	});
 	buttonGroup.add(chckbxNewCheckBox);
 	chckbxNewCheckBox.setBounds(58, 15, 97, 21);
-	//add(chckbxNewCheckBox);
 	panel_1.add(chckbxNewCheckBox);
+	
 	
 	JCheckBox chckbxNewCheckBox_1 = new JCheckBox("All");
 	chckbxNewCheckBox_1.addActionListener(new ActionListener() {
@@ -94,8 +94,8 @@ public AthletesInfo(List<Athlete> athletes) {
 	chckbxNewCheckBox_1.setSelected(true);
 	buttonGroup.add(chckbxNewCheckBox_1);
 	chckbxNewCheckBox_1.setBounds(6, 15, 50, 21);
-	//add(chckbxNewCheckBox_1);
 	panel_1.add(chckbxNewCheckBox_1);
+	
 	
 	JCheckBox chckbxAmateur = new JCheckBox("Amateur");
 	chckbxAmateur.addActionListener(new ActionListener() {
@@ -108,8 +108,8 @@ public AthletesInfo(List<Athlete> athletes) {
 	});
 	buttonGroup.add(chckbxAmateur);
 	chckbxAmateur.setBounds(157, 15, 77, 21);
-	//add(chckbxAmateur);
 	panel_1.add(chckbxAmateur);
+	
 	
 	JCheckBox chckbxMale = new JCheckBox("Male");
 	chckbxMale.addActionListener(new ActionListener() {
@@ -122,8 +122,8 @@ public AthletesInfo(List<Athlete> athletes) {
 	});
 	buttonGroup.add(chckbxMale);
 	chckbxMale.setBounds(236, 15, 63, 21);
-	//add(chckbxMale);
 	panel_1.add(chckbxMale);
+	
 	
 	JCheckBox chckbxFemale = new JCheckBox("Female");
 	chckbxFemale.addActionListener(new ActionListener() {
@@ -136,17 +136,12 @@ public AthletesInfo(List<Athlete> athletes) {
 	});
 	buttonGroup.add(chckbxFemale);
 	chckbxFemale.setBounds(301, 15, 78, 21);
-	//add(chckbxFemale);
 	panel_1.add(chckbxFemale);
 	
 }
 
 	private void setInfo(List<Athlete> athletes) {
-	/*
-		Listado de atletas conteniendo Nombre, nacionalidad, cantidad de etapas ganadas
-		en cada disciplina en el campeonato (*3), cantidad de carreras ganadas, cantidad de
-		abandonos, cantidad de carreras finalizadas.
-	*/
+
 		tableModel.setRowCount(0);
 		Competence lastCompetencia;
 		
@@ -157,9 +152,9 @@ public AthletesInfo(List<Athlete> athletes) {
 
 			row[0] = a.getName();
 			row[1] = a.getNacionality();
-			row[2] = a.getSwimmingStagesWon();
-			row[3] = a.getCyclingStagesWon();
-			row[4] = a.getPedestrianismStagesWon();
+			row[2] = a.getStagesWon(new Swimming());
+			row[3] = a.getStagesWon(new Cycling());
+			row[4] = a.getStagesWon(new Pedestrianism());
 			row[5] = a.getRacesWon();
 			row[6] = a.getRacesFinished();
 			row[7] = a.getRacesAbandoned();

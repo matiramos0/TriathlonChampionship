@@ -38,9 +38,10 @@ public class Ranking extends JFrame {
 	
 	
 	public Ranking(List<Athlete> athletes) {
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1340, 700);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setAlwaysOnTop(true);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -51,20 +52,19 @@ public class Ranking extends JFrame {
 		contentPane.add(tabbedPane);
 		
 		racePane = new RaceRanking(athletes);
-		//racePane.setBackground(new Color(255, 255, 255));
 		racePane.setLayout(null);
 
 		tabbedPane.addTab("Race ranking", null, racePane, null);
 		tabbedPane.setEnabledAt(0, true);
 		
 		athletesInfoPane = new AthletesInfo(athletes); 
-		//athletesInfoPane.setBackground(new Color(255, 255, 255));
 		athletesInfoPane.setLayout(null);
 		
 		tabbedPane.addTab("Athletes", null, athletesInfoPane, null);
 		tabbedPane.setEnabledAt(1, true);
 		
 		championshipPane = new ChampionshipRanking(athletes);
+		championshipPane.setLayout(null);
 
 		tabbedPane.addTab("Championship Ranking", null, championshipPane, null);
 		tabbedPane.setEnabledAt(2, true);

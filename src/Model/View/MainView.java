@@ -97,11 +97,12 @@ public class MainView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					controller = Persistence.ChampionshipDeserialization();
+					
 					if(controller == null)
-						JOptionPane.showMessageDialog(null, "null");				
+						JOptionPane.showMessageDialog(null, "Any information saved");				
 
 				}catch(Exception ex) {
-					JOptionPane.showMessageDialog(null, "Any information saved");				
+					JOptionPane.showMessageDialog(null, "A problem with saved Championship has occured");				
 				}
 				controller.listenStartNewChampionship();
 			}
@@ -110,15 +111,5 @@ public class MainView extends JFrame {
 	
 	
 	}
-	/*
-	 public RaceView getRaceView() { //Sacarlo?????
-		if (raceView == null) {
-			raceView = new RaceView("");
-			raceView.setVisible(true);
-			
-		}
-		return raceView;		
-	}
-	 */
 
 }
