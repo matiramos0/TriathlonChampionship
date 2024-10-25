@@ -58,7 +58,6 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
 				
 				velocity = (levelVelocity/50) + athlete.getVelocity((Swimming) currentDiscipline);
-				//velocity += (levelVelocity*velocity)/100;
 				velocity -= getFatigueEffect();
 				velocity -= getClimateConditionEffect(currentDiscipline);
 				fatigue += (levelVelocity/50) + athlete.increasesFatigue(currentDiscipline);
@@ -86,6 +85,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	            
 	            Accident randomAccident = Accident.generateRandomAccident(currentDiscipline);
 	            if (randomAccident != null) {
+	            	sleep(randomAccident.getPenaltyTime());
 	                System.out.println("Accidente aleatorio en " + currentDiscipline.getDescription() + ": " + randomAccident.getDescription());
 	                System.out.println("Penalización de tiempo: " + randomAccident.getPenaltyTime() + " segundos");
 	                
@@ -167,6 +167,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	            
 	            Accident randomAccident = Accident.generateRandomAccident(currentDiscipline);
 	            if (randomAccident != null) {
+	            	sleep(randomAccident.getPenaltyTime());
 	                System.out.println("Accidente aleatorio en " + currentDiscipline.getDescription() + ": " + randomAccident.getDescription());
 	                System.out.println("Penalización de tiempo: " + randomAccident.getPenaltyTime() + " segundos");
 	                
@@ -248,6 +249,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	            
 	            Accident randomAccident = Accident.generateRandomAccident(currentDiscipline);
 	            if (randomAccident != null) {
+	            	sleep(randomAccident.getPenaltyTime());
 	                System.out.println("Accidente aleatorio en " + currentDiscipline.getDescription() + ": " + randomAccident.getDescription());
 	                System.out.println("Penalización de tiempo: " + randomAccident.getPenaltyTime() + " segundos");
 	                

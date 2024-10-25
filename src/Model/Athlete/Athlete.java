@@ -163,7 +163,7 @@ public abstract class Athlete implements Serializable{
 	
 	//Abstract Methods
 
-	protected abstract String calculateCategory(int years);
+	public abstract String calculateCategory(int years);
 	
 	//Methods
 	

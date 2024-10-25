@@ -17,7 +17,7 @@ public class Competition extends Athlete {
     }
     
     @Override
-    protected String calculateCategory(int years) {	
+    public String calculateCategory(int years) {	
     	//split the birthDate string and compare to the current date to get how years old the athlete is
     	if ((years > 14) && (years<20))
     		return "JUNIOR";							
