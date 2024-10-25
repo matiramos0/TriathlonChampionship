@@ -63,12 +63,11 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				Discipline currentDiscipline = race.getModality().getSwimming().getDiscipline();
 				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
 				
-				velocity = athlete.getVelocity((Swimming) currentDiscipline);
-				velocity += (levelVelocity/5)*velocity;
+				velocity = (levelVelocity/50) + athlete.getVelocity((Swimming) currentDiscipline);
+				//velocity += (levelVelocity*velocity)/100;
 				velocity -= getFatigueEffect();
 				velocity -= getClimateConditionEffect(currentDiscipline);
-				fatigue += athlete.increasesFatigue(currentDiscipline);
-				fatigue += (velocity/10)*fatigue;
+				fatigue += (levelVelocity/50) + athlete.increasesFatigue(currentDiscipline);
 				advancedDistance += velocity;
 				
 				  Accident injury = Accident.generateInjury(this, fatigue);
@@ -132,15 +131,15 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 					athlete.getChampionshipInformation().getLast().setAbandon(true);
 				}
 				
-				Cycling currentDiscipline = (Cycling) race.getModality().getCycling().getDiscipline();
+				Discipline currentDiscipline = race.getModality().getCycling().getDiscipline();
 				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
 
-				velocity = athlete.getVelocity(currentDiscipline);
-				velocity += (levelVelocity/5)*velocity;
+				velocity = (levelVelocity/50) + athlete.getVelocity((Cycling) currentDiscipline);
+				//velocity += (levelVelocity*velocity)/100;
 				velocity -= getFatigueEffect();  
 				velocity -= getClimateConditionEffect(currentDiscipline);
-				fatigue += athlete.increasesFatigue(currentDiscipline);
-				fatigue += (velocity/10)*fatigue;
+				fatigue += (levelVelocity/50) + athlete.increasesFatigue(currentDiscipline);
+				//fatigue += (levelVelocity*fatigue)/100;
 				advancedDistance += velocity;
 				
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
@@ -216,12 +215,12 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				Discipline currentDiscipline = race.getModality().getPedestrianism().getDiscipline();
 				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
 								
-				velocity = athlete.getVelocity( (Pedestrianism) currentDiscipline);
-				velocity += (levelVelocity/5)*velocity;
+				velocity = (levelVelocity/50) + athlete.getVelocity( (Pedestrianism) currentDiscipline);
+				//velocity += (levelVelocity*velocity)/100;
 				velocity -= getFatigueEffect();
 				velocity -= getClimateConditionEffect(currentDiscipline);
-				fatigue += athlete.increasesFatigue(currentDiscipline);
-				fatigue += (levelVelocity/10);
+				fatigue += (levelVelocity/50) + athlete.increasesFatigue(currentDiscipline);
+				//fatigue += (levelVelocity*fatigue)/100;
 				advancedDistance += velocity;
 				
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);

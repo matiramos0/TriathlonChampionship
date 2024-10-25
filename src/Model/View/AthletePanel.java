@@ -46,7 +46,7 @@ public class AthletePanel extends JPanel{
 		
 		spinnerSpeed = new JSpinner();
 		spinnerSpeed.setBounds(10, 27, 40, 20);
-		spinnerSpeed.setModel( new SpinnerNumberModel(1, 0, 5, 1));
+		spinnerSpeed.setModel( new SpinnerNumberModel(0, 0, 5, 1));
 		add(spinnerSpeed);
 		
 		lblAthlete = new JLabel();

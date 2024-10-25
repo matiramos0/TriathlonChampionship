@@ -32,7 +32,7 @@ public class Race extends Thread implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
-	public static final long speedOfRace = 100; // miliseconds
+	public static final long speedOfRace = 50; // miliseconds
 	
 	private Modality modality;
 	private City city;

@@ -188,7 +188,7 @@ public abstract class Athlete implements Serializable{
 	// and returns the fatigue increase in the race
 	
 	public float increasesFatigue(Discipline discipline) {
-		float effect = discipline.getEffectFatigue() - discipline.getEffectFatigue()*(physicalsConditions.getResistance()/100);
+		float effect = discipline.getEffectFatigue() - (discipline.getEffectFatigue()*((physicalsConditions.getResistance()/100)));
 		return effect;
 		
 	}

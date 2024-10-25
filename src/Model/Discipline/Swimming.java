@@ -4,7 +4,7 @@ public class Swimming extends Discipline {
 
 	public Swimming() {}
 	
-	private final float fatigueValueSwimming = 0.14F; // porcentage
+	private final float fatigueValueSwimming = 0.12F; // porcentage
 	private final float VELOCITY_SWIMMING_PROM = 2.8F; // Km/h
 
 	@Override
