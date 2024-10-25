@@ -2,7 +2,7 @@ package XML;
 
 import Model.Athlete.Amateur;
 import Model.Athlete.Athlete;
-import Model.Athlete.Competence;
+import Model.Athlete.Competition;
 import Model.Athlete.Stats;
 import Model.City.City;
 import Model.City.Country;
@@ -89,7 +89,7 @@ public class XMLCharge {
                 if (category.equals("Amateur")) {
                     athlete = new Amateur(number, name, last, nationality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, stats);
                 } else if (category.equals("Competición")) {
-                    athlete = new Competence(number, name, last, nationality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, stats);
+                    athlete = new Competition(number, name, last, nationality, dni, porcentageRacesCompleted, weight, height, economy, birthdate, stats);
                 }
                 
                 if (athlete != null) {

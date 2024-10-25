@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Window.Type;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -61,7 +63,7 @@ public class MainView extends JFrame {
 		btnClose.setBounds(338, 419, 167, 86);
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+				System.exit(ABORT);
 				dispose();
 			}
 		});
@@ -93,9 +95,15 @@ public class MainView extends JFrame {
 		contentPane.add(btnContinuechampionship);
 		btnContinuechampionship.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Persistence.ChampionshipDeserialization();
-				
-				
+				try {
+					controller = Persistence.ChampionshipDeserialization();
+					if(controller == null)
+						JOptionPane.showMessageDialog(null, "null");				
+
+				}catch(Exception ex) {
+					JOptionPane.showMessageDialog(null, "Any information saved");				
+				}
+				controller.listenStartNewChampionship();
 			}
 		});
 		btnContinuechampionship.setFont(new Font("Montserrat Medium", Font.PLAIN, 20));

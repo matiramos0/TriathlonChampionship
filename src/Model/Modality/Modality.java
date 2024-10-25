@@ -1,12 +1,15 @@
 package Model.Modality;
 
+import java.io.Serializable;
+
 import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
 import Model.Discipline.DistanceDiscipline;
 import Model.Discipline.Swimming;
 
-public class Modality {
+public class Modality implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private Modalities modality;
 	private DistanceDiscipline swimming;
 	private DistanceDiscipline cycling;

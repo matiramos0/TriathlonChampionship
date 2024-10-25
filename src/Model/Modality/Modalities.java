@@ -1,6 +1,8 @@
 package Model.Modality;
 
-public enum Modalities { 
+import java.io.Serializable;
+
+public enum Modalities implements Serializable{ 
 	
 	SPRINT("Sprint"), OLYMPIC("Distancia olímpico"), 
 	LONG("Larga distancia"), MIDDLE("Media distancia");

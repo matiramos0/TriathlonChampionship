@@ -1,7 +1,14 @@
 package Model.ClimateCondition;
 
-public class UnitMeasure {
+import java.io.Serializable;
+
+public class UnitMeasure implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public UnitMeasure(String description) {
 		super();
 		this.description = description;

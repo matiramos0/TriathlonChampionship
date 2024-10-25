@@ -12,6 +12,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
+
 import Controller.Championship;
 import DAO.WeatherConditionsDAO;
 import Model.City.City;
@@ -36,7 +38,6 @@ public class Race extends Thread implements Serializable{
 	private City city;
 	private ClimateCondition currentWeather;
 	private boolean stopped;
-	private static int remainingAthletes;
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
@@ -82,14 +83,9 @@ public class Race extends Thread implements Serializable{
 			
 			for (AthleteRaceInformation athlete: listAthletes)
 				athlete.start();
-			
-			//listAthletes.get(0).start();
-			
-			//while (!listAthletes.isEmpty()) {
+						
 			while(finishedAthletesCount < listAthletes.size()) {
 			
-				//System.out.println("Tiempo: " + time);
-
 				try {
 					Random random = new Random();
 					if (random.nextInt(250) == 1) {
@@ -101,7 +97,14 @@ public class Race extends Thread implements Serializable{
 				}
 			    
 				Championship.getInstance().listenRefreshView(time, currentWeather); // O Atributo controller?
-				Championship.getInstance().listenRefreshPositions();
+				
+				try {
+					 Championship.getInstance().listenRefreshRacePositions();	
+				} catch(IllegalArgumentException e) {
+					 Championship.getInstance().listenInterruptRace(true);	
+					 JOptionPane.showMessageDialog(null, "There was a small problem updating the positions, press 'OK' to continue the race.");
+					 e.printStackTrace();
+				}
 			
 				time = time + 0.1F;
 				
@@ -139,17 +142,27 @@ public class Race extends Thread implements Serializable{
 			}
 		}
 	}
-	
+
 	public void interruptRace(boolean interruption) throws InterruptedException {
 		this.stopped = interruption;
 		//for (AthleteRaceInformation athlete: listAthletes)
 			//athlete.setStopped(interruption);
 	}
 	
-	public void countFinishAthlete() {
+	public synchronized void countFinishAthlete() {
 		this.finishedAthletesCount++ ;
 	}
 
+
+	public void cancelRace() {
+		synchronized(this) {
+			listAthletes.forEach(a -> {	synchronized(a) {
+									   a.setIsOut(true);}
+								});
+			this.interrupt();
+		 }		
+	}
+	
 	//Getters and Setters
 	public Modality getModality() {
 		return modality;
@@ -221,6 +234,14 @@ public class Race extends Thread implements Serializable{
 				provisioningPedestrianism, stopped, time);
 	}
 
+	
+	
+	@Override
+	public String toString() {
+		return city.getDescription() ;
+	}
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -237,10 +258,9 @@ public class Race extends Thread implements Serializable{
 				&& Objects.equals(provisioningPedestrianism, other.provisioningPedestrianism)
 				&& stopped == other.stopped && Float.floatToIntBits(time) == Float.floatToIntBits(other.time);
 	}
-	
+	    
 	public boolean isFinished() {
 	    return finishedAthletesCount == listAthletes.size();  
 	}
-	
-  
+
 }

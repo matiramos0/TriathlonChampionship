@@ -9,7 +9,7 @@ import java.util.Map;
 
 import Controller.Championship;
 import Model.Athlete.Athlete;
-import Model.Athlete.Competencia;
+import Model.Athlete.Competence;
 import Model.Discipline.Cycling;
 import Model.Discipline.Discipline;
 import Model.Discipline.Pedestrianism;
@@ -54,9 +54,11 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 		try {
       
 			while (advancedDistance < race.getModality().getFirstTransition() && isOut != true) {
-				if (fatigue > maxFatigue) 
-					isOut = true;		
-				
+				if (fatigue > maxFatigue) { 
+					isOut = true;
+					athlete.getChampionshipInformation().getLast().setAbandon(true);
+				}
+
 				//System.out.println(advancedDistance + "\t" + velocity + "\t" + fatigue + "\t" + athlete.getName());
 				
 				Discipline currentDiscipline = race.getModality().getSwimming().getDiscipline();
@@ -95,7 +97,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				
 				
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
-				
+				athlete.getChampionshipInformation().getLast().setPosition(position);
+
 				Championship.getInstance().listenAdvancePanel(this); // Atributo controller?
 				
 				try {
@@ -123,12 +126,15 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 			float pointProv = provisioning.getDistance();
 			
 			while (advancedDistance < race.getModality().getSecondTransition() && isOut != true) {
-				if (fatigue > maxFatigue)
+				
+				if (fatigue > maxFatigue) { 
 					isOut = true;
+					athlete.getChampionshipInformation().getLast().setAbandon(true);
+				}
 				
 				Discipline currentDiscipline = race.getModality().getCycling().getDiscipline();
 				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
-									
+
 				velocity = athlete.getVelocity(currentDiscipline);
 				velocity += (levelVelocity/5)*velocity;
 				velocity -= getFatigueEffect();  
@@ -138,6 +144,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				advancedDistance += velocity;
 				
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
+				athlete.getChampionshipInformation().getLast().setPosition(position);
 
 				if (advancedDistance - race.getModality().getFirstTransition() >= pointProv) {
 					fatigue -= fatigue*restoreFatigue;
@@ -200,10 +207,13 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 			pointProv = provisioning.getDistance();
 			
 			while (advancedDistance < race.getModality().getTotalDistance() && isOut != true) {
-				if (fatigue > maxFatigue)
+
+				if (fatigue > maxFatigue) { 
 					isOut = true;
-				
-				Discipline currentDiscipline = race.getModality().getPedestrianism().getDiscipline();
+					athlete.getChampionshipInformation().getLast().setAbandon(true);
+				}
+
+				Discipline currentDiscipline = race.getModality().getCycling().getDiscipline();
 				int levelVelocity = Championship.getInstance().listenChangeVelocity(this);
 								
 				velocity = athlete.getVelocity(currentDiscipline);
@@ -215,7 +225,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				advancedDistance += velocity;
 				
 				athlete.getChampionshipInformation().getLast().advance(advancedDistance);
-			
+				athlete.getChampionshipInformation().getLast().setPosition(position);
+
 				if (advancedDistance - race.getModality().getSecondTransition() >= pointProv) {
 					fatigue -= fatigue*restoreFatigue;
 					nextProv++;

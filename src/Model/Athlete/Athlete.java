@@ -30,7 +30,9 @@ public abstract class Athlete implements Serializable{
     protected double economy;
     protected String birthdate;
     protected Stats physicalsConditions;
-	private List<Competencia>championshipInformation;
+	private List<Competence>championshipInformation;
+	private int championshipPoints;
+	private int championshipPosition;
 
     public Athlete(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted,float weight, float height, double economy,String birthdate, Stats physicalsConditions) {
         this.number = number;
@@ -45,10 +47,11 @@ public abstract class Athlete implements Serializable{
         this.birthdate = birthdate;
         this.physicalsConditions = physicalsConditions;
 		this.championshipInformation = new ArrayList<>();
+		this.championshipPoints = 0;
     }
     
     public void newRace(Race race) {
-    	championshipInformation.add(new Competencia(race));
+    	championshipInformation.add(new Competence(race));
     }
     
     //Getters and Setters 
@@ -57,11 +60,11 @@ public abstract class Athlete implements Serializable{
 		return number;
 	}
 
-	public List<Competencia> getChampionshipInformation() {
+	public List<Competence> getChampionshipInformation() {
 		return championshipInformation;
 	}
 
-	public void setChampionshipInformation(List<Competencia> championshipInformation) {
+	public void setChampionshipInformation(List<Competence> championshipInformation) {
 		this.championshipInformation = championshipInformation;
 	}
 
@@ -166,12 +169,110 @@ public abstract class Athlete implements Serializable{
 		else if (discipline.getClass().equals(Pedestrianism.class))
 			velocity = physicalsConditions.getVelocityStoning();
 		
-		if (gender.equals(gender.FEMALE))
+		if (gender.equals(Gender.FEMALE))
 			velocity -= velocity*0.05;
 		
 		velocity -= velocity*(calculateAge(birthdate)*0.01F - 0.2F);
 		
 		return velocity;
+	}
+
+	public int getChampionshipPoints() {
+		int points = 0;
+		
+		for(int i = 0; i < championshipInformation.size(); i++) {
+			if(championshipInformation.get(i).getRace().isFinished() && championshipInformation.get(i).isAbandon() == false)
+					points += championshipInformation.get(i).getRace().getListAthletes().size() - championshipInformation.get(i).getPosition() + 1;
+		}
+		return points;
+	}
+
+	public int getChampionshipPosition() {
+		return championshipPosition;
+	}
+
+	public void setChampionshipPosition(int championshipPosition) {
+		this.championshipPosition = championshipPosition;
+	}
+
+	public int getRacesWon() {
+		int wins = 0;
+
+		for (Competence c : championshipInformation) {
+			if (c.getRace().isFinished())
+				if (c.getPosition() == 1)
+					wins++;
+		}
+
+		return wins;
+	}
+
+	public int getRacesAbandoned() {
+		int abandons = 0;
+
+		for (Competence c : championshipInformation) {
+			if (c.getRace().isFinished())
+				if (c.isAbandon())
+					abandons++;
+		}
+
+		return abandons;
+	}
+
+	public int getRacesFinished() {
+		int finished = 0;
+
+		for (Competence c : championshipInformation) {
+			if (c.getRace().isFinished())
+				if (c.getDistances().getLast().getDistance() >= c.getRace().getModality().getTotalDistance())
+					finished++;
+		}
+
+		return finished;
+	}
+
+	public int getSwimmingStagesWon() {
+		int wins = 0;
+
+		for (Competence c : championshipInformation) {
+			if (c.getRace().isFinished())
+				if (c.getDistances().get(0).getDisciplinePosition() == 1)
+					wins++;
+		}
+
+		return wins;
+	}
+	
+	public int getCyclingStagesWon() {
+		int wins = 0;
+
+		for (Competence c : championshipInformation) {
+			try{
+				if (c.getRace().isFinished())
+					if (c.getDistances().get(1).getDisciplinePosition() == 1)
+						wins++;
+			} catch(IndexOutOfBoundsException e) {
+				
+			}
+		}
+
+		return wins;
+	}
+	
+	public int getPedestrianismStagesWon() {
+		int wins = 0;
+
+		for (Competence c : championshipInformation) {
+			try {				
+				if (c.getRace().isFinished())
+					if (c.getDistances().get(2).getDisciplinePosition() == 1)
+						wins++;
+			} catch(IndexOutOfBoundsException e) {
+				
+			}
+		}
+
+		return wins;
 	}
 	
 }

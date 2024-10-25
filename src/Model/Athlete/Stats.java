@@ -1,7 +1,10 @@
 package Model.Athlete;
 
-public class Stats {
+import java.io.Serializable;
+
+public class Stats implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	public static final float VELOCITY_STONING_PROM = 10.5F; // Km/h
 	public static final float VELOCITY_SWIMMING_PROM = 2.8F; // Km/h
 	public static final float VELOCITY_CYCLING_PROM = 30F; // Km/h

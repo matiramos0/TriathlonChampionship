@@ -39,7 +39,7 @@ public class RaceView extends JFrame {
 	private JLabel lblClimateCondition;
 	private JLabel lblRaceTime;
 	private JLabel lblTitulo;
-	private Ranking ranking;
+	//private Ranking ranking;
 	private final ButtonGroup buttonGroupPause = new ButtonGroup();
 	private JRadioButton rdbtnPause;
 	private JRadioButton rdbtnResume;
@@ -97,9 +97,9 @@ public class RaceView extends JFrame {
 		contentPane.add(lblNewLabel_2_2);
 		
 		lblTitulo = new JLabel("RACE: " + titleRace);
-		lblTitulo.setFont(new Font("Montserrat Black", Font.BOLD, 50));
+		lblTitulo.setFont(new Font("Montserrat Black", Font.ITALIC, 44));
 		lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTitulo.setBounds(520, 6, 846, 78);
+		lblTitulo.setBounds(490, 6, 846, 78);
 		contentPane.add(lblTitulo);	
 		
 		JButton btnExitRace = new JButton("Exit");
@@ -109,17 +109,13 @@ public class RaceView extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				System.exit(DISPOSE_ON_CLOSE);
-				//try {
-				//	controller.listenPauseRace();
-				//} catch (InterruptedException e1) {
-				//}
+				Championship.getInstance().listenFinishRace();
 			}
 		});
 		contentPane.add(btnExitRace);
 		
 		JButton btnStartRace = new JButton("Start");
-		btnStartRace.setBounds(41, 469, 187, 57);
+		btnStartRace.setBounds(41, 456, 187, 57);
 		btnStartRace.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					Championship.getInstance().listenStartRace();
@@ -179,7 +175,7 @@ public class RaceView extends JFrame {
 				Championship.getInstance().listenStartNewRace();
 			}
 		});
-		btnNextRace.setBounds(41, 554, 187, 29);
+		btnNextRace.setBounds(41, 544, 187, 57);
 		btnNextRace.setEnabled(false);
 		contentPane.add(btnNextRace);
 		
@@ -188,40 +184,32 @@ public class RaceView extends JFrame {
 		btnSerialize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Persistence.championshipPersistence(Championship.getInstance());
+				dispose();
 			}
 		});
 		
-		btnSerialize.setBounds(41, 540, 187, 62);
-		contentPane.add(btnSerialize);}
-
-		public void listenFinishRace() {
-		    if (Championship.getInstance().FinishedRace()) {
-		        btnSerialize.setEnabled(true);
-		    }
+		btnSerialize.setBounds(41, 626, 187, 62);
+		contentPane.add(btnSerialize);
 	}
 	 
-//	Methods    
+	//Methods    
 	
-	/*public void seeRanking(List<Race> finishedRaces, Race race) {
-		ranking = new Ranking();
-		ranking.showRaceRanking(finishedRaces, race);
-		ranking.setVisible(true);
-		ranking.setLocationRelativeTo(null);		
-	}*/
+	public void finishRace() {
+		JOptionPane.showMessageDialog(null, "Race has Finished!");
+		Championship.getInstance().listenShowCurrentRanking();
+		this.getBtnNextRace().setEnabled(true);
+        btnSerialize.setEnabled(true);
+	}
 	
 	public void pause() {
 	 	rdbtnPause.doClick();
 	}
 	
 	//Getters and Setters
+	
 	public JPanel getContentPane() {
 		return contentPane;
 	}
-	 /*
-	public void setContentPane(JPanel contentPane) {
-		this.contentPane = contentPane;
-	}
-	*/
 	 	 
 	public JLabel getLblClimateCondition() {
 		return lblClimateCondition;
@@ -251,10 +239,6 @@ public class RaceView extends JFrame {
 		this.lblTitulo = lblTitulo;
 	}
 
-	public void finishRace() {
-		this.getBtnNextRace().setEnabled(true);
-		JOptionPane.showMessageDialog(null, "Race has Finished!");
-		Championship.getInstance().listenShowCurrentRanking();
-	}
+
   
 }

@@ -12,4 +12,9 @@ public interface RefreshViewListener {
 	void listenRefreshPositions();
 	
 	int listenChangeVelocity(AthleteRaceInformation athleteRace);
+
+	void listenInterruptRace(boolean interruption)throws InterruptedException;
+	
+	void listenShowCurrentRanking();
+
 }
