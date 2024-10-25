@@ -41,6 +41,7 @@ public class Race extends Thread implements Serializable{
 	private Map <Integer, Provisioning> provisioningPedestrianism;
 	private Map <Integer, Provisioning> provisioningCycling;
 	private List <AthleteRaceInformation> listAthletes;
+	private List <Athlete> athletesNotRun;
 	private int finishedAthletesCount;
 	private float time;
 	//private RaceView raceView; 
@@ -64,11 +65,17 @@ public class Race extends Thread implements Serializable{
 	public void prepareRace(List<Athlete> athletes) {
 		
 		listAthletes = new ArrayList<AthleteRaceInformation>();
+		athletesNotRun = new ArrayList<Athlete>();
 		
 		for (Athlete athlete : athletes) {
-			AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, this);
-			athlete.newRace(this);
-			listAthletes.add(athleteRace);
+			if (athlete.getNumberRaceOut() != 0) {
+				AthleteRaceInformation athleteRace = new AthleteRaceInformation(athlete, this);
+				athlete.newRace(this);
+				listAthletes.add(athleteRace);
+			} else {
+				athlete.decreasesRaceOut();
+				athletesNotRun.add(athlete);
+			}
 			
 		}
 	}
@@ -157,7 +164,7 @@ public class Race extends Thread implements Serializable{
 	public void cancelRace() {
 		synchronized(this) {
 			listAthletes.forEach(a -> {	synchronized(a) {
-									   a.setIsOut(true);}
+									   a.setOut(true);}
 								});
 			this.interrupt();
 		 }		

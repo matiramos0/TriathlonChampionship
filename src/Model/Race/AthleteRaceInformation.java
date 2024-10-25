@@ -22,8 +22,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 	
 	public static final long timeOfTranscition = 1000; // miliseconds
 	public static final long maxFatigue = 99; //porcentage
-	public static final float restoreFatigue = 0.4F; //porcentage
-	public static final float baseFatigueValue = 0.075F; //porcentage
+	public static final float restoreFatigue = 0.6F; //porcentage
+	public static final float baseFatigueValue = 0.038F; //porcentage
 	
 	private Athlete athlete;
 	private Race race;
@@ -72,7 +72,8 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				fatigue += (velocity/10)*fatigue;
 				advancedDistance += velocity;
 				
-				  Accident injury = Accident.generateInjury(athlete, fatigue);
+				  Accident injury = Accident.generateInjury(this, fatigue);
+				  
 		            if (injury != null) {
 		                System.out.println("Lesión: " + injury.getDescription());
 		                
@@ -158,7 +159,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				}
 
 				
-				Accident injury = Accident.generateInjury(athlete, fatigue);
+				Accident injury = Accident.generateInjury(this, fatigue);
 	            if (injury != null) {
 	                System.out.println("Lesión: " + injury.getDescription());
 	                
@@ -238,7 +239,7 @@ public class AthleteRaceInformation extends Thread implements Serializable{
 				}
 				
 				
-				Accident injury = Accident.generateInjury(athlete, fatigue);
+				Accident injury = Accident.generateInjury(this, fatigue);
 	            if (injury != null) {
 	                System.out.println("Lesión: " + injury.getDescription());
 	                

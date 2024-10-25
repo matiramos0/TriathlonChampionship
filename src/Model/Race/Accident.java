@@ -8,9 +8,10 @@ import Model.Discipline.Pedestrianism;
 import Model.Discipline.Swimming;
 
 public class Accident {
-	 private String description;
+	
+	 	private String description;
 	    private boolean causesInjury;
-	    private float penaltyTime;  
+	    private float penaltyTime;
 
 	    public Accident(String description, boolean causesInjury,float penaltyTime) {
 	        this.description = description;
@@ -43,7 +44,7 @@ public class Accident {
 			this.penaltyTime = penaltyTime;
 		}
 	    
-		 public static Accident generateInjury(Athlete athlete, float fatigue) {
+		 public static Accident generateInjury(AthleteRaceInformation athlete, float fatigue) throws InterruptedException {
 		        Random random = new Random();
 		        
 		        float injuryProbability = 0.01f * fatigue; 
@@ -64,14 +65,19 @@ public class Accident {
 		             boolean isSevereInjury = random.nextFloat(500) < injuryProbability;
 		             String injuryDescription;
 		             float penaltyTime = 0;
-		             boolean causesInjury = true;    
+		             long sleepTime = random.nextLong(500) + 1001;
+		             int numberRaceOut = random.nextInt(2) + 1;
+		             boolean causesInjury = true;
 		            
 		             if (isSevereInjury) {
+		            	 athlete.setOut(true);
+		            	 athlete.getAthlete().setNumberRaceOut(numberRaceOut);
 		                 injuryDescription = severeInjuries[random.nextInt(severeInjuries.length)];
-		                 penaltyTime = -1;  
+		                 penaltyTime = -1;
 		             } else {
 		                 injuryDescription = minorInjuries[random.nextInt(minorInjuries.length)];
-		                 penaltyTime =  0.5f + random.nextFloat() * 10;
+		                 penaltyTime = 0.5f + random.nextFloat() * 10;
+		                 athlete.sleep(sleepTime);
 		             }
 		             
 		             return new Accident(injuryDescription, causesInjury, penaltyTime);
@@ -84,7 +90,7 @@ public class Accident {
 		  
 		        float accidentProbability = 0.002f;  
 		        
-		        if (random.nextFloat(500) < accidentProbability) {
+		        if (random.nextFloat(4000) < accidentProbability) {
 		            String accidentDescription = null;
 		            float penaltyTime = 10.0f;  // Tiempo de penalización fijo (10 segundos)
 		            

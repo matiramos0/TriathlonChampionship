@@ -1,6 +1,7 @@
 package Model.Race;
 
 public class Penalty {
+	
 	private String description;
 	private boolean disqualification;
 	

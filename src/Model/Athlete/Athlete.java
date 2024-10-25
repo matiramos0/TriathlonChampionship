@@ -33,6 +33,7 @@ public abstract class Athlete implements Serializable{
 	private List<Competence>championshipInformation;
 	private int championshipPoints;
 	private int championshipPosition;
+	private int numberRaceOut;
 
     public Athlete(String number, String name, String last, String nacionality, int dni, int porcentageRacesCompleted,float weight, float height, double economy,String birthdate, Stats physicalsConditions) {
         this.number = number;
@@ -136,11 +137,35 @@ public abstract class Athlete implements Serializable{
 		this.category = category;
 	}
 	
+	public int getNumberRaceOut() {
+		return numberRaceOut;
+	}
+
+	public void setNumberRaceOut(int numberRaceOut) {
+		this.numberRaceOut = numberRaceOut;
+	}
+
+	public void setChampionshipPoints(int championshipPoints) {
+		this.championshipPoints = championshipPoints;
+	}
+
+	public int getChampionshipPosition() {
+		return championshipPosition;
+	}
+
+	public void setChampionshipPosition(int championshipPosition) {
+		this.championshipPosition = championshipPosition;
+	}
+	
 	//Abstract Methods
 
 	protected abstract String calculateCategory(int years);
 	
 	//Methods
+	
+	public void decreasesRaceOut() {
+		this.numberRaceOut--;
+	}
 	
 	public int calculateAge(String birthdate) {
 		
@@ -185,14 +210,6 @@ public abstract class Athlete implements Serializable{
 					points += championshipInformation.get(i).getRace().getListAthletes().size() - championshipInformation.get(i).getPosition() + 1;
 		}
 		return points;
-	}
-
-	public int getChampionshipPosition() {
-		return championshipPosition;
-	}
-
-	public void setChampionshipPosition(int championshipPosition) {
-		this.championshipPosition = championshipPosition;
 	}
 
 	public int getRacesWon() {
